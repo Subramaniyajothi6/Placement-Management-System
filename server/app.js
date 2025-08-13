@@ -1,11 +1,15 @@
 const express = require('express');
 const app = express();
-
 const cors = require('cors');
 const logger = require('./utils/logger');
 const errorRoute = require('./utils/errorRoute');
 const authRouter = require('./routes/authRouter');
 const studentRouter = require('./routes/studentRoutes');
+const companyRouter = require('./routes/companyRoutes');
+const interviewRouter = require('./routes/interviewRoutes');
+const applicationRouter = require('./routes/applicationRoutes');
+const placementDriveRouter = require('./routes/placementDriveRoutes');
+const jobRouter = require('./routes/jobRoutes');
 
 
 app.use(cors({
@@ -21,6 +25,12 @@ app.use(logger)
 
 app.use('/api/v1/auth' ,authRouter)
 app.use('/api/v1/student',studentRouter);
+app.use('/api/v1/company',companyRouter);
+app.use('/api/v1/placementDrive',placementDriveRouter);
+app.use('/api/v1/interview',interviewRouter);
+app.use('/api/v1/application',applicationRouter);
+app.use('/api/v1/job',jobRouter);
+
 
 
 app.use(errorRoute);
