@@ -1,16 +1,26 @@
+const PlacementDrive = require("../models/PlacementDrive");
+
 const placementDriveController = {
-    createPlacementDrive:(req,res)=>{try {
-        res.send('create placement drive')
+    createPlacementDrive:async (req,res)=>{try {
+        const placementDrive = await PlacementDrive.create(req.body);
+        res.status(201).json({success:true,data:placementDrive,message:"Placement Drive created successfully"});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({success:false, message: error.message });
     }},
-    getAllPlacementDrives:(req,res)=>{try {
-        res.send('get all placement drives')
+    getAllPlacementDrives: async (req,res)=>{try {
+
+       const placementDrive = await PlacementDrive.find();
+       res.status(200).json({success:true,count:placementDrive.length,data:placementDrive});
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({success:false, message: error.message });
     }},
-    getSinglePlacementDrive:(req,res)=>{try {
-        res.send(`Get placement drive with ID: ${req.params.id}`)
+    getSinglePlacementDrive:async(req,res)=>{try {
+        const placementDrive = await PlacementDrive.findById(req.params.id);
+        if(!placementDrive){
+            return res.status(404).json({success:false,message:'Placement Drive not found'});
+        }
+        res.status(200).json({success:true,data:placementDrive});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }},

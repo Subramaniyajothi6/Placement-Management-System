@@ -10,6 +10,7 @@ const interviewRouter = require('./routes/interviewRoutes');
 const applicationRouter = require('./routes/applicationRoutes');
 const placementDriveRouter = require('./routes/placementDriveRoutes');
 const jobRouter = require('./routes/jobRoutes');
+const cookieParser = require('cookie-parser');
 
 
 app.use(cors({
@@ -18,6 +19,7 @@ app.use(cors({
     credentials:true
 }))
 
+app.use(cookieParser());    
 
 app.use(express.json());
 
