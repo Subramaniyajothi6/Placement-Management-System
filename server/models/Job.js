@@ -1,56 +1,57 @@
 const mongoose = require('mongoose');
 
-const jobSchema =  new mongoose.Schema({
-    placementDrive:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'PlacementDrive',
-        required:true
+const jobSchema = new mongoose.Schema({
+    placementDrive: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PlacementDrive',
+        required: true
     },
-    title:{
-        type:String,
-        required:[true,'Job title is required'],
-        trim:true
+    title: {
+        type: String,
+        required: [true, 'Job title is required'],
+        trim: true
     },
-    description:{
-        type:String,
-        trim:true
+    description: {
+        type: String,
+        trim: true
     },
-    location:{
-        type:String,
-        trim:true
+    location: {
+        type: String,
+        trim: true
     },
-    salary:{
-        type:String,
-        trim:true
+    salary: {
+        type: String,
+        trim: true
     },
-    skillsRequired:{
-        type:[String],
-        default:[]
+    skillsRequired: {
+        type: [String],
+        default: []
     },
-    openings:{
-        type:Number,
-        default:1,
-        min:[1,'Openings must be greater than 0']
+    openings: {
+        type: Number,
+        default: 1,
+        min: [1, 'Openings must be greater than 0']
 
     },
-    postedDate:{
-        type:Date,
-        default:Date.now
+    postedDate: {
+        type: Date,
+        default: Date.now
     },
-    applicationDeadline:{
-        type:Date,
-        validate:{
-            validator:function(value){
-                return value > this.postedDate;
+    applicationDeadline: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                const posted = this.postedDate || Date.now();
+                return value > posted;
             },
-            message:'Application deadline must be after the posting date'
+            message: 'Application deadline must be after the posting date'
         }
-    },
-
-
-    },{
-        timestamps:true,
     }
+
+
+}, {
+    timestamps: true,
+}
 );
 
-module.exports = mongoose.model('Job',jobSchema,'Jobs');
+module.exports = mongoose.model('Job', jobSchema, 'Jobs');
