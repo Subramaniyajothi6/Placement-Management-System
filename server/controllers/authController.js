@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const {JWT_SECRET} = require('../utils/config');
+const { JWT_SECRET } = require('../utils/config');
 const authController = {
     register: async (req, res) => {
         try {
@@ -12,7 +12,7 @@ const authController = {
                 return res.status(400).json({ message: 'User already exists' })
             }
 
-        
+
             const newUser = new User(
                 {
                     name,
@@ -36,7 +36,7 @@ const authController = {
                 return res.status(404).json({ success: false, message: 'User not found' })
             }
             const isMatch = await bcrypt.compare(password, user.password);
-      
+
             if (!isMatch) {
                 return res.status(400).json({ success: false, message: 'Invalid credentials' })
             }
@@ -52,39 +52,6 @@ const authController = {
             res.status(500).json({ success: false, message: error.message });
         }
     },
-//     login: async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(400).json({ message: 'Invalid email or password' });
-//         }
-
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) {
-//             return res.status(400).json({ message: 'Invalid email or password' });
-//         }
-
-//         console.log("JWT_SECRET from env:", process.env.JWT_SECRET); // Debug log
-
-//         const token = jwt.sign(
-//             { id: user._id, role: user.role },
-//             process.env.JWT_SECRET,
-//             { expiresIn: '1h' }
-//         );
-
-//         const { password: _, ...userData } = user.toObject();
-//         res.status(200).json({
-//             success: true,
-//             token,
-//             user: userData
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// },
-
     logout: async (req, res) => {
         try {
             res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
@@ -96,6 +63,20 @@ const authController = {
     profile: async (req, res) => {
         try {
             const user = await User.findById(req.user.id).select('-password');
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+    updateRole: async (req, res) => {
+        try {
+            const { role } = req.body; // new role
+            const user = await User.findByIdAndUpdate(
+                req.user.id,
+                { role },
+                { new: true, runValidators: true }
+            ).select('-password');
+
             res.status(200).json(user);
         } catch (error) {
             res.status(500).json({ message: error.message });
