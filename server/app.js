@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser');
 
 
 app.use(cors({
-    origin: ['http://localhost:3000','https://placement-management-system-2d32.onrender.com/company'],
+    origin: ['http://localhost:3000','https://placement-management-system-2d32.onrender.com'],
     methods:['GET','POST', 'DELETE', 'UPDATE', 'PUT'],
     credentials:true
 }))
