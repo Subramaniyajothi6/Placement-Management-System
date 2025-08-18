@@ -23,7 +23,8 @@ const authController = {
             )
             await newUser.save();
             const { password: _, ...userData } = newUser.toObject();
-            res.status(201).json({ success: true, message: `User created successfully`, user: userData })
+            const token = jwt.sign({id: newUser._id,role:newUser.role},JWT_SECRET,{expiresIn:'1d'});
+            res.status(201).json({ success: true, message: `User created successfully`, user: userData, token });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -46,7 +47,8 @@ const authController = {
                 { expiresIn: '1d' }
             )
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
-            res.status(200).json({ success: true, message: 'Login successful', token })
+            const { password: _, ...userData } = user.toObject();
+            res.status(200).json({ success: true, message: 'Login successful',user: userData, token })
 
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
@@ -63,7 +65,7 @@ const authController = {
     profile: async (req, res) => {
         try {
             const user = await User.findById(req.user.id).select('-password');
-            res.status(200).json(user);
+            res.status(200).json({user});
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -77,7 +79,7 @@ const authController = {
                 { new: true, runValidators: true }
             ).select('-password');
 
-            res.status(200).json(user);
+            res.status(200).json({user});
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

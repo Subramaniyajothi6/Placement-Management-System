@@ -6,9 +6,6 @@ const {authMiddleware, adminMiddleware} = require('../middleware/authMiddleware'
 const authRouter = express.Router();
 
 
-// authRouter.post('/register', authController.register);
-// authRouter.post('/login', authController.login);
-
 authRouter.post('/register', register);
 authRouter.post('/login', login);
 authRouter.post('/logout', logout);
