@@ -75,7 +75,11 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Register
-      .addCase(registerUser.pending, (state) => { state.isLoading = true; })
+      .addCase(registerUser.pending, (state) => { state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
@@ -90,7 +94,11 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       // Login
-      .addCase(loginUser.pending, (state) => { state.isLoading = true; })
+      .addCase(loginUser.pending, (state) => { state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
@@ -105,7 +113,11 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       // Get Profile
-      .addCase(getUserProfile.pending, (state) => { state.isLoading = true; })
+      .addCase(getUserProfile.pending, (state) => { state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+       })
       .addCase(getUserProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;

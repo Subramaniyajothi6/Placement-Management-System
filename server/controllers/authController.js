@@ -11,8 +11,6 @@ const authController = {
             if (user) {
                 return res.status(400).json({ message: 'User already exists' })
             }
-
-
             const newUser = new User(
                 {
                     name,
@@ -24,6 +22,7 @@ const authController = {
             await newUser.save();
             const { password: _, ...userData } = newUser.toObject();
             const token = jwt.sign({id: newUser._id,role:newUser.role},JWT_SECRET,{expiresIn:'1d'});
+
             res.status(201).json({ success: true, message: `User created successfully`, user: userData, token });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -48,12 +47,14 @@ const authController = {
             )
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
             const { password: _, ...userData } = user.toObject();
+            
             res.status(200).json({ success: true, message: 'Login successful',user: userData, token })
 
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }
     },
+
     logout: async (req, res) => {
         try {
             res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
@@ -74,7 +75,7 @@ const authController = {
         try {
             const { role } = req.body; // new role
             const user = await User.findByIdAndUpdate(
-                req.user.id,
+                req.params.id,
                 { role },
                 { new: true, runValidators: true }
             ).select('-password');
