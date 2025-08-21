@@ -75,11 +75,12 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Register
-      .addCase(registerUser.pending, (state) => { state.isLoading = true;
-      state.isError = false;
-      state.isSuccess = false;
-      state.message = '';
-       })
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = '';
+      })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
@@ -91,14 +92,16 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.isSuccess = false;
         state.message = action.payload;
       })
       // Login
-      .addCase(loginUser.pending, (state) => { state.isLoading = true;
-      state.isError = false;
-      state.isSuccess = false;
-      state.message = '';
-       })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = '';
+      })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
@@ -110,21 +113,25 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.isSuccess = false;
         state.message = action.payload;
       })
       // Get Profile
-      .addCase(getUserProfile.pending, (state) => { state.isLoading = true;
-      state.isError = false;
-      state.isSuccess = false;
-      state.message = '';
-       })
+      .addCase(getUserProfile.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = '';
+      })
       .addCase(getUserProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
+        state.isSuccess = true;
       })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.isSuccess = false;
         state.message = action.payload;
       });
   }
@@ -132,3 +139,11 @@ const authSlice = createSlice({
 
 export const { resetState, logout } = authSlice.actions;
 export default authSlice.reducer;
+
+
+export const selectAuthUser = (state) => state.auth.user;
+export const selectAuthToken = (state) => state.auth.token;
+export const selectAuthLoading = (state) => state.auth.isLoading;
+export const selectAuthError = (state) => state.auth.isError;
+export const selectAuthSuccess = (state) => state.auth.isSuccess;
+export const selectAuthMessage = (state) => state.auth.message;

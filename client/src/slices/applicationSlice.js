@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import * as applicationApi from "../api/applicationApi";
+import * as applicationApi from "../api/applicationsApi";
 
 export const fetchApplications = createAsyncThunk(
     'applications/fetchApplications',
     async (_, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getApplications();
-            return response.data;
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -18,7 +18,7 @@ export const createApplication = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await applicationApi.createApplication(data);
-            return response.data;
+            return response.data.data;
 
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -31,7 +31,7 @@ export const updateApplication = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const response = await applicationApi.updateApplication(id, data);
-            return response.data;
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
