@@ -2,14 +2,14 @@ import {createBrowserRouter, RouterProvider} from 'react-router'
 // import Home from './Home'
 // import StudentDashboard from './components/students/StudentDashBoard'
 import StudentApplicationForm from './components/students/StudentApplicationForm'
+import StudentDashboard from './components/students/StudentDashBoard'
 const App = () => {
   
 const routes = [
   {
 
     path:"/",
-    // element:<Home/>
-    element:<StudentApplicationForm/>
+    element:<StudentDashboard/>
 
   }
 ]
