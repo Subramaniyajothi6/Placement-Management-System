@@ -13,6 +13,32 @@ export const fetchApplications = createAsyncThunk(
     }
 );
 
+export const fetchMyApplications = createAsyncThunk(
+    'applications/fetchMyApplications',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await applicationApi.getMyApplications();
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
+export const fetchCompanyApplications = createAsyncThunk(
+    'applications/fetchCompanyApplications',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await applicationApi.getCompanyApplications();
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
+
+
 export const createApplication = createAsyncThunk(
     'applications/createApplication',
     async (data, { rejectWithValue }) => {
@@ -79,6 +105,32 @@ const applicationSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+        
+            .addCase(fetchMyApplications.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchMyApplications.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = action.payload;
+            })
+            .addCase(fetchMyApplications.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            .addCase(fetchCompanyApplications.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCompanyApplications.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = action.payload;
+            })
+            .addCase(fetchCompanyApplications.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
 
             // create
 
@@ -86,49 +138,49 @@ const applicationSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(createApplication.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items.push(action.payload);
-            })
-            .addCase(createApplication.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+        .addCase(createApplication.fulfilled, (state, action) => {
+            state.loading = false;
+            state.items.push(action.payload);
+        })
+        .addCase(createApplication.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
 
-            // update
+        // update
 
-            .addCase(updateApplication.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
+        .addCase(updateApplication.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
 
-            .addCase(updateApplication.fulfilled, (state, action) => {
-                state.loading = false;
-                const index = state.items.findIndex((app) => app._id === action.payload._id);
-                if (index !== -1) {
-                    state.items[index] = action.payload;
-                }
-            })
+        .addCase(updateApplication.fulfilled, (state, action) => {
+            state.loading = false;
+            const index = state.items.findIndex((app) => app._id === action.payload._id);
+            if (index !== -1) {
+                state.items[index] = action.payload;
+            }
+        })
 
-            .addCase(updateApplication.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+        .addCase(updateApplication.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
 
-            .addCase(deleteApplication.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+        .addCase(deleteApplication.pending, (state) => {
+            state.loading = true;
+            state.error = null;
 
-            })
-            .addCase(deleteApplication.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = state.items.filter((app) => app._id !== action.payload);
-            })
-            .addCase(deleteApplication.rejected,(state,action)=>{
-                state.loading = false;
-                state.error = action.payload;
-            })
-    }
+        })
+        .addCase(deleteApplication.fulfilled, (state, action) => {
+            state.loading = false;
+            state.items = state.items.filter((app) => app._id !== action.payload);
+        })
+        .addCase(deleteApplication.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
+}
 })
 
 

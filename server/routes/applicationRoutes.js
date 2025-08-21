@@ -1,6 +1,6 @@
 const express = require('express');
 const { createApplication, getAllApplications, getSingleApplication, updateApplication, deleteApplication, getMyApplications, getCompanyApplications } = require('../controllers/applicationController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 
 const applicationRouter = express.Router();
 
