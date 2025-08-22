@@ -27,7 +27,6 @@ const interviewController = {
         try {
             const interviews = await Interview.find({ candidate: req.user.id })
                 .populate('job', 'title placementDrive')
-                .populate('company', 'name');
             res.status(200).json({ success: true, count: interviews.length, data: interviews });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
