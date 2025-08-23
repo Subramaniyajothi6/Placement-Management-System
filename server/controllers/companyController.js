@@ -6,6 +6,8 @@ const companyController = {
         try {
             const company = await CompanyProfile.create(req.body);
 
+            await User.findByIdAndUpdate(company.user, { companyId: company._id });
+
             res.status(201).json({
                 success: true,
                 message: 'Company Created Successfully',

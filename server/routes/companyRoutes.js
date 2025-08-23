@@ -1,6 +1,6 @@
 const express = require('express');
 const { createCompany, getAllCompanies, getCompanyById, updateCompany, deleteCompany, companyDashboard } = require('../controllers/companyController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 
 const companyRouter = express.Router();
 
