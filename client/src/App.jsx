@@ -4,7 +4,18 @@ import {createBrowserRouter, RouterProvider} from 'react-router'
 import StudentApplicationForm from './components/students/StudentApplicationForm'
 import StudentDashboard from './components/students/StudentDashBoard'
 import InterviewSchedulePage from './components/students/InterviewSchedulePage'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { getUserProfile, selectAuthUser } from './slices/authSlice'
 const App = () => {
+  const dispatch = useDispatch();
+  const user = useSelector(selectAuthUser);
+
+    useEffect(() => {
+    if (!user) {
+      dispatch(getUserProfile());
+    }
+  }, [dispatch, user]);
   
 const routes = [
   {

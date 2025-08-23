@@ -7,6 +7,8 @@ const interviewApi = {
 
     getAll:()=> axiosClient.get('/interview'),
 
+    getMyInterviews:()=> axiosClient.get('/interview/my'),
+
     getById:(id)=> axiosClient.get(`/interview/${id}`),
 
     update:(id,data)=> axiosClient.put(`/interview/${id}`,data),
