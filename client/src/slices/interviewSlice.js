@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
-import * as interviewApi from "../api/interviewsApi";
+import  interviewApi from "../api/interviewsApi";
 
 export const createInterview = createAsyncThunk(
     'interview/createInterview',
@@ -29,6 +29,7 @@ export const fetchMyInterviews = createAsyncThunk(
     'interview/fetchMyInterviews',
     async (_, { rejectWithValue }) => {
         try {
+            console.log('fetchMyInterviews THUNK: started');
             const response = await interviewApi.getMyInterviews();
             console.log('Interviews fetched from API:', response.data.data);
             return response.data.data;

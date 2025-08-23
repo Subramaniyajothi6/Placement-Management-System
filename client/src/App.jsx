@@ -7,6 +7,7 @@ import InterviewSchedulePage from './components/students/InterviewSchedulePage'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { getUserProfile, selectAuthUser } from './slices/authSlice'
+import ProfilePage from './components/students/ProfilePage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -22,7 +23,9 @@ const routes = [
 
     path:"/",
     // element:<StudentDashboard/>
-    element:<InterviewSchedulePage/>
+    // element:<StudentApplicationForm/>
+    // element:<InterviewSchedulePage/>
+    // element:<ProfilePage/>
 
   }
 ]

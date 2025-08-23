@@ -7,7 +7,10 @@ const interviewApi = {
 
     getAll:()=> axiosClient.get('/interview'),
 
-    getMyInterviews:()=> axiosClient.get('/interview/my'),
+    getMyInterviews:()=> {
+        console.log('API call to getMyInterviews');
+        return axiosClient.get('/interview/my')
+    },
 
     getById:(id)=> axiosClient.get(`/interview/${id}`),
 

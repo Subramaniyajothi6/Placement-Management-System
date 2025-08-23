@@ -60,6 +60,19 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 
+
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateUserProfile',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await authApi.updateProfile(formData);
+      return response.data;  // assuming API returns updated user data
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 // Initial State
 const initialState = {
   user: user,
@@ -149,11 +162,30 @@ const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload;
-      });
+      })
+      // updateUserProfile
+    .addCase(updateUserProfile.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+    })
+    .addCase(updateUserProfile.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.user ?? action.payload;
+      state.isSuccess = true;
+      localStorage.setItem('user', JSON.stringify(state.user));  // update localStorage user too
+    })
+    .addCase(updateUserProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload;
+    });
   }
 });
 
-export const { resetState, logout } = authSlice.actions;
+export const { resetState, logout ,updateProfile } = authSlice.actions;
 export default authSlice.reducer;
 
 

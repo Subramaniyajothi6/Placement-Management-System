@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import *as placementDriveApi from '../api/placementDriveApi';
+import  placementDriveApi from '../api/placementDriveApi';
 
 
 export const createPlacementDrive = createAsyncThunk(

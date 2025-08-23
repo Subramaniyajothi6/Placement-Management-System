@@ -9,8 +9,9 @@ const InterviewSchedulePage = () => {
     const isLoading = useSelector(selectInterviewLoading);
     const isError = useSelector(selectInterviewError);
     useEffect(() => {
-        console.log('User ID:', userId);
         if (userId) {
+            console.log('User ID:', userId);
+            console.log('Dispatching fetchMyInterviews...');
             dispatch(fetchMyInterviews())
         }
     }, [dispatch, userId])
