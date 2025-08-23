@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from 'axios';
+import authApi from "../api/authApi";
 
 const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
 const token = localStorage.getItem('token') || null;
@@ -30,14 +31,29 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// export const getUserProfile = createAsyncThunk(
+//   'auth/getUserProfile',
+//   async (_, { getState, rejectWithValue }) => {
+//     try {
+//       const { auth } = getState();
+//       const config = { headers: { Authorization: `Bearer ${auth.token}` } };
+//       const response = await axios.get('/api/auth/profile', config);
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data?.message || error.message);
+//     }
+//   }
+// );
+
+
+
+
 export const getUserProfile = createAsyncThunk(
   'auth/getUserProfile',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const { auth } = getState();
-      const config = { headers: { Authorization: `Bearer ${auth.token}` } };
-      const response = await axios.get('/api/auth/profile', config);
-      return response.data;
+      const response = await authApi.getProfile();
+      return response.data;  // Use whole response or adjust if your API returns { user: {...} }
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
