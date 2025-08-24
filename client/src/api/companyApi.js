@@ -7,11 +7,14 @@ const companyApi = {
 
     getAll: () => axiosClient.get('/company'),
 
+    getDashboard: () => axiosClient.get('/company/dashboard'),
+    
     getById: (id) => axiosClient.get(`/company/${id}`),
 
     update: (id, data) => axiosClient.put(`/company/${id}`, data),
 
-    delete: (id) => axiosClient.delete(`/company/${id}`)
+    delete: (id) => axiosClient.delete(`/company/${id}`),
+
 
 }
 

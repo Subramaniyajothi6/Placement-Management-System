@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import  companyApi from '../api/companyApi';
+import companyApi from '../api/companyApi';
 
 
 export const fetchCompanies = createAsyncThunk(
     'company/fetchCompanies',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await companyApi.getCompanies();
+            const response = await companyApi.getAll();
             return response.data;
 
         } catch (error) {
@@ -19,7 +19,7 @@ export const createCompany = createAsyncThunk(
     'company/createCompany',
     async (data, { rejectWithValue }) => {
         try {
-            const response = await companyApi.addCompany(data);
+            const response = await companyApi.create(data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -51,6 +51,21 @@ export const deleteCompany = createAsyncThunk(
     }
 )
 
+
+export const fetchCompanyDashboard = createAsyncThunk(
+    'company/fetchCompanyDashboard',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await companyApi.getDashboard();  // Define getDashboard in your companyApi
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
+
+
 const initialState = {
     companies: [],
     selectedCompany: null,
@@ -58,6 +73,14 @@ const initialState = {
     isError: false,
     isSuccess: false,
     message: '',
+    dashboard: {
+        jobsPosted: 0,
+        applicationsReceived: 0,
+        upcomingInterviews: 0,
+        isLoading: false,
+        isError: false,
+        errorMessage: '',
+    },
 };
 
 
@@ -158,6 +181,24 @@ const companySlice = createSlice({
                 state.isError = true;
                 state.message = action.payload;
             })
+
+            // dashboard 
+
+            .addCase(fetchCompanyDashboard.pending, (state) => {
+                state.dashboard.isLoading = true;
+                state.dashboard.isError = false;
+            })
+            .addCase(fetchCompanyDashboard.fulfilled, (state, action) => {
+                state.dashboard.isLoading = false;
+                state.dashboard.jobsPosted = action.payload.jobsPosted;
+                state.dashboard.applicationsReceived = action.payload.applicationsReceived;
+                state.dashboard.upcomingInterviews = action.payload.upcomingInterviews;
+            })
+            .addCase(fetchCompanyDashboard.rejected, (state, action) => {
+                state.dashboard.isLoading = false;
+                state.dashboard.isError = true;
+                state.dashboard.errorMessage = action.payload;
+            })
     }
 });
 
@@ -170,3 +211,9 @@ export const selectCompanyLoading = (state) => state.company.isLoading;
 export const selectCompanyError = (state) => state.company.isError;
 export const selectCompanySuccess = (state) => state.company.isSuccess;
 export const selectCompanyMessage = (state) => state.company.message;
+export const selectDashboardJobsPosted = (state) => state.company.dashboard.jobsPosted;
+export const selectDashboardApplicationsReceived = (state) => state.company.dashboard.applicationsReceived;
+export const selectDashboardUpcomingInterviews = (state) => state.company.dashboard.upcomingInterviews;
+export const selectDashboardLoading = (state) => state.company.dashboard.isLoading;
+export const selectDashboardError = (state) => state.company.dashboard.isError;
+export const selectDashboardErrorMessage = (state) => state.company.dashboard.errorMessage;

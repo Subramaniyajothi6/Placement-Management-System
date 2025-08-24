@@ -7,12 +7,12 @@ const companyRouter = express.Router();
 
 companyRouter.post('/', createCompany)
 companyRouter.get('/', getAllCompanies)
+companyRouter.get('/dashboard',authMiddleware,roleMiddleware(['company']), companyDashboard);
 companyRouter.get('/:id', getCompanyById)
 companyRouter.put('/:id', updateCompany)
 companyRouter.delete('/:id', deleteCompany)
 
 
 
-companyRouter.get('/dashboard',authMiddleware,roleMiddleware(['company']), companyDashboard);
 
 module.exports = companyRouter;

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { getUserProfile, selectAuthUser } from './slices/authSlice'
 import ProfilePage from './components/students/ProfilePage'
+import CompanyDashboard from './components/company/CompanyDashboard'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -26,6 +27,7 @@ const routes = [
     // element:<StudentApplicationForm/>
     // element:<InterviewSchedulePage/>
     // element:<ProfilePage/>
+    element:<CompanyDashboard/>
 
   }
 ]

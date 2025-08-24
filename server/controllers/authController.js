@@ -21,7 +21,7 @@ const authController = {
             )
             await newUser.save();
             const { password: _, ...userData } = newUser.toObject();
-            const token = jwt.sign({id: newUser._id,role:newUser.role},JWT_SECRET,{expiresIn:'1d'});
+            const token = jwt.sign({ id: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '1d' });
 
             res.status(201).json({ success: true, message: `User created successfully`, user: userData, token });
         } catch (error) {
@@ -41,14 +41,17 @@ const authController = {
                 return res.status(400).json({ success: false, message: 'Invalid credentials' })
             }
 
-            const token = jwt.sign({ id: user._id, role: user.role },
-                JWT_SECRET,
-                { expiresIn: '1d' }
-            )
+            const tokenPayload = {
+                id: user._id,
+                role: user.role,
+                companyId: user.role === 'company' ? user.companyId : null,
+            };
+            const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1d' });
+            
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
             const { password: _, ...userData } = user.toObject();
-            
-            res.status(200).json({ success: true, message: 'Login successful',user: userData, token })
+
+            res.status(200).json({ success: true, message: 'Login successful', user: userData, token })
 
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
@@ -66,7 +69,7 @@ const authController = {
     profile: async (req, res) => {
         try {
             const user = await User.findById(req.user.id).select('-password');
-            res.status(200).json({user});
+            res.status(200).json({ user });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -80,7 +83,7 @@ const authController = {
                 { new: true, runValidators: true }
             ).select('-password');
 
-            res.status(200).json({user});
+            res.status(200).json({ user });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
