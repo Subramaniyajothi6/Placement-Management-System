@@ -3,15 +3,15 @@ import axiosClient from "./axiosClient";
 
 const jobsApi = {
 
-    create: (data) => axiosClient.post('/job',data),
+    create: (data) => axiosClient.post('/jobs',data),
 
-    getAll:()=> axiosClient.get('/job'),
+    getAll:()=> axiosClient.get('/jobs'),
 
-    getById:(id)=> axiosClient.get(`/job/${id}`),
+    getById:(id)=> axiosClient.get(`/jobs/${id}`),
 
-    update:(id,data)=>axiosClient.put(`/job/${id}`,data),
+    update:(id,data)=>axiosClient.put(`/jobs/${id}`,data),
 
-    delete:(id)=>axiosClient.delete(`/job/${id}`)
+    delete:(id)=>axiosClient.delete(`/jobs/${id}`)
 }
 
 export default jobsApi;

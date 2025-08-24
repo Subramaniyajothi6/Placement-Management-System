@@ -3,7 +3,10 @@ const Job = require("../models/Job");
 const jobController = {
     createJob: async (req, res) => {
         try {
-            const job = await Job.create(req.body);
+            const jobData = {
+                ...req.body, company: req.user.companyId,
+            };
+            const job = await Job.create(jobData);
             res.status(201).json({ success: true, data: job, message: "Job created successfully" });
         } catch (error) {
             if (error.name === 'ValidationError') {

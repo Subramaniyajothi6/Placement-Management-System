@@ -6,6 +6,11 @@ const jobSchema = new mongoose.Schema({
         ref: 'PlacementDrive',
         required: true
     },
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CompanyProfile',
+        required: true,
+    },
     title: {
         type: String,
         required: [true, 'Job title is required'],

@@ -6,7 +6,6 @@ export const createJob = createAsyncThunk(
     'jobs/createJob',
     async (data, { rejectWithValue }) => {
         try {
-
             const response = await jobApi.create(data)
             return response.data.data;
         } catch (error) {
