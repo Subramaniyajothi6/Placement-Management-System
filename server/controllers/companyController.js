@@ -1,6 +1,7 @@
 const CompanyProfile = require("../models/CompanyProfile");
 const Job = require("../models/Job");
-
+const Application = require("../models/Application");
+const Interview = require("../models/Interview");
 const companyController = {
 
     createCompany: async (req, res) => {
