@@ -1,4 +1,5 @@
 const CompanyProfile = require("../models/CompanyProfile");
+const Job = require("../models/Job");
 
 const companyController = {
 
