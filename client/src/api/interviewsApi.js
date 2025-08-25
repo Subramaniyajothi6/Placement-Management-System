@@ -3,9 +3,9 @@ import axiosClient from "./axiosClient";
 
 const interviewApi = {
 
-    create: (data)=> axiosClient.post('/interview',data),
+    createInterview: (data)=> axiosClient.post('/interview',data),
 
-    getAll:()=> axiosClient.get('/interview'),
+    getInterviews:()=> axiosClient.get('/interview'),
 
     getMyInterviews:()=> {
         console.log('API call to getMyInterviews');
@@ -14,11 +14,11 @@ const interviewApi = {
 
     getCompanyInterviews:()=> axiosClient.get('/interview/company'),
 
-    getById:(id)=> axiosClient.get(`/interview/${id}`),
+    getInterviewById:(id)=> axiosClient.get(`/interview/${id}`),
 
-    update:(id,data)=> axiosClient.put(`/interview/${id}`,data),
+    updateInterview:(id,data)=> axiosClient.put(`/interview/${id}`,data),
 
-    delete:(id) => axiosClient.delete(`/interview/${id}`)
+    deleteInterview:(id) => axiosClient.delete(`/interview/${id}`)
 }
 
 export default interviewApi ; 

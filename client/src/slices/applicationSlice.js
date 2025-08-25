@@ -6,7 +6,8 @@ export const fetchApplications = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getApplications();
-            return response.data.data;
+            console.log("Applications API response:", response);
+            return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -18,7 +19,7 @@ export const fetchMyApplications = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getMyApplications();
-            return response.data.data;
+           return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -30,7 +31,7 @@ export const fetchCompanyApplications = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getCompanyApplications();
-            return response.data.data;
+            return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -44,7 +45,7 @@ export const createApplication = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await applicationApi.createApplication(data);
-            return response.data.data;
+            return response.data.data || response.data;
 
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -57,7 +58,7 @@ export const updateApplication = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const response = await applicationApi.updateApplication(id, data);
-            return response.data.data;
+            return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -73,6 +74,18 @@ export const deleteApplication = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message)
         }
+    }
+)
+
+export const getApplicationById = createAsyncThunk(
+    'applications/getApplicationById',
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await applicationApi.getById(id);
+            return response.data.data || response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }   
     }
 )
 
@@ -185,3 +198,15 @@ const applicationSlice = createSlice({
 
 
 export default applicationSlice.reducer;
+export const { resetStatus } = applicationSlice.actions;
+export const selectAllApplications = (state) => state.applications.items;
+export const selectApplicationLoading = (state) => state.applications.loading;
+export const selectApplicationError = (state) => state.applications.error;
+export const selectApplicationById = (state, applicationId) =>
+    state.applications.items.find((app) => app._id === applicationId);
+export const selectApplicationsByStudent = (state, studentId) =>
+    state.applications.items.filter((app) => app.student._id === studentId);
+export const selectApplicationsByJob = (state, jobId) =>
+    state.applications.items.filter((app) => app.job._id === jobId);
+export const selectApplicationsByCompany = (state, companyId) =>
+    state.applications.items.filter((app) => app.job.company._id === companyId);

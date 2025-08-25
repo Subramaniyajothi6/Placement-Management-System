@@ -70,7 +70,7 @@ const placementDriveController = {
 
     deletePlacementDrive: async (req, res) => {
         try {
-            const placementDrive = PlacementDrive.findByIdAndDelete(req.params.id);
+            const placementDrive = await PlacementDrive.findByIdAndDelete(req.params.id);
             if (!placementDrive) {
                 return res.status(404).json({ success: false, message: 'Placement Drive not found' });
             }

@@ -43,17 +43,49 @@ const interviewController = {
             res.status(500).json({ success: false, message: error.message });
         }
     },
+    // updateInterview: async (req, res) => {
+    //     try {
+    //         const interview = await Interview.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    //         if (!interview) {
+    //             return res.status(404).json({ success: false, message: 'Interview not found' })
+    //         }
+    //         res.status(200).json({ success: true, data: interview, message: "Interview updated successfully" });
+    //     } catch (error) {
+    //         res.status(500).json({ success: false, message: error.message });
+    //     }
+    // },
+
     updateInterview: async (req, res) => {
         try {
-            const interview = await Interview.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+            const updateFields = {
+                feedback: req.body.feedback,
+                score: req.body.score,
+                result: req.body.result,
+                status: req.body.status,
+                // Add other permitted fields as needed
+            };
+
+            // Clean undefined fields
+            Object.keys(updateFields).forEach(key => updateFields[key] === undefined && delete updateFields[key]);
+
+            const interview = await Interview.findByIdAndUpdate(
+                req.params.id,
+                updateFields,
+                { new: true, runValidators: true }
+            );
+
             if (!interview) {
-                return res.status(404).json({ success: false, message: 'Interview not found' })
+                return res.status(404).json({ success: false, message: 'Interview not found' });
             }
+
+            // Optional: sync application status here if needed
+
             res.status(200).json({ success: true, data: interview, message: "Interview updated successfully" });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }
     },
+
     deleteInterview: async (req, res) => {
         try {
 

@@ -15,7 +15,7 @@ export const store = configureStore({
     placementDrive: placementDriveReducer,
     student: studentReducer,
     jobs: jobReducer,
-    application: applicationReducer,
+    applications: applicationReducer,
    
   },
 });

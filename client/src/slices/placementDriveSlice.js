@@ -52,8 +52,9 @@ export const deletePlacementDrive = createAsyncThunk(
     'placementDrives/deletePlacementDrive',
     async (id, { rejectWithValue }) => {
         try {
-            await placementDriveApi.delete(id)
-            return id
+           await placementDriveApi.delete(id)
+           console.log('Deleted placement drive with id:', id);
+            return id;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message)
         }
@@ -161,9 +162,8 @@ const placementDriveSlice = createSlice({
 })
 
 export default placementDriveSlice.reducer
-export const { clearPlacementDrive } = placementDriveSlice.actions;
-
-export const selectPlacementDrives = (state) => state.placementDrives.placementDrives;
-export const selectSelectedPlacementDrive = (state) => state.placementDrives.selectedPlacementDrive;
-export const selectPlacementDrivesLoading = (state) => state.placementDrives.loading;
-export const selectPlacementDrivesError = (state) => state.placementDrives.error;
+export const { clearPlacementDrive , clearPlacementDriveError } = placementDriveSlice.actions;
+export const selectPlacementDrives = (state) => state.placementDrive.placementDrives;
+export const selectSelectedPlacementDrive = (state) => state.placementDrive.selectedPlacementDrive;
+export const selectPlacementDrivesLoading = (state) => state.placementDrive.loading;
+export const selectPlacementDrivesError = (state) => state.placementDrive.error;

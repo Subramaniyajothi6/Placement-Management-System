@@ -263,6 +263,7 @@ export const selectInterviewById = (state, id) =>
 export const selectAllInterviews = (state) => state.interview.interviews;
 export const selectInterviewLoading = (state) => state.interview.isLoading;
 export const selectInterviewError = (state) => state.interview.isError;
+export const selectInterviewErrorMessage = (state) => state.interview.message;
 
 export const selectInterviewsByCompany = (state, companyId) =>
     state.interview.interviews.filter((i) => i.companyId === companyId);

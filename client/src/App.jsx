@@ -11,6 +11,10 @@ import ProfilePage from './components/students/ProfilePage'
 import CompanyDashboard from './components/company/CompanyDashboard'
 import PostJob from './components/company/PostJob'
 import ApplicationReviewPage from './components/company/ApplicationReviewPage'
+import InterviewSchedulingForm from './components/company/InterviewSchedulingForm'
+import InterviewFeedbackForm from './components/company/InterviewFeedbackForm'
+import AdminDashboard from './pages/AdminDashboard'
+import ManagePlacementDrives from './pages/ManagePlacementDrives'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -32,9 +36,12 @@ const routes = [
     // element:<CompanyDashboard/>
     // element:<PostJob/>
     // element:<ApplicationReviewPage/>
-    element : <InterviewSchedulePage/>
+    // element : <InterviewSchedulingForm/>
+    // element : <InterviewFeedbackForm/>
+    // element :<AdminDashboard/>
+    element:<ManagePlacementDrives/>
     
-
+  
   }
 ]
 
