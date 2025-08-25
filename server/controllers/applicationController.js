@@ -1,4 +1,5 @@
 const Application = require("../models/Application");
+// const Job = require("../models/Job");
 const applicationController = {
 
     //  create new application
@@ -26,7 +27,16 @@ const applicationController = {
     // get company applications 
     getCompanyApplications: async (req, res) => {
         try {
-            const applications = await Application.find({ company: req.user.companyId })
+            const filter = { company: req.user.companyId };
+
+            if (req.query.jobId) {
+                filter.job = req.query.jobId;
+            }
+            if (req.query.status) {
+                filter.status = req.query.status;
+            }
+
+            const applications = await Application.find({ ...filter })
                 .populate('job', 'title placementDrive')
                 .populate('candidate', 'name email');
             res.status(200).json({ success: true, count: applications.length, data: applications })

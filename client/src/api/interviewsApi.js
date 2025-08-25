@@ -12,6 +12,8 @@ const interviewApi = {
         return axiosClient.get('/interview/my')
     },
 
+    getCompanyInterviews:()=> axiosClient.get('/interview/company'),
+
     getById:(id)=> axiosClient.get(`/interview/${id}`),
 
     update:(id,data)=> axiosClient.put(`/interview/${id}`,data),

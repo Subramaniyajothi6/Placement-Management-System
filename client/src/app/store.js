@@ -14,7 +14,7 @@ export const store = configureStore({
     interview: interviewReducer,
     placementDrive: placementDriveReducer,
     student: studentReducer,
-    job: jobReducer,
+    jobs: jobReducer,
     application: applicationReducer,
    
   },

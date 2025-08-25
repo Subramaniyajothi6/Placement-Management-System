@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import  jobApi from '../api/jobsApi';
+import jobApi from '../api/jobsApi';
 
 
 export const createJob = createAsyncThunk(
@@ -71,11 +71,17 @@ const jobSlice = createSlice({
         error: null
     },
     reducers: {
+        
         clearSelectedJob: (state) => {
             state.selectedJob = null;
         },
         clearJobError: (state) => {
             state.error = null;
+        },
+        resetJobState: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.isSuccess = false;
         },
     },
     extraReducers: (builder) => {
@@ -83,10 +89,12 @@ const jobSlice = createSlice({
             .addCase(createJob.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.isSuccess = false;
             })
 
             .addCase(createJob.fulfilled, (state, action) => {
                 state.loading = false;
+                state.isSuccess = true;
                 state.jobs.push(action.payload);
             })
             .addCase(createJob.rejected, (state, action) => {
@@ -136,7 +144,7 @@ const jobSlice = createSlice({
                 if (index !== -1) {
                     state.jobs[index] = action.payload;
                 }
-                
+
                 if (state.selectedJob && state.selectedJob._id === action.payload._id) {
                     state.selectedJob = action.payload;
                 }
@@ -156,7 +164,7 @@ const jobSlice = createSlice({
                 state.loading = false;
                 state.jobs = state.jobs.filter((job) => job._id !== action.payload)
 
-                if(state.selectedJob && state.selectedJob._id === action.payload){
+                if (state.selectedJob && state.selectedJob._id === action.payload) {
                     state.selectedJob = null;
                 }
             })
@@ -171,8 +179,12 @@ const jobSlice = createSlice({
 )
 
 export default jobSlice.reducer;
-export const { clearSelectedJob, clearJobError } = jobSlice.actions;
+export const { clearSelectedJob, clearJobError, resetJobState } = jobSlice.actions;
 export const selectJobs = (state) => state.jobs.jobs;
 export const selectSelectedJob = (state) => state.jobs.selectedJob;
 export const selectJobsLoading = (state) => state.jobs.loading;
 export const selectJobsError = (state) => state.jobs.error;
+export const selectJobsSuccess = (state) => state.jobs.isSuccess;
+export const selectJobsState = (state) => state.jobs;
+export const selectJobById = (state, jobId) =>
+    state.jobs.jobs.find((job) => job._id === jobId);

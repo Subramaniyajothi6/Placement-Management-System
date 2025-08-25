@@ -9,6 +9,8 @@ import { useEffect } from 'react'
 import { getUserProfile, selectAuthUser } from './slices/authSlice'
 import ProfilePage from './components/students/ProfilePage'
 import CompanyDashboard from './components/company/CompanyDashboard'
+import PostJob from './components/company/PostJob'
+import ApplicationReviewPage from './components/company/ApplicationReviewPage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -27,7 +29,10 @@ const routes = [
     // element:<StudentApplicationForm/>
     // element:<InterviewSchedulePage/>
     // element:<ProfilePage/>
-    element:<CompanyDashboard/>
+    // element:<CompanyDashboard/>
+    // element:<PostJob/>
+    // element:<ApplicationReviewPage/>
+    element:<InterviewSchedulePage/>
 
   }
 ]
