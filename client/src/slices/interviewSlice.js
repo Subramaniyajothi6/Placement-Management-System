@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
-import  interviewApi from "../api/interviewsApi";
+import interviewApi from "../api/interviewsApi";
 
 export const createInterview = createAsyncThunk(
     'interview/createInterview',
@@ -38,6 +38,19 @@ export const fetchMyInterviews = createAsyncThunk(
         }
     }
 );
+
+export const fetchCompanyInterviews = createAsyncThunk(
+    'interview/fetchCompanyInterviews',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await interviewApi.getCompanyInterviews();
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+);
+
 
 
 export const fetchInterviewById = createAsyncThunk(
@@ -217,6 +230,23 @@ const interviewSlice = createSlice({
                 state.isError = true;
                 state.message = action.payload;
             })
+
+            .addCase(fetchCompanyInterviews.pending, (state) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.isSuccess = false;
+            })
+            .addCase(fetchCompanyInterviews.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.interviews = action.payload;
+                state.isSuccess = true;
+            })
+            .addCase(fetchCompanyInterviews.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+                state.isSuccess = false;
+            });
     }
 }
 )
@@ -238,11 +268,11 @@ export const selectInterviewsByCompany = (state, companyId) =>
     state.interview.interviews.filter((i) => i.companyId === companyId);
 
 export const selectInterviewsByStudent = createSelector(
-  (state) => state.interview.interviews,
-  (_, studentId) => studentId,
-  (interviews, studentId) =>
-    interviews.filter(
-      (i) =>
-        (typeof i.candidate === 'string' ? i.candidate : i.candidate?._id) === studentId
-    )
+    (state) => state.interview.interviews,
+    (_, studentId) => studentId,
+    (interviews, studentId) =>
+        interviews.filter(
+            (i) =>
+                (typeof i.candidate === 'string' ? i.candidate : i.candidate?._id) === studentId
+        )
 );

@@ -32,7 +32,8 @@ const routes = [
     // element:<CompanyDashboard/>
     // element:<PostJob/>
     // element:<ApplicationReviewPage/>
-    element:<InterviewSchedulePage/>
+    element : <InterviewSchedulePage/>
+    
 
   }
 ]
