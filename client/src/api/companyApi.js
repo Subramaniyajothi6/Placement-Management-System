@@ -11,9 +11,9 @@ const companyApi = {
     
     getById: (id) => axiosClient.get(`/company/${id}`),
 
-    update: (id, data) => axiosClient.put(`/company/${id}`, data),
+    updateCompany: (id, data) => axiosClient.put(`/company/${id}`, data),
 
-    delete: (id) => axiosClient.delete(`/company/${id}`),
+    deleteCompany: (id) => axiosClient.delete(`/company/${id}`),
 
 
 }

@@ -11,6 +11,7 @@ const applicationRouter = require('./routes/applicationRoutes');
 const placementDriveRouter = require('./routes/placementDriveRoutes');
 const jobRouter = require('./routes/jobRoutes');
 const cookieParser = require('cookie-parser');
+const reportRouter = require('./routes/reportRouter');
 
 
 app.use(cors({
@@ -32,6 +33,7 @@ app.use('/api/v1/placementDrive',placementDriveRouter);
 app.use('/api/v1/interview',interviewRouter);
 app.use('/api/v1/application',applicationRouter);
 app.use('/api/v1/job',jobRouter);
+app.use('/api/v1/report',require(reportRouter));
 
 
 
