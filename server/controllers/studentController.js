@@ -14,6 +14,10 @@ const studentController ={
      getAllStudents: async (req, res) =>{
         try {
          const students = await StudentProfile.find();
+         if(!students){
+            return res.status(404).json({success:false,message:"No student found"})
+         }
+         
          res.status(200).json({success:true,data:students})
          
         } catch (err) {
@@ -23,7 +27,8 @@ const studentController ={
      },  
      getStudentById: async (req, res) =>{
       try {
-         const student = await StudentProfile.findById(req.params.id);
+         const student = await StudentProfile.findById(req.params.id)
+         .populate('userId', 'name email');
          if(!student){
             return res.status(404).json({success:false,message:"student not found"})
          }

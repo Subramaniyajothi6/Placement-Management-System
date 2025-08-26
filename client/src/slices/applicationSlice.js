@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import applicationApi from "../api/applicationsApi";
 
 export const fetchApplications = createAsyncThunk(
@@ -19,7 +19,7 @@ export const fetchMyApplications = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getMyApplications();
-           return response.data.data || response.data;
+            return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -85,7 +85,7 @@ export const getApplicationById = createAsyncThunk(
             return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
-        }   
+        }
     }
 )
 
@@ -118,7 +118,7 @@ const applicationSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-        
+
             .addCase(fetchMyApplications.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -151,49 +151,49 @@ const applicationSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-        .addCase(createApplication.fulfilled, (state, action) => {
-            state.loading = false;
-            state.items.push(action.payload);
-        })
-        .addCase(createApplication.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
-        })
+            .addCase(createApplication.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items.push(action.payload);
+            })
+            .addCase(createApplication.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
 
-        // update
+            // update
 
-        .addCase(updateApplication.pending, (state) => {
-            state.loading = true;
-            state.error = null;
-        })
+            .addCase(updateApplication.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
 
-        .addCase(updateApplication.fulfilled, (state, action) => {
-            state.loading = false;
-            const index = state.items.findIndex((app) => app._id === action.payload._id);
-            if (index !== -1) {
-                state.items[index] = action.payload;
-            }
-        })
+            .addCase(updateApplication.fulfilled, (state, action) => {
+                state.loading = false;
+                const index = state.items.findIndex((app) => app._id === action.payload._id);
+                if (index !== -1) {
+                    state.items[index] = action.payload;
+                }
+            })
 
-        .addCase(updateApplication.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
-        })
+            .addCase(updateApplication.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
 
-        .addCase(deleteApplication.pending, (state) => {
-            state.loading = true;
-            state.error = null;
+            .addCase(deleteApplication.pending, (state) => {
+                state.loading = true;
+                state.error = null;
 
-        })
-        .addCase(deleteApplication.fulfilled, (state, action) => {
-            state.loading = false;
-            state.items = state.items.filter((app) => app._id !== action.payload);
-        })
-        .addCase(deleteApplication.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
-        })
-}
+            })
+            .addCase(deleteApplication.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = state.items.filter((app) => app._id !== action.payload);
+            })
+            .addCase(deleteApplication.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+    }
 })
 
 
@@ -204,8 +204,12 @@ export const selectApplicationLoading = (state) => state.applications.loading;
 export const selectApplicationError = (state) => state.applications.error;
 export const selectApplicationById = (state, applicationId) =>
     state.applications.items.find((app) => app._id === applicationId);
-export const selectApplicationsByStudent = (state, studentId) =>
-    state.applications.items.filter((app) => app.student._id === studentId);
+export const selectApplicationsByStudent = createSelector(
+    [selectAllApplications, (state, studentId) => studentId],
+    (applications, studentId) => applications.filter(app =>
+        app.student === studentId || app.student?._id === studentId
+    )
+);
 export const selectApplicationsByJob = (state, jobId) =>
     state.applications.items.filter((app) => app.job._id === jobId);
 export const selectApplicationsByCompany = (state, companyId) =>

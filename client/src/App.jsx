@@ -15,6 +15,9 @@ import InterviewSchedulingForm from './components/company/InterviewSchedulingFor
 import InterviewFeedbackForm from './components/company/InterviewFeedbackForm'
 import AdminDashboard from './pages/AdminDashboard'
 import ManagePlacementDrives from './pages/ManagePlacementDrives'
+import StudentList from './pages/StudentList'
+import StudentDetail from './pages/StudentDetail'
+import StudentManagementPage from './pages/StudentManagementPage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -39,7 +42,10 @@ const routes = [
     // element : <InterviewSchedulingForm/>
     // element : <InterviewFeedbackForm/>
     // element :<AdminDashboard/>
-    element:<ManagePlacementDrives/>
+    // element:<ManagePlacementDrives/>
+    // element:<StudentList/>
+    // element:<StudentDetail/>
+    element:<StudentManagementPage/>
     
   
   }
