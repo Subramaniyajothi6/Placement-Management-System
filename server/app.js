@@ -33,7 +33,7 @@ app.use('/api/v1/placementDrive',placementDriveRouter);
 app.use('/api/v1/interview',interviewRouter);
 app.use('/api/v1/application',applicationRouter);
 app.use('/api/v1/job',jobRouter);
-app.use('/api/v1/report',require(reportRouter));
+app.use('/api/v1/report',reportRouter);
 
 
 
