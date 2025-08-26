@@ -2,13 +2,16 @@ const CompanyProfile = require("../models/CompanyProfile");
 const Job = require("../models/Job");
 const Application = require("../models/Application");
 const Interview = require("../models/Interview");
+const User = require("../models/User");
 const companyController = {
 
     createCompany: async (req, res) => {
         try {
             const company = await CompanyProfile.create(req.body);
-
-            await User.findByIdAndUpdate(company.user, { companyId: company._id });
+            const existingCompany = await CompanyProfile.findOne({ user: req.body.user });
+            if (existingCompany) {
+                return res.status(400).json({ success: false, message: 'User already has a company profile.' });
+            }
 
             res.status(201).json({
                 success: true,
@@ -78,9 +81,9 @@ const companyController = {
         }
     },
 
-     companyDashboard : async (req, res) => {
+    companyDashboard: async (req, res) => {
         try {
-            const companyId = req.user.companyId;  
+            const companyId = req.user.companyId;
 
             const jobsPosted = await Job.countDocuments({ company: companyId });
             const applicationsReceived = await Application.countDocuments({ company: companyId });

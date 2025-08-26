@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CompanyProfile',
-        required: function () { return this.role === 'company'; }
+        
     },
     resetToken: String,
     resetTokenExpiration: Date,

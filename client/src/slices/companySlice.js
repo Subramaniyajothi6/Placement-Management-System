@@ -7,7 +7,7 @@ export const fetchCompanies = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await companyApi.getAll();
-            return response.data;
+            return response.data.data;
 
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -20,7 +20,7 @@ export const createCompany = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await companyApi.create(data);
-            return response.data;
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -32,7 +32,7 @@ export const updateCompany = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const response = await companyApi.updateCompany(id, data);
-            return response.data;
+            return response.data.data
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }

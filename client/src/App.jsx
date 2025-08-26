@@ -18,6 +18,7 @@ import ManagePlacementDrives from './pages/ManagePlacementDrives'
 import StudentList from './pages/StudentList'
 import StudentDetail from './pages/StudentDetail'
 import StudentManagementPage from './pages/StudentManagementPage'
+import CompanyList from './pages/CompanyList'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -45,7 +46,8 @@ const routes = [
     // element:<ManagePlacementDrives/>
     // element:<StudentList/>
     // element:<StudentDetail/>
-    element:<StudentManagementPage/>
+    // element:<StudentManagementPage/>
+    element:<CompanyList/>
     
   
   }
