@@ -7,21 +7,24 @@ const companyController = {
 
     createCompany: async (req, res) => {
         try {
-            const company = await CompanyProfile.create(req.body);
             const existingCompany = await CompanyProfile.findOne({ user: req.body.user });
             if (existingCompany) {
                 return res.status(400).json({ success: false, message: 'User already has a company profile.' });
             }
 
+            const company = await CompanyProfile.create(req.body);
+            await User.findByIdAndUpdate(company.user, { companyId: company._id });
+
             res.status(201).json({
                 success: true,
                 message: 'Company Created Successfully',
                 data: company,
-            })
+            });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }
     },
+
     getAllCompanies: async (req, res) => {
         try {
             const companies = await CompanyProfile.find();
