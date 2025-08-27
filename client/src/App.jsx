@@ -20,6 +20,7 @@ import StudentDetail from './pages/StudentDetail'
 import StudentManagementPage from './pages/StudentManagementPage'
 import CompanyList from './pages/CompanyList'
 import ReportsPage from './pages/ReportsPage'
+import ReportDetailsPage from './pages/ReportDetailsPage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -50,9 +51,10 @@ const routes = [
     // element:<StudentManagementPage/>
     // element:<CompanyList/>
     element:<ReportsPage/>
-    
   
   }
+  ,
+  { path:'reports/:id',element:<ReportDetailsPage/>}
 ]
 
 const router = createBrowserRouter(routes, {

@@ -24,7 +24,9 @@ const reportController = {
 
     getReportById: async (req, res) => {
         try {
-            const report = await Report.findById(req.params.id);
+            const report = await Report.findById(req.params.id).populate({
+                path: 'placementDrive', model: 'PlacementDrive'
+            });
             if (!report) {
                 return res.status(404).json({ success: false, message: 'Report not found' });
             }

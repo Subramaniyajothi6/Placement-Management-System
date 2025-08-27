@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchReportById, fetchReports, resetReportState, selectAllReports, selectReportError, selectReportLoading, selectSelectedReport, selectSelectedReportError, selectSelectedReportLoading } from "../slices/reportSlice";
+import { fetchReportById, fetchReports, resetReportState, selectAllReports, selectReportError, selectReportLoading } from "../slices/reportSlice";
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router";
 
 const ReportsPage = () => {
     const dispatch = useDispatch();
@@ -9,17 +9,20 @@ const ReportsPage = () => {
     const loading = useSelector(selectReportLoading);
     const error = useSelector(selectReportError);
 
-    const selectedReport = useSelector(selectSelectedReport);
-    const selectedLoading = useSelector(selectSelectedReportLoading);
-    const selectedError = useSelector(selectSelectedReportError);
+
+    // const selectedReport = useSelector(selectSelectedReport);
+    // const selectedLoading = useSelector(selectSelectedReportLoading);       
+    // const selectedError = useSelector(selectSelectedReportError);
+
+
 
     const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
         dispatch(fetchReports())
-        .then((action) => {
-            console.log('Fetched reports:', action.payload); 
-    });
+        // .then((action) => {
+        //     console.log('Fetched reports:', action.payload); 
+        // });
 
         return () => {
             dispatch(resetReportState());
@@ -31,6 +34,7 @@ const ReportsPage = () => {
         dispatch(fetchReportById(id));
     };
 
+    console.log('reports:', reports);
     return (
         <div className="p-6 max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">Reports & Analytics</h1>
@@ -57,15 +61,16 @@ const ReportsPage = () => {
                                         key={report._id}
                                         className="mb-3 p-3 border rounded cursor-pointer hover:bg-blue-50"
                                     >
+                                      <Link to={`/reports/${report._id}`}>
                                         <button
                                             className={`w-full text-left ${report._id === selectedId ? 'bg-blue-200' : ''
                                                 }`}
                                             onClick={() => handleSelectReport(report._id)}
                                         >
                                             <p className="font-semibold text-lg">
-                                                {report.placementDrive?.title || report.placementDrive?.companyName || 'Unnamed Placement Drive'}
+                                                {report.placementDrive?.title ||  'Unnamed Placement Drive'}
                                             </p>
-                                            <p>
+                                            <p className="text-sm text-gray-600 mb-1">
                                                 {report.placementDrive?.companyName || 'Unknown Company'}
                                             </p>
                                             <p className="text-sm text-gray-600 mb-1">
@@ -79,6 +84,7 @@ const ReportsPage = () => {
                                                 Success Rate: <span className="font-medium">{successRate}%</span>
                                             </p>
                                         </button>
+                                      </Link>
                                     </li>
                                 );
                             })}
@@ -87,7 +93,7 @@ const ReportsPage = () => {
                 </div>
 
                 {/* Report Details */}
-                <div className="w-2/3 border rounded p-4 max-h-[600px] overflow-auto">
+                {/* <div className="w-2/3 border rounded p-4 max-h-[600px] overflow-auto">
                     <h2 className="text-xl font-semibold mb-4">Report Details</h2>
                     {selectedLoading && <p>Loading report details...</p>}
                     {selectedError && <p className="text-red-600">Error loading report details.</p>}
@@ -95,7 +101,10 @@ const ReportsPage = () => {
                     {selectedReport && (
                         <div>
                             <p>
-                                <strong>Placement Drive:</strong> {selectedReport.placementDrive || 'N/A'}
+                                <strong>Placement Drive:</strong> {reports.find((report) => report._id === selectedId).placementDrive?.title || 'N/A'}
+                            </p>
+                            <p>
+                                <strong>Company:</strong> {selectedReport.placementDrive?.companyName || 'N/A'}
                             </p>
                             <p>
                                 <strong>Participant Count:</strong> {selectedReport.participantCount}
@@ -121,7 +130,7 @@ const ReportsPage = () => {
                             )}
                         </div>
                     )}
-                </div>
+                </div> */}
             </div>
         </div>
     );
