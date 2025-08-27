@@ -12,7 +12,7 @@ const reportController = {
 
     getAllReports: async (req, res) => {
         try {
-            const reports = await Report.find().sort({ startDate: -1 }).populate('placementDrive');
+            const reports = await Report.find().sort({ startDate: -1 }).populate('PlacementDrive');
             res.status(200).json({ success: true, count: reports.length, data: reports });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
