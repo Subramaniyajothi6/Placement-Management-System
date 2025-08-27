@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReportById, fetchReports, resetReportState, selectAllReports, selectReportError, selectReportLoading, selectSelectedReport, selectSelectedReportError, selectSelectedReportLoading } from "../slices/reportSlice";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 
 
 const ReportsPage = () => {
@@ -16,7 +16,10 @@ const ReportsPage = () => {
     const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
-        dispatch(fetchReports());
+        dispatch(fetchReports())
+        .then((action) => {
+            console.log('Fetched reports:', action.payload); 
+    });
 
         return () => {
             dispatch(resetReportState());

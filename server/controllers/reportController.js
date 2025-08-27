@@ -15,6 +15,7 @@ const reportController = {
             const reports = await Report.find().sort({ startDate: -1 }).populate({
                 path: 'placementDrive', model: 'PlacementDrive'
             });
+            console.log('Reports with populated placementDrive:', reports);
             res.status(200).json({ success: true, count: reports.length, data: reports });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
