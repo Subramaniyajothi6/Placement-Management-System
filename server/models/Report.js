@@ -4,7 +4,7 @@ const ReportSchema = new mongoose.Schema({
 
     placementDrive:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'PlacementDrive',
+        ref:'placementDrive',
         required:true,
         unique:true // only one report per placement drive
     },
