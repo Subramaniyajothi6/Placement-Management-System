@@ -19,6 +19,7 @@ import StudentList from './pages/StudentList'
 import StudentDetail from './pages/StudentDetail'
 import StudentManagementPage from './pages/StudentManagementPage'
 import CompanyList from './pages/CompanyList'
+import ReportsPage from './pages/ReportsPage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -47,7 +48,8 @@ const routes = [
     // element:<StudentList/>
     // element:<StudentDetail/>
     // element:<StudentManagementPage/>
-    element:<CompanyList/>
+    // element:<CompanyList/>
+    element:<ReportsPage/>
     
   
   }

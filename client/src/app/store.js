@@ -6,6 +6,7 @@ import placementDriveReducer from "../slices/placementDriveSlice";
 import studentReducer from "../slices/studentSlice";
 import jobReducer from "../slices/jobSlice";
 import applicationReducer from "../slices/applicationSlice";
+import reportReducer from "../slices/reportSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     student: studentReducer,
     jobs: jobReducer,
     applications: applicationReducer,
+    report: reportReducer
    
   },
 });
