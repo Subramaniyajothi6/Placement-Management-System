@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReportById, fetchReports, resetReportState, selectAllReports, selectReportError, selectReportLoading, selectSelectedReport, selectSelectedReportError, selectSelectedReportLoading } from "../slices/reportSlice";
-import { act, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const ReportsPage = () => {
@@ -64,6 +64,9 @@ const ReportsPage = () => {
                                         >
                                             <p className="font-semibold text-lg">
                                                 {report.placementDrive?.title || report.placementDrive?.companyName || 'Unnamed Placement Drive'}
+                                            </p>
+                                            <p>
+                                                {report.placementDrive?.companyName || 'Unknown Company'}
                                             </p>
                                             <p className="text-sm text-gray-600 mb-1">
                                                 {new Date(report.startDate).toLocaleDateString()} -{' '}
