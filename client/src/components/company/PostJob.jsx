@@ -101,7 +101,7 @@ const PostJob = () => {
         {placementDriveId ? "Post a New Job for Drive" : "Post a New Job"}
       </h2>
 
-      {error && <p className="text-red-600 mb-4">{Array.isArray(error) ? error.join(", ") : error}</p>}
+      {error && <p className="text-red-600 mb-4"> {Array.isArray(error) ? error.join(", ") : error}</p>}
 
       <form onSubmit={handleSubmit}>
         <label className="block mb-2 font-semibold">Job Title</label>

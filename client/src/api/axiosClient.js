@@ -2,6 +2,7 @@ import axios from "axios";
 
 const axiosClient = axios.create({
     baseURL: 'https://placement-management-system-2d32.onrender.com/api/v1',
+    // baseURL: 'http://localhost:3000/api/v1',
     headers: {
         'Content-Type': 'application/json',
     },

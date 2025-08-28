@@ -4,7 +4,7 @@ const jobController = {
     createJob: async (req, res) => {
         try {
             const jobData = {
-                ...req.body, company: req.user._id,
+                ...req.body, company: req.user.id,
             };
             const job = await Job.create(jobData);
             res.status(201).json({ success: true, data: job, message: "Job created successfully" });
