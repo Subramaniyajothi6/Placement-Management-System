@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from 'axios';
+
 import authApi from "../api/authApi";
 
 const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
@@ -11,7 +11,7 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/auth/register', userData);
+      const response = await authApi.register(userData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -23,29 +23,13 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/auth/login', userData);
+      const response = await authApi.login(userData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
-
-// export const getUserProfile = createAsyncThunk(
-//   'auth/getUserProfile',
-//   async (_, { getState, rejectWithValue }) => {
-//     try {
-//       const { auth } = getState();
-//       const config = { headers: { Authorization: `Bearer ${auth.token}` } };
-//       const response = await axios.get('/api/auth/profile', config);
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || error.message);
-//     }
-//   }
-// );
-
-
 
 
 export const getUserProfile = createAsyncThunk(
@@ -115,55 +99,56 @@ const authSlice = createSlice({
         state.isSuccess = true;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('token', action.payload.token);
+        state.message = '';  // clear message on success
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = action.payload;
+        // action.payload contains backend error message, assign to message
+        state.message = action.payload || 'Registration failed';
       })
+  
       // Login
       .addCase(loginUser.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = '';
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('token', action.payload.token);
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = action.payload;
-      })
-      // Get Profile
-      .addCase(getUserProfile.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = '';
-      })
-      .addCase(getUserProfile.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload.user ?? action.payload;
-        state.isSuccess = true;
-      })
-      .addCase(getUserProfile.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = action.payload;
-      })
-      // updateUserProfile
+    state.isLoading = true;
+    state.isError = false;
+    state.isSuccess = false;
+    state.message = '';
+  })
+    .addCase(loginUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      localStorage.setItem('user', JSON.stringify(action.payload.user));
+      localStorage.setItem('token', action.payload.token);
+    })
+    .addCase(loginUser.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload;
+    })
+    // Get Profile
+    .addCase(getUserProfile.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+    })
+    .addCase(getUserProfile.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.user ?? action.payload;
+      state.isSuccess = true;
+    })
+    .addCase(getUserProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload;
+    })
+    // updateUserProfile
     .addCase(updateUserProfile.pending, (state) => {
       state.isLoading = true;
       state.isError = false;
@@ -182,10 +167,10 @@ const authSlice = createSlice({
       state.isSuccess = false;
       state.message = action.payload;
     });
-  }
+}
 });
 
-export const { resetState, logout ,updateProfile } = authSlice.actions;
+export const { resetState, logout, updateProfile } = authSlice.actions;
 export default authSlice.reducer;
 
 

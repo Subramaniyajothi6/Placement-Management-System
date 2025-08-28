@@ -1,4 +1,4 @@
-import {createBrowserRouter, RouterProvider} from 'react-router'
+import { createBrowserRouter, RouterProvider } from 'react-router'
 // import Home from './Home'
 // import StudentDashboard from './components/students/StudentDashBoard'
 import StudentApplicationForm from './components/students/StudentApplicationForm'
@@ -21,57 +21,73 @@ import StudentManagementPage from './pages/StudentManagementPage'
 import CompanyList from './pages/CompanyList'
 import ReportsPage from './pages/ReportsPage'
 import ReportDetailsPage from './pages/ReportDetailsPage'
+import LoginPage from './components/Authentication/LoginPage'
+import Dashboard from './components/Dashboard'
+import RegisterPage from './components/Authentication/RegisterPage'
+import StudentApplicationPage from './components/students/StudentApplicationPage'
+import PlacementDriveJobPostWrapper from './components/company/PlacementDriveJobPostWrapper'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
 
-    useEffect(() => {
-    if (!user) {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!user && token) {
       dispatch(getUserProfile());
     }
   }, [dispatch, user]);
-  
-const routes = [
-  {
 
-    path:"/",
-    // element:<StudentDashboard/>
-    // element:<StudentApplicationForm/>
-    // element:<InterviewSchedulePage/>
-    // element:<ProfilePage/>
-    // element:<CompanyDashboard/>
-    // element:<PostJob/>
-    // element:<ApplicationReviewPage/>
-    // element : <InterviewSchedulingForm/>
-    // element : <InterviewFeedbackForm/>
-    // element :<AdminDashboard/>
-    // element:<ManagePlacementDrives/>
-    // element:<StudentList/>
-    // element:<StudentDetail/>
-    // element:<StudentManagementPage/>
-    // element:<CompanyList/>
-    element:<ReportsPage/>
-  
-  }
-  ,
-  { path:'reports/:id',element:<ReportDetailsPage/>}
-]
+  const routes = [
+    {
 
-const router = createBrowserRouter(routes, {
-  future: {
-    v7_startTransition: true,
-    v7_fetcherPersist: true,
-    v7_normalizeFormMethod: true,
-    v7_partialHydration: true,
-    v7_skipActionErrorRevalidation: true,
+      path: "/",
+      // element:<StudentDashboard/>
+      // element:<StudentApplicationForm/>
+      // element:<StudentApplicationPage/>
+      // element:<InterviewSchedulePage/>
+      // element:<ProfilePage/>
+      // element:<CompanyDashboard/>
+      element:<PostJob/>
+      // element:<ApplicationReviewPage/>
+      // element : <InterviewSchedulingForm/>
+      // element : <InterviewFeedbackForm/>
+      // element :<AdminDashboard/>
+      // element:<ManagePlacementDrives/>
+      // element:<StudentList/>
+      // element:<StudentDetail/>
+      // element:<StudentManagementPage/>
+      // element:<CompanyList/>
+      // element:<ReportsPage/>
+      // element: <LoginPage />
+      // element:<RegisterPage/>
 
-  },
-})
+    }
+    ,
+    // { path:'reports/:id',element:<ReportDetailsPage/>}
+    { path: '/:user/dashboard', element: <Dashboard /> },
+    { path: '/login', element: <LoginPage /> },
+    // { path: '/student/:companyId', 
+    //    element:<StudentApplicationPage/> }
+    { path: '/:user/postJob/:placementDriveId', element: <PostJob /> },
+    { path: '/:user/postJob', element: <PlacementDriveJobPostWrapper /> }
+
+  ]
+
+  const router = createBrowserRouter(routes, {
+    future: {
+      v7_startTransition: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_skipActionErrorRevalidation: true,
+
+    },
+  })
 
   return (
-   <RouterProvider
-    router={router}
-    future={{ v7_startTransition: true }}
+    <RouterProvider
+      router={router}
+      future={{ v7_startTransition: true }}
     />
   )
 }

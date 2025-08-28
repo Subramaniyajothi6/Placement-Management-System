@@ -1,37 +1,65 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearJobError, createJob, resetJobState } from "../../slices/jobSlice";
+import { selectAuthUser } from "../../slices/authSlice";
+import { useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { clearJobError, createJob, resetJobState, selectJobsError, selectJobsLoading, selectJobsSuccess } from "../../slices/jobSlice";
 
 
 const PostJob = () => {
   const dispatch = useDispatch();
-  const { loading, error, isSuccess } = useSelector((state) => state.jobs);
+  const loading = useSelector(selectJobsLoading);
+  const error = useSelector(selectJobsError);
+  const isSuccess = useSelector(selectJobsSuccess);
+
+  const { _id: companyIdFromUser } = useSelector(selectAuthUser);
+  const { placementDriveId } = useParams(); 
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    location: '',
-    jobType: 'full-time',
-    applicationDeadline: '',
+    placementDrive: "",
+    company: "",
+    title: "",
+    description: "",
+    location: "",
+    jobType: "full-time",
+    applicationDeadline: "",
   });
 
   useEffect(() => {
+    // When placementDriveId or companyIdFromUser changes, update formData accordingly
+    setFormData((prev) => ({
+      ...prev,
+      placementDrive: placementDriveId || "",
+      
+    }));
+  }, [placementDriveId]);
+
+  useEffect(() => {
+    // When companyIdFromUser changes, update formData accordingly
+    setFormData((prev) => ({
+      ...prev,
+      company: companyIdFromUser || "",
+    }));
+  }, [companyIdFromUser]);
+
+  useEffect(() => {
     if (isSuccess) {
-      alert('Job posted successfully!');
+      alert("Job posted successfully!");
       dispatch(resetJobState());
       setFormData({
-        title: '',
-        description: '',
-        location: '',
-        jobType: 'full-time',
-        applicationDeadline: '',
+        placementDrive: placementDriveId || "",
+        company: companyIdFromUser || "",
+        title: "",
+        description: "",
+        location: "",
+        jobType: "full-time",
+        applicationDeadline: "",
       });
     }
 
     return () => {
       dispatch(clearJobError());
     };
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, placementDriveId, companyIdFromUser]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -45,9 +73,11 @@ const PostJob = () => {
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-6">Post a New Job</h2>
+      <h2 className="text-2xl font-bold mb-6">
+        {placementDriveId ? "Post a New Job for Drive" : "Post a New Job"}
+      </h2>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <p className="text-red-600 mb-4">{error.message}</p>}
 
       <form onSubmit={handleSubmit}>
         <label className="block mb-2 font-semibold">Job Title</label>
@@ -105,7 +135,7 @@ const PostJob = () => {
           disabled={loading}
           className="w-full py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
         >
-          {loading ? 'Posting...' : 'Post Job'}
+          {loading ? "Posting..." : "Post Job"}
         </button>
       </form>
     </div>

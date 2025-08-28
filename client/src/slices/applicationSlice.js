@@ -95,12 +95,16 @@ const applicationSlice = createSlice({
         items: [],
         loading: false,
         error: null,
+        success: false,
+        message: null,
     },
 
     reducers: {
         resetStatus: (state) => {
             state.loading = false;
             state.error = null;
+            state.success = false;
+            state.message = null;
         }
     },
 
@@ -109,40 +113,58 @@ const applicationSlice = createSlice({
             .addCase(fetchApplications.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
+                state.message = null;
             })
             .addCase(fetchApplications.fulfilled, (state, action) => {
                 state.loading = false;
                 state.items = action.payload;
+                state.success = true;
             })
             .addCase(fetchApplications.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
             })
 
             .addCase(fetchMyApplications.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
+                state.message = null;
             })
             .addCase(fetchMyApplications.fulfilled, (state, action) => {
                 state.loading = false;
                 state.items = action.payload;
+                state.success = true;
+                state.message = "Fetched my applications successfully";
             })
             .addCase(fetchMyApplications.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
             })
 
             .addCase(fetchCompanyApplications.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
+                state.message = null;
+
             })
             .addCase(fetchCompanyApplications.fulfilled, (state, action) => {
                 state.loading = false;
                 state.items = action.payload;
+                state.success = true;
+                state.message = "Fetched company applications successfully";
             })
             .addCase(fetchCompanyApplications.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
             })
 
             // create
@@ -150,14 +172,21 @@ const applicationSlice = createSlice({
             .addCase(createApplication.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
+                state.message = null;
+
             })
             .addCase(createApplication.fulfilled, (state, action) => {
                 state.loading = false;
                 state.items.push(action.payload);
+                state.success = true;
+                state.message = "Application created successfully";
             })
             .addCase(createApplication.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
             })
 
             // update
@@ -165,6 +194,8 @@ const applicationSlice = createSlice({
             .addCase(updateApplication.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
+                state.message = null;
             })
 
             .addCase(updateApplication.fulfilled, (state, action) => {
@@ -173,25 +204,35 @@ const applicationSlice = createSlice({
                 if (index !== -1) {
                     state.items[index] = action.payload;
                 }
+                state.success = true;
+                state.message = "Application updated successfully";
             })
 
             .addCase(updateApplication.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
             })
 
             .addCase(deleteApplication.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
+                state.message = null;
 
             })
             .addCase(deleteApplication.fulfilled, (state, action) => {
                 state.loading = false;
                 state.items = state.items.filter((app) => app._id !== action.payload);
+                state.success = true;
+                state.message = "Application deleted successfully";
             })
             .addCase(deleteApplication.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
             })
     }
 })
@@ -207,7 +248,7 @@ export const selectApplicationById = (state, applicationId) =>
 export const selectApplicationsByStudent = createSelector(
     [selectAllApplications, (state, studentId) => studentId],
     (applications, studentId) => applications.filter(app =>
-        app.student === studentId || app.student?._id === studentId
+        app.candidate === studentId || app.candidate?._id === studentId
     )
 );
 export const selectApplicationsByJob = (state, jobId) =>

@@ -25,7 +25,7 @@ const authController = {
 
             res.status(201).json({ success: true, message: `User created successfully`, user: userData, token });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(500).json({ message: error.message, success: false });
         }
     },
     login: async (req, res) => {

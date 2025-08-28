@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { fetchMyApplications } from '../../slices/applicationSlice';
+import { fetchMyApplications, selectAllApplications, selectApplicationError, selectApplicationLoading } from '../../slices/applicationSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const statusColors = {
@@ -13,7 +13,9 @@ const statusColors = {
 
 const StudentDashboard = () => {
   const dispatch = useDispatch();
-  const { items: applications, loading, error } = useSelector((state) => state.application);
+  const applications = useSelector(selectAllApplications);
+const loading = useSelector(selectApplicationLoading);
+const error = useSelector(selectApplicationError);
 
   useEffect(() => {
     dispatch(fetchMyApplications());
