@@ -1,10 +1,10 @@
 const express = require('express');
 const { getAllJobs, getSingleJob,  createJob, updateJob, deleteJob } = require('../controllers/jobController');
-const { roleMiddleware, authMiddleware } = require('../middleware/authMiddleware');
+const { roleMiddleware, authMiddleware, validateJob, jobCreateValidationRules , } = require('../middleware/authMiddleware');
 
 const jobRouter = express.Router();
 
-jobRouter.post('/', authMiddleware, roleMiddleware(['company']), createJob); 
+jobRouter.post('/', authMiddleware, roleMiddleware(['company']),jobCreateValidationRules, validateJob, createJob); 
 
 jobRouter.get('/',getAllJobs);
 

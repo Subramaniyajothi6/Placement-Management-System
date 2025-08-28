@@ -1,9 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuthUser } from "../../slices/authSlice";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import { clearJobError, createJob, resetJobState, selectJobsError, selectJobsLoading, selectJobsSuccess } from "../../slices/jobSlice";
-
+import {
+  clearJobError,
+  createJob,
+  resetJobState,
+  selectJobsError,
+  selectJobsLoading,
+  selectJobsSuccess,
+} from "../../slices/jobSlice";
 
 const PostJob = () => {
   const dispatch = useDispatch();
@@ -11,35 +16,28 @@ const PostJob = () => {
   const error = useSelector(selectJobsError);
   const isSuccess = useSelector(selectJobsSuccess);
 
-  const { _id: companyIdFromUser } = useSelector(selectAuthUser);
-  const { placementDriveId } = useParams(); 
+
+  const { placementDriveId } = useParams();
 
   const [formData, setFormData] = useState({
     placementDrive: "",
-    company: "",
     title: "",
     description: "",
     location: "",
-    jobType: "full-time",
+    salary: "",
+    skillsRequired: [],
+    openings: 1,
     applicationDeadline: "",
   });
 
   useEffect(() => {
-    // When placementDriveId or companyIdFromUser changes, update formData accordingly
     setFormData((prev) => ({
       ...prev,
       placementDrive: placementDriveId || "",
-      
     }));
   }, [placementDriveId]);
 
-  useEffect(() => {
-    // When companyIdFromUser changes, update formData accordingly
-    setFormData((prev) => ({
-      ...prev,
-      company: companyIdFromUser || "",
-    }));
-  }, [companyIdFromUser]);
+
 
   useEffect(() => {
     if (isSuccess) {
@@ -47,11 +45,12 @@ const PostJob = () => {
       dispatch(resetJobState());
       setFormData({
         placementDrive: placementDriveId || "",
-        company: companyIdFromUser || "",
         title: "",
         description: "",
         location: "",
-        jobType: "full-time",
+        salary: "",
+        skillsRequired: [],
+        openings: 1,
         applicationDeadline: "",
       });
     }
@@ -59,15 +58,40 @@ const PostJob = () => {
     return () => {
       dispatch(clearJobError());
     };
-  }, [isSuccess, dispatch, placementDriveId, companyIdFromUser]);
+  }, [isSuccess, dispatch, placementDriveId]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    if (name === "skillsRequired") {
+      const skillsArray = value.split(",").map((skill) => skill.trim());
+      setFormData((prev) => ({ ...prev, skillsRequired: skillsArray }));
+    } else if (name === "openings") {
+      const num = parseInt(value, 10);
+      setFormData((prev) => ({ ...prev, openings: isNaN(num) ? 1 : num }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
     if (error) dispatch(clearJobError());
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Optional front-end validation
+    if (!formData.title || !formData.placementDrive ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (formData.applicationDeadline) {
+      const deadline = new Date(formData.applicationDeadline);
+      if (isNaN(deadline.getTime())) {
+        alert("Please enter a valid application deadline date.");
+        return;
+      }
+    }
+
     dispatch(createJob(formData));
   };
 
@@ -77,7 +101,7 @@ const PostJob = () => {
         {placementDriveId ? "Post a New Job for Drive" : "Post a New Job"}
       </h2>
 
-      {error && <p className="text-red-600 mb-4">{error.message}</p>}
+      {error && <p className="text-red-600 mb-4">{Array.isArray(error) ? error.join(", ") : error}</p>}
 
       <form onSubmit={handleSubmit}>
         <label className="block mb-2 font-semibold">Job Title</label>
@@ -95,7 +119,6 @@ const PostJob = () => {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          required
           rows="5"
           className="w-full mb-4 p-2 border rounded"
         />
@@ -109,17 +132,35 @@ const PostJob = () => {
           className="w-full mb-4 p-2 border rounded"
         />
 
-        <label className="block mb-2 font-semibold">Job Type</label>
-        <select
-          name="jobType"
-          value={formData.jobType}
+        <label className="block mb-2 font-semibold">Salary</label>
+        <input
+          type="text"
+          name="salary"
+          value={formData.salary}
           onChange={handleChange}
           className="w-full mb-4 p-2 border rounded"
-        >
-          <option value="full-time">Full-time</option>
-          <option value="internship">Internship</option>
-          <option value="contract">Contract</option>
-        </select>
+          placeholder="e.g., ₹25,000 - ₹35,000"
+        />
+
+        <label className="block mb-2 font-semibold">Skills Required (comma separated)</label>
+        <input
+          type="text"
+          name="skillsRequired"
+          value={formData.skillsRequired.join(", ")}
+          onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
+          placeholder="React, JavaScript, CSS etc."
+        />
+
+        <label className="block mb-2 font-semibold">Openings</label>
+        <input
+          type="number"
+          name="openings"
+          min="1"
+          value={formData.openings}
+          onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
+        />
 
         <label className="block mb-2 font-semibold">Application Deadline</label>
         <input
