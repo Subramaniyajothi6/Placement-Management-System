@@ -60,7 +60,7 @@ const CommonDashboard = () => {
           {placementDrives.map((drive) => (
             <li
               key={drive._id}
-              onClick={() => navigate(`/drives/${drive._id}`)}
+              onClick={() => navigate(`/company/drives/${drive._id}`)}
               tabIndex={0}
               role="button"
               className="border rounded-lg shadow hover:shadow-lg cursor-pointer bg-white p-5 flex flex-col justify-between transition focus:outline-none focus:ring-2 focus:ring-indigo-500"

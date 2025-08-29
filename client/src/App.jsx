@@ -26,6 +26,8 @@ import Dashboard from './components/Dashboard'
 import RegisterPage from './components/Authentication/RegisterPage'
 import StudentApplicationPage from './components/students/StudentApplicationPage'
 import PlacementDriveJobPostWrapper from './components/company/PlacementDriveJobPostWrapper'
+import DriveCompanyJobsPage from './DriveCompanyJobsPage'
+import CreateCompanyProfileForm from './components/company/CompanyForm'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -47,7 +49,7 @@ const App = () => {
       // element:<InterviewSchedulePage/>
       // element:<ProfilePage/>
       // element:<CompanyDashboard/>
-      element:<PostJob/>
+      // element:<PostJob/>
       // element:<ApplicationReviewPage/>
       // element : <InterviewSchedulingForm/>
       // element : <InterviewFeedbackForm/>
@@ -60,6 +62,9 @@ const App = () => {
       // element:<ReportsPage/>
       // element: <LoginPage />
       // element:<RegisterPage/>
+      // element:<CompanyDashboard/>
+      element:<DriveCompanyJobsPage/>
+      // element:<CreateCompanyProfileForm/>
 
     }
     ,
@@ -69,7 +74,9 @@ const App = () => {
     // { path: '/student/:companyId', 
     //    element:<StudentApplicationPage/> }
     { path: '/:user/postJob/:placementDriveId', element: <PostJob /> },
-    { path: '/:user/postJob', element: <PlacementDriveJobPostWrapper /> }
+    { path: '/:user/postJob', element: <PlacementDriveJobPostWrapper /> },
+    // { path: '/:user/drives', element: <ManagePlacementDrives /> }
+
 
   ]
 

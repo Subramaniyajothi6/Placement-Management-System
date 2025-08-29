@@ -9,18 +9,31 @@ import {
   selectJobsLoading,
   selectJobsSuccess,
 } from "../../slices/jobSlice";
+import { fetchCompanies, selectAllCompanies, } from "../../slices/companySlice";
+import { selectAuthUser } from "../../slices/authSlice";
 
 const PostJob = () => {
   const dispatch = useDispatch();
   const loading = useSelector(selectJobsLoading);
   const error = useSelector(selectJobsError);
   const isSuccess = useSelector(selectJobsSuccess);
+  const companies = useSelector(selectAllCompanies);
+  const user = useSelector(selectAuthUser);
+
+useEffect(() => {
+  dispatch(fetchCompanies());
+}, [dispatch]);
+const userId = user?._id;
+
+const companyId = companies.filter(c=>c.user === userId )[0]?._id;
+  
 
 
   const { placementDriveId } = useParams();
 
   const [formData, setFormData] = useState({
     placementDrive: "",
+    company:"",
     title: "",
     description: "",
     location: "",
@@ -34,8 +47,9 @@ const PostJob = () => {
     setFormData((prev) => ({
       ...prev,
       placementDrive: placementDriveId || "",
+      company:companyId
     }));
-  }, [placementDriveId]);
+  }, [placementDriveId,companyId]);
 
 
 

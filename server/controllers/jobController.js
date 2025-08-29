@@ -3,9 +3,7 @@ const Job = require("../models/Job");
 const jobController = {
     createJob: async (req, res) => {
         try {
-            const jobData = {
-                ...req.body, company: req.user.id,
-            };
+            const jobData = req.body;
             const job = await Job.create(jobData);
             res.status(201).json({ success: true, data: job, message: "Job created successfully" });
         } catch (error) {
