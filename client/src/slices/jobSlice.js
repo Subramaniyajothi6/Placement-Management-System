@@ -215,11 +215,14 @@ const jobSlice = createSlice({
 export const { clearSelectedJob, clearJobError, resetJobState } = jobSlice.actions;
 
 // Export selectors
+export const selectJobsState = (state) => state.jobs;
 export const selectJobs = (state) => state.jobs.jobs;
+
 export const selectSelectedJob = (state) => state.jobs.selectedJob;
 export const selectJobsLoading = (state) => state.jobs.loading;
 export const selectJobsError = (state) => state.jobs.error;
 export const selectJobsSuccess = (state) => state.jobs.success;
 export const selectJobsMessage = (state) => state.jobs.message;
+
 
 export default jobSlice.reducer;

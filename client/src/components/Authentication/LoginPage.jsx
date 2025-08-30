@@ -8,6 +8,7 @@ import {
   selectAuthUser,
 } from "../../slices/authSlice";
 import { useEffect, useState } from "react";
+import {  fetchStudents } from "../../slices/studentSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -21,25 +22,91 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   // console.log('user',user.role);
-  
 
   useEffect(() => {
-  if (user) { 
-     if (user.role == "student" ) {
+  // async function checkProfile() {
+  //   if (user?.role === "student") {
+  //     try {
+  //       const resAction = await dispatch(fetchStudents(user._id));
+  //       if (fetchStudents.fulfilled.match(resAction) && resAction.payload) {
+  //         // Profile found, redirect to profile page
+  //         navigate(`/${user._id}/profile`);
+  //       } else {
+  //         // No profile, redirect to student dashboard
+  //         navigate("/studentUser/dashboard");
+  //       }
+  //     } catch {
+  //       navigate("/studentUser/dashboard"); // fallback
+  //     }
+  //   } else if (user?.role === "company") {
+  //     navigate("/companyUser/dashboard");
+  //   } else if (user?.role === "admin") {
+  //     navigate("/adminUser/dashboard");
+  //   }
+  // }
+  async function checkProfile() {
+  if (user?.role === "student") {
+    try {
+      const resAction = await dispatch(fetchStudents()); // fetch all profiles
+      if (
+        fetchStudents.fulfilled.match(resAction) &&
+        resAction.payload &&
+        Array.isArray(resAction.payload)
+      ) {
+        const profileExists = resAction.payload.some(
+          (profile) => profile.userId === user._id
+        );
+
+        if (profileExists) {
+          // Profile exists, redirect to dashboard
+          navigate("/studentUser/dashboard");
+        } else {
+          // No profile, redirect to profile creation page
+          navigate(`/${user._id}/profile`);
+        }
+      } else {
+        // In case fetching students fails or returns empty list, redirect to dashboard
+        navigate("/studentUser/dashboard");
+      }
+    } catch {
+      // On any error fallback to dashboard
       navigate("/studentUser/dashboard");
     }
-    else if (user.role == "company") {
-      navigate("/companyUser/dashboard");
-    }
-    else if (user.role == "admin") {
-      navigate("/adminUser/dashboard");
-    }
+  } else if (user?.role === "company") {
+    navigate("/companyUser/dashboard");
+  } else if (user?.role === "admin") {
+    navigate("/adminUser/dashboard");
   }
-  else{
+}
+
+
+  if (user) {
+    checkProfile();
+  } else {
     navigate("/login");
-  } 
+  }
+}, [user, dispatch, navigate]);
+
+  
+  
+
+  // useEffect(() => {
+  // if (user) { 
+  //    if (user.role == "student" ) {
+  //     navigate("/studentUser/dashboard");
+  //   }
+  //   else if (user.role == "company") {
+  //     navigate("/companyUser/dashboard");
+  //   }
+  //   else if (user.role == "admin") {
+  //     navigate("/adminUser/dashboard");
+  //   }
+  // }
+  // else{
+  //   navigate("/login");
+  // } 
     
-  }, [user, navigate]);
+  // }, [user, navigate]);
 
   useEffect(() => {
     return () => {

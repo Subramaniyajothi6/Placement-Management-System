@@ -17,6 +17,8 @@ const StudentDashboard = () => {
 const loading = useSelector(selectApplicationLoading);
 const error = useSelector(selectApplicationError);
 
+console.log('Applications:', applications);
+
   useEffect(() => {
     dispatch(fetchMyApplications());
   }, [dispatch]);

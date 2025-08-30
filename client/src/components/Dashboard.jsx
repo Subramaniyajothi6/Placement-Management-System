@@ -60,7 +60,18 @@ const CommonDashboard = () => {
           {placementDrives.map((drive) => (
             <li
               key={drive._id}
-              onClick={() => navigate(`/company/drives/${drive._id}`)}
+              onClick={() =>{
+                if(isStudent){
+                  navigate(`/student/applyJob/${drive._id}`);
+                }
+                else if(isCompany){
+                  navigate(`/company/${drive._id}`);
+                }
+                else{
+                  alert("Please log in to view placement drive details.");
+                  navigate("/login");
+                }
+              }}
               tabIndex={0}
               role="button"
               className="border rounded-lg shadow hover:shadow-lg cursor-pointer bg-white p-5 flex flex-col justify-between transition focus:outline-none focus:ring-2 focus:ring-indigo-500"

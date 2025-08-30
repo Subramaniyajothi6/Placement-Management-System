@@ -1,173 +1,67 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPlacementDrives, selectPlacementDrives } from "../../slices/placementDriveSlice";
-import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
-import { fetchJobs, selectJobs, selectJobsLoading } from "../../slices/jobSlice";
-import { createApplication } from "../../slices/applicationSlice";
+import { useParams } from "react-router";
 import { selectAuthUser } from "../../slices/authSlice";
+import { useState } from "react";
+import { createApplication } from "../../slices/applicationSlice";
 
 const StudentApplicationPage = () => {
   const dispatch = useDispatch();
-  const placementDrives = useSelector(selectPlacementDrives);
-  const companies = useSelector(selectAllCompanies);
-  const jobs = useSelector(selectJobs);
-  const jobsLoading = useSelector(selectJobsLoading);
+  const { placementDriveId, companyId, jobId } = useParams(); // get from URL
   const user = useSelector(selectAuthUser);
   const userId = user?._id;
 
   const [form, setForm] = useState({
-    placementDriveId: "",
-    companyId: "",
-    jobId: "",
     resume: "",
     coverLetter: "",
     name: user?.name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    candidate: userId || "",
   });
-
-  useEffect(() => {
-    dispatch(fetchPlacementDrives());
-    dispatch(fetchCompanies());
-    dispatch(fetchJobs());
-  }, [dispatch]);
-
-  // Companies filtered by chosen placement drive
-  const filteredCompanies = companies.filter(
-    company =>
-      form.placementDriveId &&
-      company.placementDrives?.some(drive => drive._id === form.placementDriveId)
-  );
-
-  // Jobs filtered by chosen company and placement drive
-  const filteredJobs = jobs.filter(
-    job =>
-      form.companyId &&
-      form.placementDriveId &&
-      job.company?._id === form.companyId &&
-      job.placementDrive?._id === form.placementDriveId
-  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Selecting drive resets company and job fields
-    if (name === "placementDriveId") {
-      setForm((prev) => ({
-        ...prev,
-        placementDriveId: value,
-        companyId: "",
-        jobId: "",
-      }));
-    } else if (name === "companyId") {
-      setForm((prev) => ({
-        ...prev,
-        companyId: value,
-        jobId: "",
-      }));
-    } else {
-      setForm((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.jobId || !form.companyId || !form.resume) {
-      alert("Please fill in all required fields.");
+
+    if (!form.resume) {
+      alert("Please fill in your resume URL.");
       return;
     }
+
     const payload = {
-      job: form.jobId,
-      company: form.companyId,
+      job: jobId,             // directly from params
+      company: companyId,     // directly from params
       candidate: userId,
       resume: form.resume,
       coverletter: form.coverLetter,
       name: form.name,
       email: form.email,
       phone: form.phone,
+      placementDriveId: placementDriveId // optionally send if your backend needs it
     };
+
     dispatch(createApplication(payload));
     alert("Application submitted successfully!");
-    setForm({
-      placementDriveId: "",
-      companyId: "",
-      jobId: "",
+    setForm((prev) => ({
+      ...prev,
       resume: "",
       coverLetter: "",
-      name: user?.name || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      candidate: userId || "",
-    });
+    }));
   };
 
-  if (jobsLoading) {
-    return <p className="p-8 text-center">Loading jobs...</p>;
-  }
-
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded shadow mt-8">
-      <h2 className="text-2xl font-bold mb-6">Job Application</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Placement Drive */}
-        <label className="block">
-          Placement Drive
-          <select
-            name="placementDriveId"
-            value={form.placementDriveId}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          >
-            <option value="">-- Select a Placement Drive --</option>
-            {placementDrives.map(drive => (
-              <option value={drive._id} key={drive._id}>{drive.title}</option>
-            ))}
-          </select>
-        </label>
-
-        {/* Companies filtered by placement drive */}
-        <label className="block">
-          Company
-          <select
-            name="companyId"
-            value={form.companyId}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-            disabled={!form.placementDriveId}
-          >
-            <option value="">-- Select a Company --</option>
-            {filteredCompanies.map(company => (
-              <option value={company._id} key={company._id}>{company.name}</option>
-            ))}
-          </select>
-        </label>
-
-        {/* Jobs filtered by placement drive and company */}
-        <label className="block">
-          Job
-          <select
-            name="jobId"
-            value={form.jobId}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-            disabled={!form.companyId}
-          >
-            <option value="">-- Select a Job --</option>
-            {filteredJobs.map(job => (
-              <option value={job._id} key={job._id}>{job.title}</option>
-            ))}
-          </select>
-        </label>
-
-        {/* The rest of your form fields */}
-        <label className="block">
-          Name
+    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow mt-8">
+      <h2 className="text-2xl font-bold mb-6 text-center">Job Application</h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Name */}
+        <div>
+          <label className="block mb-2 font-semibold">Name</label>
           <input
             type="text"
             name="name"
@@ -176,9 +70,11 @@ const StudentApplicationPage = () => {
             className="w-full p-2 border rounded"
             required
           />
-        </label>
-        <label className="block">
-          Email
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block mb-2 font-semibold">Email</label>
           <input
             type="email"
             name="email"
@@ -187,9 +83,11 @@ const StudentApplicationPage = () => {
             className="w-full p-2 border rounded"
             required
           />
-        </label>
-        <label className="block">
-          Phone
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className="block mb-2 font-semibold">Phone</label>
           <input
             type="text"
             name="phone"
@@ -198,20 +96,25 @@ const StudentApplicationPage = () => {
             className="w-full p-2 border rounded"
             required
           />
-        </label>
-        <label className="block">
-          Resume URL
+        </div>
+
+        {/* Resume URL */}
+        <div>
+          <label className="block mb-2 font-semibold">Resume URL</label>
           <input
             type="text"
             name="resume"
             value={form.resume}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            placeholder="Enter your resume URL"
+            className="w-full p-2 border rounded"
             required
           />
-        </label>
-        <label className="block">
-          Cover Letter
+        </div>
+
+        {/* Cover Letter */}
+        <div>
+          <label className="block mb-2 font-semibold">Cover Letter</label>
           <textarea
             name="coverLetter"
             value={form.coverLetter}
@@ -220,11 +123,11 @@ const StudentApplicationPage = () => {
             className="w-full p-2 border rounded"
             placeholder="Write your cover letter here..."
           />
-        </label>
+        </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition"
+          className="w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Submit Application
         </button>

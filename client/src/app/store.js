@@ -4,9 +4,9 @@ import companyReducer from "../slices/companySlice";
 import interviewReducer from "../slices/interviewSlice";
 import placementDriveReducer from "../slices/placementDriveSlice";
 import studentReducer from "../slices/studentSlice";
-import jobReducer from "../slices/jobSlice";
 import applicationReducer from "../slices/applicationSlice";
 import reportReducer from "../slices/reportSlice";
+import jobReducer from "../slices/jobSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +16,7 @@ export const store = configureStore({
     placementDrive: placementDriveReducer,
     student: studentReducer,
     jobs: jobReducer,
-    application: applicationReducer,
+    applications: applicationReducer,
     report: reportReducer
    
   },

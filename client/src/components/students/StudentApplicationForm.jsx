@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createApplication } from '../../slices/applicationSlice';
 import { selectAuthUser } from '../../slices/authSlice';
+import { selectJobs } from '../../slices/jobSlice';
 
 const StudentApplicationForm = ({ jobs = [] }) => {
   const user = useSelector(selectAuthUser);
   const dispatch = useDispatch();
+  const job = useSelector(selectJobs) 
 
+  console.log("jobs in form",job)
+  useEffect(() => {
+    selectJobs();
+  })
   const [form, setForm] = useState({
     jobId: '',
+    candidate:'',
+    company:'',
     resume: null,
     coverLetter: '',
+    status: '',
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',

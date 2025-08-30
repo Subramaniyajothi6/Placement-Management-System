@@ -28,6 +28,8 @@ import StudentApplicationPage from './components/students/StudentApplicationPage
 import PlacementDriveJobPostWrapper from './components/company/PlacementDriveJobPostWrapper'
 import DriveCompanyJobsPage from './DriveCompanyJobsPage'
 import CreateCompanyProfileForm from './components/company/CompanyForm'
+import CompaniesInPlacementDrive from './components/students/CompaniesInPlacementDrive'
+import JobsByDriveAndCompany from './components/students/JobsByDriveAndCompany'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -41,17 +43,17 @@ const App = () => {
 
   const routes = [
     {
+      // element:<StudentApplicationForm/>             // dont use this one 
 
       path: "/",
       // element:<StudentDashboard/>
-      // element:<StudentApplicationForm/>
       // element:<StudentApplicationPage/>
       // element:<InterviewSchedulePage/>
       // element:<ProfilePage/>
       // element:<CompanyDashboard/>
       // element:<PostJob/>
       // element:<ApplicationReviewPage/>
-      // element : <InterviewSchedulingForm/>
+      element : <InterviewSchedulingForm/>
       // element : <InterviewFeedbackForm/>
       // element :<AdminDashboard/>
       // element:<ManagePlacementDrives/>
@@ -63,8 +65,10 @@ const App = () => {
       // element: <LoginPage />
       // element:<RegisterPage/>
       // element:<CompanyDashboard/>
-      element:<DriveCompanyJobsPage/>
+      // element:<DriveCompanyJobsPage/>
       // element:<CreateCompanyProfileForm/>
+      // element:<CompaniesInPlacementDrive/>
+     
 
     }
     ,
@@ -76,6 +80,11 @@ const App = () => {
     { path: '/:user/postJob/:placementDriveId', element: <PostJob /> },
     { path: '/:user/postJob', element: <PlacementDriveJobPostWrapper /> },
     // { path: '/:user/drives', element: <ManagePlacementDrives /> }
+    // { path: '/:user/:driveId', element: <StudentApplicationPage /> }
+    { path: '/:user/applyJob/:driveId', element: <CompaniesInPlacementDrive /> },
+    { path: '/:user/applyJob/:driveId/:companyId', element: <JobsByDriveAndCompany /> },
+    { path: '/:user/applyJob/:driveId/:companyId/:jobId', element: <StudentApplicationPage/>  },
+    { path: '/:user/profile', element: <ProfilePage /> },
 
 
   ]

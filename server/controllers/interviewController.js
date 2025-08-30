@@ -1,4 +1,5 @@
 const Interview = require("../models/Interview");
+const User = require("../models/User");
 
 const interviewController = {
     createInterview: async (req, res) => {
@@ -27,6 +28,17 @@ const interviewController = {
         try {
             const interviews = await Interview.find({ candidate: req.user.id })
                 .populate('job', 'title placementDrive')
+            res.status(200).json({ success: true, count: interviews.length, data: interviews });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    getCompanyInterviews: async (req, res) => {
+        try {
+            const interviews = await Interview.find({ company: req.user.id });
+            const user = await User.findById(req.user.id);
+            console.log(interviews);
             res.status(200).json({ success: true, count: interviews.length, data: interviews });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });

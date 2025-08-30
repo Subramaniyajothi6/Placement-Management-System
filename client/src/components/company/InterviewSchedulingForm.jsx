@@ -35,6 +35,9 @@ const InterviewSchedulingForm = () => {
     const [formError, setFormError] = useState('');
     const [submitSuccess, setSubmitSuccess] = useState(false);
 
+    
+    console.log('Interviews:', interviews);
+
     // Fetch jobs and interviews on mount
     useEffect(() => {
         dispatch(fetchJobs());

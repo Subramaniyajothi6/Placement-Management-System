@@ -241,6 +241,7 @@ const applicationSlice = createSlice({
 export default applicationSlice.reducer;
 export const { resetStatus } = applicationSlice.actions;
 export const selectAllApplications = (state) => state.applications.items;
+
 export const selectApplicationLoading = (state) => state.applications.loading;
 export const selectApplicationError = (state) => state.applications.error;
 export const selectApplicationById = (state, applicationId) =>

@@ -162,8 +162,17 @@ const placementDriveSlice = createSlice({
 })
 
 export default placementDriveSlice.reducer
+
+
 export const { clearPlacementDrive , clearPlacementDriveError } = placementDriveSlice.actions;
+
+
 export const selectPlacementDrives = (state) => state.placementDrive.placementDrives;
 export const selectSelectedPlacementDrive = (state) => state.placementDrive.selectedPlacementDrive;
 export const selectPlacementDrivesLoading = (state) => state.placementDrive.loading;
 export const selectPlacementDrivesError = (state) => state.placementDrive.error;
+export const selectPlacementDriveById = (state, id) =>
+    state.placementDrive.placementDrives.find((pd) => pd._id === id);   
+export const selectPlacementDriveState = (state) => state.placementDrive;
+export const selectPlacementDriveMessage = (state) => state.placementDrive.message;
+export const selectPlacementDriveSuccess = (state) => state.placementDrive.success;
