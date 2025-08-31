@@ -80,17 +80,7 @@ const interviewController = {
             res.status(500).json({ success: false, message: error.message });
         }
     },
-    // updateInterview: async (req, res) => {
-    //     try {
-    //         const interview = await Interview.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    //         if (!interview) {
-    //             return res.status(404).json({ success: false, message: 'Interview not found' })
-    //         }
-    //         res.status(200).json({ success: true, data: interview, message: "Interview updated successfully" });
-    //     } catch (error) {
-    //         res.status(500).json({ success: false, message: error.message });
-    //     }
-    // },
+
 
     updateInterview: async (req, res) => {
         try {
