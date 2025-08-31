@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Interview = require("../models/Interview");
 const User = require("../models/User");
 
@@ -36,14 +37,38 @@ const interviewController = {
 
     getCompanyInterviews: async (req, res) => {
         try {
-            const interviews = await Interview.find({ company: req.user.id });
-            const user = await User.findById(req.user.id);
-            console.log(interviews);
-            res.status(200).json({ success: true, count: interviews.length, data: interviews });
+            const companyId = req.user.companyId;
+            console.log("companyId :", companyId);
+
+            if (!companyId || !mongoose.Types.ObjectId.isValid(companyId)) {
+                return res.status(400).json({ success: false, message: "Invalid or missing company ID" });
+            }
+
+            try {
+                const interviews = await Interview.aggregate([
+                    {
+                        $lookup: {
+                            from: "Jobs",
+                            localField: "job",
+                            foreignField: "_id",
+                            as: "jobDetails",
+                        },
+                    },
+                    { $unwind: "$jobDetails" },
+                    { $match: { "jobDetails.company": mongoose.Types.ObjectId.createFromHexString(companyId) } },
+                ]);
+                console.log("interviews", interviews);
+                return res.status(200).json({ success: true, count: interviews.length, data: interviews });
+            } catch (aggError) {
+                console.error("Aggregation error:", aggError);
+                return res.status(500).json({ success: false, message: aggError.message });
+            }
+
         } catch (error) {
-            res.status(500).json({ success: false, message: error.message });
+            return res.status(500).json({ success: false, message: error.message });
         }
     },
+
     getSingleInterview: async (req, res) => {
         try {
             const interview = await Interview.findById(req.params.id);

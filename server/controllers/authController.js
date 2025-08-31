@@ -47,7 +47,7 @@ const authController = {
                 companyId: user.role === 'company' ? user.companyId : null,
             };
             const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1d' });
-            
+
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
             const { password: _, ...userData } = user.toObject();
 
@@ -58,6 +58,15 @@ const authController = {
         }
     },
 
+
+    getAllUsers: async (req, res) => {
+        try {
+            const users = await User.find().select('-password');
+            res.status(200).json({ success: true, count: users.length, data: users });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
     logout: async (req, res) => {
         try {
             res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
