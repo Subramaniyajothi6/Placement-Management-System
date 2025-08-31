@@ -99,7 +99,16 @@ const interviewController = {
                 score: req.body.score,
                 result: req.body.result,
                 status: req.body.status,
-                // Add other permitted fields as needed
+                job: req.body.job,
+                candidate: req.body.candidate,
+                startTime: req.body.startTime,
+                endTime: req.body.endTime,
+                interviewDate: req.body.interviewDate,
+                durationMinutes: req.body.durationMinutes,
+                interviewType: req.body.interviewType,
+                location: req.body.location,
+                meetingId: req.body.meetingId,
+                round: req.body.round,
             };
 
             // Clean undefined fields
@@ -115,6 +124,7 @@ const interviewController = {
                 return res.status(404).json({ success: false, message: 'Interview not found' });
             }
 
+            console.log('Interview updated successfully');
             // Optional: sync application status here if needed
 
             res.status(200).json({ success: true, data: interview, message: "Interview updated successfully" });

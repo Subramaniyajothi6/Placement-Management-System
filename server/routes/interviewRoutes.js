@@ -19,7 +19,7 @@ interviewRouter.post('/',createInterview);
 interviewRouter.get('/',getAllInterviews);
 // interviewRouter.get('/my',getMyInterviews)
 interviewRouter.get('/:id',getSingleInterview);
-interviewRouter.put('/:id',updateInterview);
+// interviewRouter.put('/:id',updateInterview);
 interviewRouter.delete('/:id',deleteInterview);
 
 
