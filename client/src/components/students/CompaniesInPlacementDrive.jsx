@@ -1,109 +1,13 @@
-// import { useDispatch, useSelector } from "react-redux";
-// import { useParams } from "react-router";
-// import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
-// import { useEffect } from "react";
-// import { fetchJobs, selectJobs } from "../../slices/jobSlice";
-
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useNavigate } from "react-router";
 import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
 import { fetchJobs, selectJobs } from "../../slices/jobSlice";
 import { useEffect } from "react";
-
-// const CompaniesInPlacementDrive = () => {
-//   const dispatch = useDispatch();
-//   const {driveId} = useParams();
-//   const companies = useSelector(selectAllCompanies);
-//  let job = useSelector(selectJobs)
-
-//   // console.log(companies);
-//   // console.log(driveId);
-//   // console.log(job);
-
-//   // companies.filter((company)={ })
-
-//   useEffect(() => {
-//     dispatch(fetchCompanies());
-//   }, [dispatch]);
-
-//   useEffect(()=>{
-//     dispatch(fetchJobs());
-//   },[dispatch])
-
-//    const filteredJobs = job.filter((job)=>(job.placementDrive._id === driveId))
-
-// // console.log(filteredJobs)
-
-// // const companiesInJob = filteredJobs.map((job)=>(job.company))
-// // console.log(companiesInJob)
-
-// filteredJobs.forEach((job)=>{
-//  const companiesInJob =  companies.filter((company)=>(company._id === job.company))
-// console.log(companiesInJob)
-
-// })
-
-
-// // const companiesInDrive = companies.filter((company)=>(company._id === companiesInJob))
-// // console.log(companiesInDrive)
-
-//   const filteredCompanies = companies.filter(
-//     (company) =>
-//       company.placementDrives &&
-//       company.placementDrives.some(
-//         (drive) =>
-//           drive._id === placementDriveId || drive === placementDriveId
-//       )
-//   );
-
-//   return (
-//     <div className="max-w-lg mx-auto p-6 bg-white rounded shadow mt-8">
-//       <h2 className="text-2xl font-bold mb-6 text-center">
-//         Companies in Placement Drive
-//       </h2>
-//       {filteredCompanies.length === 0 ? (
-//         <p className="text-center text-gray-500">No companies found for this placement drive.</p>
-//       ) : (
-//         <ul className="space-y-3">
-//           {filteredCompanies.map((company) => (
-//             <li
-//               key={company._id}
-//               className="p-4 border rounded bg-gray-50 flex flex-col items-start"
-//             >
-//               <span className="text-lg font-bold">{company.name}</span>
-//               {company.industry && (
-//                 <span className="text-sm text-gray-700">{company.industry}</span>
-//               )}
-//               {company.location?.city && (
-//                 <span className="text-sm text-gray-500">
-//                   {company.location.city}, {company.location.country}
-//                 </span>
-//               )}
-//               {company.website && (
-//                 <a
-//                   href={company.website}
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   className="text-blue-600 text-sm hover:underline"
-//                 >
-//                   Visit website
-//                 </a>
-//               )}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CompaniesInPlacementDrive;
-
-
-
+import { FiMapPin, FiGlobe } from "react-icons/fi";
 
 const CompaniesInPlacementDrive = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { driveId } = useParams();
   const companies = useSelector(selectAllCompanies);
   const jobs = useSelector(selectJobs);
@@ -113,14 +17,12 @@ const CompaniesInPlacementDrive = () => {
     dispatch(fetchJobs());
   }, [dispatch]);
 
-  // 1. Get all jobs in this placement drive
   const jobsInDrive = jobs.filter(
     (job) =>
       job.placementDrive?._id === driveId ||
-      job.placementDrive === driveId // In case some jobs are populated, others are string IDs
+      job.placementDrive === driveId
   );
 
-  // 2. Get unique company IDs for jobs in the drive
   const uniqueCompanyIds = [
     ...new Set(
       jobsInDrive.map((job) =>
@@ -129,50 +31,68 @@ const CompaniesInPlacementDrive = () => {
     ),
   ];
 
-  // 3. Filter company objects present in this drive
   const filteredCompanies = companies.filter((company) =>
     uniqueCompanyIds.includes(company._id)
   );
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Companies in this Placement Drive
-      </h2>
+    <div className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-lg shadow-lg">
+      {/* Back button */}
+      <button
+        onClick={() => navigate("/student/dashboard")}
+        className="inline-block mb-6 px-5 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+      >
+        &larr; Back to Dashboard
+      </button>
+
+      <h1 className="text-3xl font-extrabold mb-8 text-center text-gray-800">
+        Companies in Placement Drive
+      </h1>
+
       {filteredCompanies.length === 0 ? (
-        <p className="text-center text-gray-500">
+        <p className="text-center text-gray-500 text-lg">
           No companies found for this placement drive.
         </p>
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-6">
           {filteredCompanies.map((company) => (
-            <Link to={`/student/applyJob/${driveId}/${company._id}`} key={company._id}>
-              <li
-               
-                className="p-4 border rounded bg-gray-50 flex flex-col items-start"
-              >
-                <span className="text-lg font-bold">{company.name}</span>
+            <Link
+              to={`/student/applyJob/${driveId}/${company._id}`}
+              key={company._id}
+              className="block focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded-lg"
+            >
+              <li className="p-6 border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:bg-indigo-50 transition cursor-pointer">
+                <h2 className="text-xl font-semibold text-indigo-700 mb-1">
+                  {company.name}
+                </h2>
                 {company.industry && (
-                  <span className="text-sm text-gray-700">{company.industry}</span>
+                  <p className="text-gray-700 mb-2">{company.industry}</p>
                 )}
-                {company.location?.city && (
-                  <span className="text-sm text-gray-500">
-                    {company.location.city}, {company.location.country}
-                  </span>
-                )}
-                {company.website && (
-                  <a
-                    href={company.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 text-sm hover:underline"
-                  >
-                    Visit website
-                  </a>
-                )}
+
+                <div className="flex items-center space-x-4 text-gray-600 text-sm">
+                  {company.location?.city && (
+                    <span className="flex items-center space-x-1">
+                      <FiMapPin />
+                      <span>
+                        {company.location.city}, {company.location.country}
+                      </span>
+                    </span>
+                  )}
+                  {company.website && (
+                    <a
+                      href={company.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-1 text-indigo-600 hover:underline"
+                      onClick={e => e.stopPropagation()} // prevent Link navigation
+                    >
+                      <FiGlobe />
+                      <span>Website</span>
+                    </a>
+                  )}
+                </div>
               </li>
             </Link>
-
           ))}
         </ul>
       )}

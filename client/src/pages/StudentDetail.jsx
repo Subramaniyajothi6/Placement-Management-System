@@ -12,6 +12,7 @@ import {
     selectAllApplications,
 } from "../slices/applicationSlice";
 import { useParams, useNavigate } from "react-router";
+import { FaArrowLeft } from "react-icons/fa";
 
 const StudentDetail = () => {
     const { studentId } = useParams();
@@ -21,87 +22,114 @@ const StudentDetail = () => {
     const student = useSelector(selectSelectedStudent);
     const loading = useSelector(selectStudentLoading);
     const error = useSelector(selectStudentError);
-
     const applications = useSelector(selectAllApplications);
 
     useEffect(() => {
         if (studentId) {
             dispatch(fetchStudentById(studentId));
-            dispatch(fetchApplications()); // Fetch all applications or optimize to student only
+            dispatch(fetchApplications());
         }
-
         return () => {
             dispatch(clearSelectedStudent());
         };
     }, [dispatch, studentId]);
 
-    if (loading) return <p>Loading student information...</p>;
-    if (error) return <p className="text-red-600">Error: {error}</p>;
-    if (!student) return <p className="text-red-600">Student not found.</p>;
+    if (loading)
+        return <div className="text-center py-14 text-indigo-700 font-semibold">Loading student information...</div>;
+    if (error)
+        return <div className="text-center py-14 text-red-600 font-semibold">Error: {error}</div>;
+    if (!student)
+        return <div className="text-center py-14 text-red-600 font-semibold">Student not found.</div>;
 
     return (
-        <div className="p-6 max-w-4xl mx-auto bg-white shadow rounded">
+        <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-10">
+            {/* Back Button */}
             <button
                 onClick={() => navigate(-1)}
-                className="mb-4 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 transition"
+                className="flex items-center mb-8 text-indigo-600 font-semibold hover:text-indigo-800 focus:outline-none transition"
             >
-                Back to List
+                <FaArrowLeft className="mr-2" /> Back
             </button>
 
-            <h2 className="text-2xl font-bold mb-4">User ID: {student.userId?._id || "N/A"}</h2>
-            <h2 className="text-2xl font-bold mb-4">Name: {student.userId?.name || "N/A"}</h2>
-            <p className="mb-2">
-                <strong>Email:</strong> {student.userId?.email || "N/A"}
-            </p>
-            <p className="mb-2">
-                <strong>Bio:</strong> {student.bio || "Not provided"}
-            </p>
+            {/* Student Header */}
+            <section className="mb-8">
+                <h2 className="text-3xl font-bold text-indigo-700 border-b pb-3 mb-3">
+                    {student.userId?.name || "N/A"}
+                </h2>
+                <div className="space-y-2 ml-1">
+                    <div>
+                        <span className="text-sm font-medium text-indigo-900">User ID:</span> {student.userId?._id || "N/A"}
+                    </div>
+                    <div>
+                        <span className="text-sm font-medium text-indigo-900">Email:</span>{" "}
+                        <span className="break-all">{student.userId?.email || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span className="text-sm font-medium text-indigo-900">Bio:</span>{" "}
+                        {student.bio || <span className="text-gray-500 italic">Not provided</span>}
+                    </div>
+                </div>
+            </section>
 
-            <h3 className="text-xl font-semibold mt-6 mb-2">Education</h3>
-            {student.education?.length ? (
-                <ul className="list-disc pl-5">
-                    {student.education.map((edu, index) => (
-                        <li key={index}>
-                            {edu.degree} in {edu.fieldOfStudy} from {edu.institution} (
-                            {edu.startYear} - {edu.endYear})
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No education details provided.</p>
-            )}
-
-            <h3 className="text-xl font-semibold mt-6 mb-2">Applications</h3>
-            {applications?.length ? (
-                <table className="w-full border border-gray-300">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="p-2 border border-gray-300">Job Title</th>
-                            <th className="p-2 border border-gray-300">Company</th>
-                            <th className="p-2 border border-gray-300">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {applications.map((app) => (
-                            <tr key={app._id}>
-                                <td className="p-2 border border-gray-300">
-                                    {typeof app.job === "object" && app.job !== null
-                                        ? app.job.title || "N/A"
-                                        : app.job || "N/A"}
-                                </td>
-                                <td className="p-2 border border-gray-300">
-                                    {typeof app.company === "object" && app.company !== null
-                                        ? app.company.name || "N/A"
-                                        : app.company || "N/A"}
-                                </td>
-                                <td className="p-2 border border-gray-300">{app.status}</td>
-                            </tr>
+            {/* Education */}
+            <section className="mb-10">
+                <h3 className="text-xl font-semibold text-indigo-800 mb-2">Education</h3>
+                {student.education?.length ? (
+                    <ul className="list-disc pl-5 space-y-1">
+                        {student.education.map((edu, index) => (
+                            <li key={index} className="text-gray-800">
+                                <span className="font-medium text-indigo-700">{edu.degree}</span>
+                                {" in "}
+                                <span className="font-medium">{edu.fieldOfStudy}</span>
+                                {" at "}
+                                <span className="font-medium">{edu.institution}</span>
+                                {" ("}
+                                {edu.startYear} - {edu.endYear}
+                                {")"}
+                            </li>
                         ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No applications found.</p>
-            )}
+                    </ul>
+                ) : (
+                    <p className="text-gray-500 italic">No education details provided.</p>
+                )}
+            </section>
+
+            {/* Applications */}
+            <section>
+                <h3 className="text-xl font-semibold text-indigo-800 mb-3">Applications</h3>
+                {applications?.length ? (
+                    <div className="overflow-x-auto rounded-lg border border-indigo-100 shadow bg-white">
+                        <table className="min-w-full">
+                            <thead className="bg-indigo-50">
+                                <tr>
+                                    <th className="p-4 text-left text-indigo-700 font-semibold">Job Title</th>
+                                    <th className="p-4 text-left text-indigo-700 font-semibold">Company</th>
+                                    <th className="p-4 text-left text-indigo-700 font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {applications.map((app, idx) => (
+                                    <tr key={app._id} className={idx % 2 ? "bg-indigo-50" : "bg-white"}>
+                                        <td className="p-4">
+                                            {(typeof app.job === "object" && app.job !== null
+                                                ? app.job.title
+                                                : app.job) || "N/A"}
+                                        </td>
+                                        <td className="p-4">
+                                            {(typeof app.company === "object" && app.company !== null
+                                                ? app.company.name
+                                                : app.company) || "N/A"}
+                                        </td>
+                                        <td className="p-4">{app.status}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <p className="text-gray-500 italic">No applications found.</p>
+                )}
+            </section>
         </div>
     );
 };

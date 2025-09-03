@@ -82,16 +82,16 @@ const applicationController = {
                 .populate('candidate', 'name email')   // User model fields
                 .populate('job', 'title location');    // Job model fields
 
-                // console.log(application);
+            // console.log(application);
 
             if (!application) {
                 return res.status(404).json({ success: false, message: 'Application not found' });
             }
-           
+
             const candidateName = application.candidate?.name || "Candidate";
             const candidateEmail = application.candidate?.email;
             const jobTitle = application.job?.title || "the position";
-            
+
 
 
             if (candidateEmail) {
@@ -102,8 +102,8 @@ const applicationController = {
                 // Send email using your mailer utility (replace this with your mail service)
                 await applicationEmail.sendEmail(candidateEmail, subject, text);
             }
-          
-            
+
+
             res.status(200).json({
                 success: true,
                 message: "Application updated successfully and notification sent.",
@@ -127,6 +127,9 @@ const applicationController = {
             res.status(500).json({ message: error.message });
         }
     },
+    // Get application counts grouped by status for company reports
+
+
 }
 
 module.exports = applicationController

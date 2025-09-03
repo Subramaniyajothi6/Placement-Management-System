@@ -84,31 +84,45 @@ const companyController = {
         }
     },
 
-    companyDashboard: async (req, res) => {
-        try {
-            const user = await User.findById(req.user.id);
-            const companyId = user.companyId;
-            if (!companyId) {
-                return res.status(400).json({ success: false, message: 'Company ID is required' });
-            }
-            const jobsPosted = await Job.countDocuments({ company: companyId });
+companyDashboard: async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const companyId = user.companyId;
 
-            const applicationsReceived = await Application.countDocuments({ company: companyId });
-
-
-            const upcomingInterviews = await Interview.countDocuments({
-                company: companyId,
-                interviewDate: { $gte: new Date() }
-            });
-
-            res.status(200).json({
-                success: true,
-                data: { jobsPosted, applicationsReceived, upcomingInterviews }
-            });
-        } catch (error) {
-            res.status(500).json({ success: false, message: error.message });
-        }
+    if (!companyId) {
+      return res.status(400).json({ success: false, message: 'Company ID is required' });
     }
+
+    const jobsPosted = await Job.countDocuments({ company: companyId });
+    const applicationsReceived = await Application.countDocuments({ company: companyId });
+
+    // Find upcoming interviews, populate job to get company, then filter
+    const upcomingInterviewsAll = await Interview.find({
+      interviewDate: { $gte: new Date() },
+    }).populate({
+      path: 'job',
+      select: 'company',
+    });
+
+    const filteredInterviews = upcomingInterviewsAll.filter(
+      (interview) => interview.job?.company?.toString() === companyId.toString()
+    );
+
+    const upcomingInterviewsCount = filteredInterviews.length;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        jobsPosted,
+        applicationsReceived,
+        upcomingInterviews: upcomingInterviewsCount,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 
 }
 

@@ -8,6 +8,14 @@ import {
 } from "../../slices/applicationSlice";
 import { fetchJobById, selectSelectedJob } from "../../slices/jobSlice";
 import { fetchUserById } from "../../slices/authSlice";
+import {
+  FaUser,
+  FaEnvelope,
+  FaBriefcase,
+  FaMapMarkerAlt,
+  FaCalendarCheck,
+  FaFileAlt,
+} from "react-icons/fa";
 
 const statusOptions = [
   "Submitted",
@@ -22,7 +30,6 @@ const ApplicationDetailPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Use selector with correct function signature
   const application = useSelector((state) => selectApplicationById(state, id));
   const job = useSelector(selectSelectedJob);
   const [candidate, setCandidate] = useState(null);
@@ -32,8 +39,6 @@ const ApplicationDetailPage = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [error, setError] = useState(null);
 
-  
-  // Fetch application and related data on mount or id change
   useEffect(() => {
     dispatch(getApplicationById(id))
       .unwrap()
@@ -43,19 +48,18 @@ const ApplicationDetailPage = () => {
         if (app.candidate) {
           dispatch(fetchUserById(app.candidate))
             .unwrap()
-            .then((userData) => setCandidate(userData))
-            .catch(() => {}); // Optional: handle user fetch error
+            .then(setCandidate)
+            .catch(() => {});
         }
       })
       .catch(() => setError("Failed to load application."));
   }, [dispatch, id]);
 
-  // console.log("Candidate:", candidate);
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
+    setSuccessMessage(null);
+    setError(null);
   };
-
-  // console.log("Status:", status);
 
   const handleSave = async () => {
     if (!application) return;
@@ -63,100 +67,146 @@ const ApplicationDetailPage = () => {
     setError(null);
     setSuccessMessage(null);
     try {
-
       await dispatch(
-        updateApplication({ id: application?._id, data: { status } })
+        updateApplication({ id: application._id, data: { status } })
       ).unwrap();
-
       setSuccessMessage("Status updated successfully.");
-      console.log("Status updated successfully.");
-    } catch (err) {
-      setError("Failed to update status.", err.message);
+    } catch {
+      setError("Failed to update status.");
     }
     setSaving(false);
-
-    console.log("Status updated successfully" );
   };
 
-  
+  if (!application)
+    return (
+      <div className="text-center py-12 text-gray-600 font-medium">
+        Loading application details...
+      </div>
+    );
 
-  if (!application) return <div>Loading application details...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
-
-
-
+  if (error)
+    return (
+      <div className="text-center py-12 text-red-600 font-semibold">{error}</div>
+    );
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6">Application Details</h1>
+    <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-8 mt-10 relative">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute left-8 top-8 text-indigo-600 hover:text-indigo-800 transition font-semibold flex items-center focus:outline-none"
+        aria-label="Go back"
+      >
+        <span className="mr-1 text-xl">&larr;</span> Back
+      </button>
 
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Applicant Information</h2>
-        <p>Name: {candidate?.name || "N/A"}</p>
-        <p>Email: {candidate?.email || "N/A"}</p>
+      <h1 className="text-3xl font-bold mb-8 text-indigo-700 text-center border-b pb-3">
+        Application Details
+      </h1>
+
+      <div className="grid md:grid-cols-2 gap-x-10 gap-y-10 mb-10">
+        {/* Applicant Info */}
+        <div className="bg-indigo-50 rounded-lg shadow-sm p-6 space-y-3">
+          <div className="flex items-center mb-2 space-x-2">
+            <FaUser className="text-indigo-600" />
+            <h2 className="text-xl font-semibold text-indigo-700">Applicant</h2>
+          </div>
+          <div>
+            <span className="font-semibold text-indigo-900">Name:</span>{" "}
+            {candidate?.name || "N/A"}
+          </div>
+          <div>
+            <span className="font-semibold text-indigo-900">Email:</span>{" "}
+            {candidate?.email || "N/A"}
+          </div>
+        </div>
+
+        {/* Job Info */}
+        <div className="bg-indigo-50 rounded-lg shadow-sm p-6 space-y-3">
+          <div className="flex items-center mb-2 space-x-2">
+            <FaBriefcase className="text-indigo-600" />
+            <h2 className="text-xl font-semibold text-indigo-700">Job</h2>
+          </div>
+          <div>
+            <span className="font-semibold text-indigo-900">Title:</span>{" "}
+            {job?.title || "N/A"}
+          </div>
+          <div className="flex items-center space-x-2">
+            <FaMapMarkerAlt className="text-indigo-500" />
+            <span className="text-gray-700">{job?.location || "N/A"}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FaCalendarCheck className="text-indigo-500" />
+            <span>
+              <span className="font-semibold text-indigo-900">Applied On:</span>{" "}
+              {new Date(application.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Job Information</h2>
-        <p>Title: {job?.title || "N/A"}</p>
-        <p>Location: {job?.location || "N/A"}</p>
-        <p>Applied On: {new Date(application.createdAt).toLocaleDateString()}</p>
+      {/* Status Update */}
+      <div className="mt-6 px-2">
+        <h2 className="text-xl font-bold mb-4 text-indigo-800 border-b pb-2">
+          Application Status
+        </h2>
+        <div className="flex items-center gap-4 mb-2">
+          <select
+            value={status}
+            onChange={handleStatusChange}
+            disabled={saving}
+            className="w-60 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 font-semibold text-indigo-700"
+            aria-label="Update application status"
+          >
+            {statusOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className={`px-5 py-3 rounded-md text-white font-semibold shadow-md transition ${
+              saving
+                ? "bg-indigo-300 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
+          >
+            {saving ? "Saving..." : "Save Status & Notify"}
+          </button>
+        </div>
+        {successMessage && (
+          <p className="text-green-600 font-medium animate-pulse">
+            {successMessage}
+          </p>
+        )}
+        {error && (
+          <p className="text-red-600 font-medium animate-pulse">{error}</p>
+        )}
       </div>
 
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Application Status</h2>
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          className="p-2 border rounded w-1/3"
-          disabled={saving}
-        >
-          {statusOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Resume</h2>
+      {/* Resume Section */}
+      <div className="mt-10 px-2">
+        <h2 className="text-xl font-bold border-b pb-1 flex items-center space-x-2 text-indigo-800 mb-4">
+          <FaFileAlt className="text-indigo-600" />
+          <span>Resume</span>
+        </h2>
         {application.resume ? (
           <a
             href={application.resume}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-indigo-700 hover:underline font-semibold inline-block mt-2"
           >
             View Resume
           </a>
         ) : (
-          "No resume provided."
+          <p className="text-gray-600 mt-2">No resume provided.</p>
         )}
       </div>
 
-      {successMessage && (
-        <div className="text-green-600 mb-4">{successMessage}</div>
-      )}
-      {error && <div className="text-red-600 mb-4">{error}</div>}
 
-      <div className="flex space-x-4">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className={`px-4 py-2 rounded bg-indigo-600 text-white font-semibold ${
-            saving ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-700"
-          }`}
-        >
-          {saving ? "Saving..." : "Save Status & Notify"}
-        </button>
-        <button
-          onClick={() => navigate(-1)}
-          className="px-4 py-2 rounded border border-gray-400 text-gray-700 hover:bg-gray-100"
-        >
-          Back
-        </button>
-      </div>
     </div>
   );
 };

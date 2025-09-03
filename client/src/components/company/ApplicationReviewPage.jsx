@@ -26,7 +26,7 @@ const ApplicationReviewPage = () => {
   const jobsLoading = useSelector(selectJobsLoading);
   const jobsError = useSelector(selectJobsError);
   const user = useSelector((state) => state.auth.user);
-  const company = useSelector(selectAllCompanies);
+  const companies = useSelector(selectAllCompanies);
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,14 +35,11 @@ const ApplicationReviewPage = () => {
 
   useEffect(() => {
     dispatch(fetchJobs());
-  }, [dispatch]);
-
-  useEffect(() => {
     dispatch(fetchCompanies());
   }, [dispatch]);
 
   // Filter companies for the current user
-  const userCompanies = company.filter((c) => c.user === user._id);
+  const userCompanies = companies.filter((c) => c.user === user._id);
   const userCompanyIds = userCompanies.map((c) => c._id);
 
   // Filter jobs belonging to companies of current user
@@ -60,7 +57,7 @@ const ApplicationReviewPage = () => {
       const response = await applicationApi.getCompanyApplications({ params });
       setApplications(response.data.data);
     } catch (err) {
-      setError("Failed to fetch applications", err.message);
+      setError("Failed to fetch applications: " + (err.message || ""));
     }
     setLoading(false);
   };
@@ -75,99 +72,158 @@ const ApplicationReviewPage = () => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6">Application Review</h1>
+  // Back button handler
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-      {/* Handle job loading/error states */}
-      {jobsLoading && <div>Loading jobs...</div>}
-      {jobsError && <div className="text-red-600">Error loading jobs: {jobsError}</div>}
+  return (
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow">
+      {/* Back Button */}
+      <button
+        onClick={handleBack}
+        className="mb-6 text-indigo-600 hover:underline font-semibold focus:outline-none"
+        aria-label="Go back"
+      >
+        &larr; Back
+      </button>
+
+      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">
+        Application Review
+      </h1>
 
       {/* Filter controls */}
-      {!jobsLoading && !jobsError && (
-        <div className="flex space-x-4 mb-6">
-          <select
-            name="jobId"
-            value={filters.jobId}
-            onChange={handleFilterChange}
-            className="p-2 border rounded w-1/3"
-          >
-            <option value="">All Jobs</option>
-            {filteredJobs.map((job) => (
-              <option key={job._id} value={job._id}>
-                {job.title}
-              </option>
-            ))}
-          </select>
+      <div className="flex flex-col sm:flex-row sm:space-x-6 mb-6 space-y-4 sm:space-y-0">
+        <select
+          name="jobId"
+          value={filters.jobId}
+          onChange={handleFilterChange}
+          className="p-3 border rounded shadow-sm w-full sm:w-1/3 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+          aria-label="Filter by Job"
+        >
+          <option value="">All Jobs</option>
+          {filteredJobs.map((job) => (
+            <option key={job._id} value={job._id}>
+              {job.title}
+            </option>
+          ))}
+        </select>
 
-          <select
-            name="status"
-            value={filters.status}
-            onChange={handleFilterChange}
-            className="p-2 border rounded w-1/3"
-          >
-            {statusOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+        <select
+          name="status"
+          value={filters.status}
+          onChange={handleFilterChange}
+          className="p-3 border rounded shadow-sm w-full sm:w-1/3 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+          aria-label="Filter by Application Status"
+        >
+          {statusOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Loading/Error */}
-      {loading && <div>Loading applications...</div>}
-      {error && <div className="text-red-600">{error}</div>}
+      {jobsLoading && (
+        <p className="text-center text-gray-600 py-10">Loading jobs...</p>
+      )}
+      {jobsError && (
+        <p className="text-center text-red-600 py-10">{jobsError}</p>
+      )}
+      {loading && (
+        <p className="text-center text-gray-700 py-10">
+          Loading applications...
+        </p>
+      )}
+      {error && (
+        <p className="text-center text-red-600 py-10">{error}</p>
+      )}
 
       {/* Applications Table */}
       {!loading && !error && (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2 text-left">Applicant Name</th>
-              <th className="border border-gray-300 p-2 text-left">Email</th>
-              <th className="border border-gray-300 p-2 text-left">Job Title</th>
-              <th className="border border-gray-300 p-2 text-left">Status</th>
-              <th className="border border-gray-300 p-2 text-left">Applied On</th>
-              <th className="border border-gray-300 p-2 text-left">Resume</th>
-            </tr>
-          </thead>
-          <tbody>
-            {applications.length === 0 ? (
+        <div className="overflow-x-auto rounded-md border border-gray-200 shadow-sm">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-indigo-50">
               <tr>
-                <td colSpan="6" className="text-center p-4">
-                  No applications found.
-                </td>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
+                  Applicant Name
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
+                  Job Title
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
+                  Applied On
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
+                  Resume
+                </th>
               </tr>
-            ) : (
-              applications.map((app) => (
-                <tr key={app._id} className="hover:bg-gray-50" onClick={()=>{navigate(`/company/applications/${app._id}`)}}>
-                  <td className="border border-gray-300 p-2">{app.candidate?.name || "N/A"}</td>
-                  <td className="border border-gray-300 p-2">{app.candidate?.email || "N/A"}</td>
-                  <td className="border border-gray-300 p-2">{app.job?.title || "N/A"}</td>
-                  <td className="border border-gray-300 p-2">{app.status}</td>
-                  <td className="border border-gray-300 p-2">
-                    {new Date(app.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    {app.resume ? (
-                      <a
-                        href={app.resume}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        View Resume
-                      </a>
-                    ) : (
-                      "No resume"
-                    )}
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {applications.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center p-6 text-gray-600">
+                    No applications found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                applications.map((app) => (
+                  <tr
+                    key={app._id}
+                    className="hover:bg-indigo-50 cursor-pointer transition"
+                    onClick={() => {
+                      navigate(`/company/applications/${app._id}`);
+                    }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        navigate(`/company/applications/${app._id}`);
+                      }
+                    }}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-800">
+                      {app.candidate?.name || "N/A"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      {app.candidate?.email || "N/A"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      {app.job?.title || "N/A"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700 font-semibold">
+                      {app.status}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                      {new Date(app.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {app.resume ? (
+                        <a
+                          href={app.resume}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-indigo-600 hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          View Resume
+                        </a>
+                      ) : (
+                        "No resume"
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

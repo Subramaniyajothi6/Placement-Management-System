@@ -21,7 +21,6 @@ import ReportsPage from './pages/ReportsPage'
 import ReportDetailsPage from './pages/ReportDetailsPage'
 import LoginPage from './components/Authentication/LoginPage'
 import Dashboard from './components/Dashboard'
-import RegisterPage from './components/Authentication/RegisterPage'
 import StudentApplicationPage from './components/students/StudentApplicationPage'
 import PlacementDriveJobPostWrapper from './components/company/PlacementDriveJobPostWrapper'
 
@@ -51,10 +50,6 @@ const App = () => {
       // element:<StudentApplicationForm/>             // dont use this one 
 
       path: "/",
-      // element:<StudentDashboard/>
-      // element:<StudentApplicationPage/>
-      // element:<InterviewSchedulePage/>
-      // element:<ProfilePage/>
       // element:<PostJob/>
       // element :<AdminDashboard/>
       // element:<ManagePlacementDrives/>
@@ -63,12 +58,26 @@ const App = () => {
       // element:<StudentManagementPage/>
       // element:<ReportsPage/>
       // element: <LoginPage />
-      // element:<RegisterPage/>
       // element:<DriveCompanyJobsPage/>
-      
+      // element:<RegisterPage/>
+      /////////////////////////////////////////// student //////////////////////////////////////////////////
+      // element:<CompaniesInPlacementDrive/>
+      // element:<JobsByDriveAndCompany/>
+      // element:<ProfilePage/> // for creating profile
+      // element:<StudentApplicationPage/>
+      // element:<InterviewSchedulePage/>
+      // element:<StudentDashboard/>
+      // element:<ViewProfilePage/>
+
+
+
+
+
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////
       //   Company
       // element:<ApplicationReviewPage/>
-      element:<CompanyDashboard/>
+      // element:<CompanyDashboard/>
       // element:<CompanyForm/>
       // element:<CompanyProfilePage/>
       
@@ -79,7 +88,6 @@ const App = () => {
       // element : <PostJob/>
 
       // element:<CompanyList/>
-      // element:<CompaniesInPlacementDrive/>
       // element:<CreateCompanyProfileForm/>
 
       // element:<CommonDashboard/>
@@ -112,6 +120,10 @@ const App = () => {
     { path: '/:user/applications', element: < ApplicationReviewPage/> },
     { path: '/:user/applications/:id', element: < ApplicationDetailPage/> },
     { path: '/:user/profile/:id', element: < CompanyProfilePage/> },
+    { path: '/companydashboard', element: < CompanyDashboard/> },
+    { path: '/studentdashboard', element: < StudentDashboard/> },
+    
+
 
 
 
@@ -121,7 +133,6 @@ const App = () => {
     { path: '/dashboard/reports/:id', element: <ReportDetailsPage/> },
     { path: '/:user/student/profiles', element: <StudentManagementPage/> },
     { path: '/:user/student/profiles/:studentId', element: <StudentDetail/> },
-    { path: '/:user/placementDrive', element: <ManagePlacementDrives/> },
     { path: '/:user/placementDrive', element: <ManagePlacementDrives/> },
 
 

@@ -5,89 +5,6 @@ import { fetchPlacementDrives, selectPlacementDrives } from "../slices/placement
 import { useEffect } from "react";
 import Navbar from "./Navbar";
 
-// const CommonDashboard = () => {
-//   const dispatch = useDispatch();
-//   const user = useSelector(selectAuthUser);
-//   const placementDrives = useSelector(selectPlacementDrives);
-//   const navigate = useNavigate();
-
-//   const isStudent = user?.role === "student";
-//   const isCompany = user?.role === "company";
-
-//   useEffect(() => {
-//     dispatch(fetchPlacementDrives());
-//   }, [dispatch]);
-
-//   const handleDriveClick = (driveId) => {
-//     if (isStudent) {
-//       navigate(`/student/applyJob/${driveId}`);
-//     } else if (isCompany) {
-//       navigate(`/company/postJob/${driveId}`);
-//     } else {
-//       alert("Please log in to view placement drive details.");
-//       navigate("/login");
-//     }
-//   };
-
-//   // const handleViewProfileClick = () => {
-//   //   if (isStudent) {
-//   //     navigate(`/student/profile/${user._id}`);
-//   //   } else if (isCompany) {
-//   //     navigate(`/company/profile/${user._id}`);
-//   //   }
-//   // };
-
-//   return (
-//     <div className="p-6 max-w-7xl mx-auto space-y-16">
-//       <Navbar/>
-//       <header className="flex flex-col sm:flex-row justify-center items-center mb-8">
-//         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
-//           Placement Dashboard
-//         </h1>
-//         {/* {(isStudent || isCompany) && (
-//           <button
-//             onClick={handleViewProfileClick}
-//             className="mt-6 sm:ml-10 sm:mt-0 px-6 py-3 rounded-lg flex-1 bg-indigo-600 text-white text-lg font-semibold hover:bg-indigo-700 transition"
-//           >
-//             View Profile
-//           </button>
-//         )} */}
-//       </header>
-
-//       {/* Role-based message */}
-//       <p className="text-lg font-medium text-gray-700 mb-8 text-center mx-auto">
-//         {isCompany && "Select the placement drive to post the job for your company."}
-//         {isStudent && "Select the placement drive that you want to apply for."}
-//         {!isCompany && !isStudent && "Please log in to interact with placement drives."}
-//       </p>
-
-//       <section>
-//         <h2 className="text-3xl font-semibold mb-6 border-b border-gray-300 pb-3 text-gray-800 text-center sm:text-left">
-//           Placement Drives
-//         </h2>
-//         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-//           {placementDrives.map((drive) => (
-//             <li
-//               key={drive._id}
-//               onClick={() => handleDriveClick(drive._id)}
-//               tabIndex={0}
-//               role="button"
-//               className="border rounded-lg shadow-md hover:shadow-lg cursor-pointer bg-white p-6 flex flex-col justify-between transition focus:outline-none focus:ring-4 focus:ring-indigo-400"
-//             >
-//               <div>
-//                 <h3 className="font-bold text-xl mb-2 text-indigo-700">{drive.title}</h3>
-//                 <p className="text-sm text-gray-500 mb-4">{new Date(drive.date).toLocaleDateString()}</p>
-//                 <p className="text-gray-700 line-clamp-3">{drive.description}</p>
-//               </div>
-//             </li>
-//           ))}
-//         </ul>
-//       </section>
-//     </div>
-//   );
-// };
-
-
 const CommonDashboard = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -111,105 +28,110 @@ const CommonDashboard = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-16">
+    <div className="min-h-screen bg-indigo-50">
       <Navbar />
-      <header className="flex flex-col sm:flex-row justify-center items-center mb-8">
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
-          Placement Dashboard
-        </h1>
-      </header>
+      <div className="p-6 max-w-7xl mx-auto">
+        <header className="mb-12 flex flex-col items-center justify-center">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-indigo-800 text-center">
+            Placement Dashboard
+          </h1>
+          <p className="mt-4 text-lg md:text-xl font-medium text-indigo-700 text-center max-w-2xl">
+            {isCompany &&
+              "Select a placement drive to post jobs for your company."}
+            {isStudent &&
+              "Select a placement drive to explore and apply for opportunities."}
+            {isAdmin &&
+              "As an admin, view and manage placement drives for both students and companies."}
+            {!isCompany && !isStudent && !isAdmin &&
+              "Please log in to interact with placement drives."}
+          </p>
+        </header>
 
-      {/* Role-based message */}
-      <p className="text-lg font-medium text-gray-700 mb-8 text-center mx-auto max-w-3xl">
-        {isCompany &&
-          "Select the placement drive to post the job for your company."}
-        {isStudent &&
-          "Select the placement drive that you want to apply for."}
-        {isAdmin &&
-          "As an admin, you can view and manage placement drives for both students and companies."}
-        {!isCompany && !isStudent && !isAdmin &&
-          "Please log in to interact with placement drives."}
-      </p>
+        <main className="space-y-12">
+          {isAdmin ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
+              {/* Student Drives */}
+              <section className="">
+                <h2 className="text-2xl font-bold mb-6 text-indigo-700 border-b-2 border-indigo-100 pb-2">
+                  Student Placement Drives
+                </h2>
+                <ul className="grid grid-cols-1 gap-8">
+                  {placementDrives.map((drive) => (
+                    <li
+                      key={drive._id}
+                      onClick={() => handleDriveClick(drive._id, "student")}
+                      tabIndex={0}
+                      role="button"
+                      className="p-6 bg-white rounded-xl border border-indigo-100 shadow hover:shadow-xl cursor-pointer transition ease-in-out duration-150 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                    >
+                      <div>
+                        <h3 className="text-xl font-semibold text-indigo-800 mb-1 truncate">{drive.title}</h3>
+                        <div className="flex items-center text-sm mb-3 text-gray-500">
+                          <span className="">{new Date(drive.date).toLocaleDateString()}</span>
+                        </div>
+                        <p className="text-gray-700 line-clamp-3 min-h-[56px]">{drive.description}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
 
-      {isAdmin ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          {/* Student Drives Section */}
-          <section>
-            <h2 className="text-3xl font-semibold mb-6 border-b border-gray-300 pb-3 text-gray-800 text-center sm:text-left">
-              Student Placement Drives
-            </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              {placementDrives.map((drive) => (
-                <li
-                  key={drive._id}
-                  onClick={() => handleDriveClick(drive._id, "student")}
-                  tabIndex={0}
-                  role="button"
-                  className="border rounded-lg shadow-md hover:shadow-lg cursor-pointer bg-white p-6 flex flex-col justify-between transition focus:outline-none focus:ring-4 focus:ring-indigo-400"
-                >
-                  <div>
-                    <h3 className="font-bold text-xl mb-2 text-indigo-700">{drive.title}</h3>
-                    <p className="text-sm text-gray-500 mb-4">{new Date(drive.date).toLocaleDateString()}</p>
-                    <p className="text-gray-700 line-clamp-3">{drive.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Company Drives Section */}
-          <section>
-            <h2 className="text-3xl font-semibold mb-6 border-b border-gray-300 pb-3 text-gray-800 text-center sm:text-left">
-              Company Placement Drives
-            </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              {placementDrives.map((drive) => (
-                <li
-                  key={drive._id}
-                  onClick={() => handleDriveClick(drive._id, "company")}
-                  tabIndex={0}
-                  role="button"
-                  className="border rounded-lg shadow-md hover:shadow-lg cursor-pointer bg-white p-6 flex flex-col justify-between transition focus:outline-none focus:ring-4 focus:ring-indigo-400"
-                >
-                  <div>
-                    <h3 className="font-bold text-xl mb-2 text-indigo-700">{drive.title}</h3>
-                    <p className="text-sm text-gray-500 mb-4">{new Date(drive.date).toLocaleDateString()}</p>
-                    <p className="text-gray-700 line-clamp-3">{drive.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-      ) : (
-        <section>
-          <h2 className="text-3xl font-semibold mb-6 border-b border-gray-300 pb-3 text-gray-800 text-center sm:text-left">
-            Placement Drives
-          </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {placementDrives.map((drive) => (
-              <li
-                key={drive._id}
-                onClick={() => handleDriveClick(drive._id, isStudent ? "student" : "company")}
-                tabIndex={0}
-                role="button"
-                className="border rounded-lg shadow-md hover:shadow-lg cursor-pointer bg-white p-6 flex flex-col justify-between transition focus:outline-none focus:ring-4 focus:ring-indigo-400"
-              >
-                <div>
-                  <h3 className="font-bold text-xl mb-2 text-indigo-700">{drive.title}</h3>
-                  <p className="text-sm text-gray-500 mb-4">{new Date(drive.date).toLocaleDateString()}</p>
-                  <p className="text-gray-700 line-clamp-3">{drive.description}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+              {/* Company Drives */}
+              <section>
+                <h2 className="text-2xl font-bold mb-6 text-indigo-700 border-b-2 border-indigo-100 pb-2">
+                  Company Placement Drives
+                </h2>
+                <ul className="grid grid-cols-1 gap-8">
+                  {placementDrives.map((drive) => (
+                    <li
+                      key={drive._id}
+                      onClick={() => handleDriveClick(drive._id, "company")}
+                      tabIndex={0}
+                      role="button"
+                      className="p-6 bg-white rounded-xl border border-indigo-100 shadow hover:shadow-xl cursor-pointer transition focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                    >
+                      <div>
+                        <h3 className="text-xl font-semibold text-indigo-800 mb-1 truncate">{drive.title}</h3>
+                        <div className="flex items-center text-sm mb-3 text-gray-500">
+                          <span className="">{new Date(drive.date).toLocaleDateString()}</span>
+                        </div>
+                        <p className="text-gray-700 line-clamp-3 min-h-[56px]">{drive.description}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+          ) : (
+            <section>
+              <h2 className="text-2xl font-bold mb-6 text-indigo-700 border-b-2 border-indigo-100 pb-2 text-center sm:text-left">
+                Placement Drives
+              </h2>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+                {placementDrives.map((drive) => (
+                  <li
+                    key={drive._id}
+                    onClick={() => handleDriveClick(drive._id, isStudent ? "student" : "company")}
+                    tabIndex={0}
+                    role="button"
+                    className="p-6 bg-white rounded-xl border border-indigo-100 shadow hover:shadow-xl cursor-pointer transition focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                  >
+                    <div>
+                      <h3 className="text-xl font-semibold text-indigo-800 mb-1 truncate">{drive.title}</h3>
+                      <div className="flex items-center text-sm mb-3 text-gray-500">
+                        <span>{new Date(drive.date).toLocaleDateString()}</span>
+                      </div>
+                      <p className="text-gray-700 line-clamp-3 min-h-[56px]">{drive.description}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
-
-
-
 
 export default CommonDashboard;

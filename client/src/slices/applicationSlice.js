@@ -59,7 +59,7 @@ export const updateApplication = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const response = await applicationApi.updateApplication(id, data);
-            
+
             return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -91,6 +91,20 @@ export const getApplicationById = createAsyncThunk(
     }
 )
 
+export const fetchApplicationStatusCounts = createAsyncThunk(
+    "applications/fetchApplicationStatusCounts",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await applicationApi.getApplicationStatusCounts();
+            return response.data.data || response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || error.message || "Failed to fetch status counts"
+            );
+        }
+    }
+);
+
 const applicationSlice = createSlice({
     name: 'applications',
     initialState: {
@@ -99,6 +113,9 @@ const applicationSlice = createSlice({
         error: null,
         success: false,
         message: null,
+        statusCounts: [],
+        statusCountsLoading: false,
+        statusCountsError: null,
     },
 
     reducers: {
@@ -264,6 +281,20 @@ const applicationSlice = createSlice({
                 state.success = false;
                 state.message = action.payload;
             })
+
+
+            .addCase(fetchApplicationStatusCounts.pending, (state) => {
+                state.statusCountsLoading = true;
+                state.statusCountsError = null;
+            })
+            .addCase(fetchApplicationStatusCounts.fulfilled, (state, action) => {
+                state.statusCountsLoading = false;
+                state.statusCounts = action.payload;
+            })
+            .addCase(fetchApplicationStatusCounts.rejected, (state, action) => {
+                state.statusCountsLoading = false;
+                state.statusCountsError = action.payload;
+            })
     }
 })
 
@@ -286,3 +317,8 @@ export const selectApplicationsByJob = (state, jobId) =>
     state.applications.items.filter((app) => app.job._id === jobId);
 export const selectApplicationsByCompany = (state, companyId) =>
     state.applications.items.filter((app) => app.job.company._id === companyId);
+
+
+export const selectApplicationStatusCounts = (state) => state.applications.statusCounts;
+export const selectApplicationStatusCountsLoading = (state) => state.applications.statusCountsLoading;
+export const selectApplicationStatusCountsError = (state) => state.applications.statusCountsError;
