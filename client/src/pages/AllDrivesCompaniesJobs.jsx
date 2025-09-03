@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchJobs, selectJobs } from "./slices/jobSlice";
-import { fetchPlacementDrives, selectPlacementDrives } from "./slices/placementDriveSlice";
-import { fetchCompanies, selectAllCompanies } from "./slices/companySlice";
-import {  useEffect, useState } from "react";
+import { fetchJobs, selectJobs } from "../slices/jobSlice";
+import { fetchPlacementDrives, selectPlacementDrives } from "../slices/placementDriveSlice";
+import { fetchCompanies, selectAllCompanies } from "../slices/companySlice";
+import { useEffect, useState } from "react";
 
 const AllDrivesCompaniesJobs = () => {
   const dispatch = useDispatch();

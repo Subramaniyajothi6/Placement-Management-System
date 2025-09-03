@@ -49,7 +49,7 @@ const ReportsPage = () => {
                                         key={report._id}
                                         className="mb-3 p-3 border rounded cursor-pointer hover:bg-blue-50"
                                     >
-                                      <Link to={`/reports/${report._id}`}>
+                                      <Link to={`/dashboard/reports/${report._id}`}>
                                         <button
                                             className={`w-full text-left ${report._id === selectedId ? 'bg-blue-200' : ''
                                                 }`}

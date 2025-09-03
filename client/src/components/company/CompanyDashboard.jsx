@@ -11,12 +11,16 @@ const CompanyDashboard = () => {
   const isError = useSelector(selectDashboardError);
   const errorMessage = useSelector(selectDashboardErrorMessage);
 
+
+  console.log(upcomingInterviews);
+
   useEffect(() => {
     dispatch(fetchCompanyDashboard());
   }, [dispatch]);
 
   if (isLoading) return <p>Loading dashboard...</p>;
   if (isError) return <p>Error: {errorMessage}</p>;
+
 
   return (
     

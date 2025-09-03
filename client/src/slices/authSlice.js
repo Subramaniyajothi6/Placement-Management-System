@@ -31,6 +31,18 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+export const fetchUserById = createAsyncThunk(
+  "user/fetchUserById",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await authApi.getUserById(userId);
+      return response.data.data;  // Adjust according to your API response shape
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+)
+
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
@@ -214,3 +226,5 @@ export const selectAuthLoading = (state) => state.auth.isLoading;
 export const selectAuthError = (state) => state.auth.isError;
 export const selectAuthSuccess = (state) => state.auth.isSuccess;
 export const selectAuthMessage = (state) => state.auth.message;
+export const selectAuthState = (state) => state.auth;
+export const selectUserById = (state, userId) => state.auth.users.find((user) => user._id === userId);

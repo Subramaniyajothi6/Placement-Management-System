@@ -86,13 +86,16 @@ const companyController = {
 
     companyDashboard: async (req, res) => {
         try {
-            const companyId = req.user.id;
+            const user = await User.findById(req.user.id);
+            const companyId = user.companyId;
             if (!companyId) {
                 return res.status(400).json({ success: false, message: 'Company ID is required' });
             }
             const jobsPosted = await Job.countDocuments({ company: companyId });
 
             const applicationsReceived = await Application.countDocuments({ company: companyId });
+
+
             const upcomingInterviews = await Interview.countDocuments({
                 company: companyId,
                 interviewDate: { $gte: new Date() }

@@ -67,6 +67,16 @@ const authController = {
             res.status(500).json({ success: false, message: error.message });
         }
     },
+
+    getUserId: async (req, res) => {
+        try {
+            const user = await User.findById(req.params.id).select('-password');
+            res.status(200).json({ success: true, data: user });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+        
+    },
     logout: async (req, res) => {
         try {
             res.cookie('token', '', { httpOnly: true, expires: new Date(0) });

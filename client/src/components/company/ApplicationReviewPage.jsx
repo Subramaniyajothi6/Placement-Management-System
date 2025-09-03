@@ -1,32 +1,52 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchJobs, selectJobs, selectJobsError, selectJobsLoading } from "../../slices/jobSlice";
+import {
+  fetchJobs,
+  selectJobs,
+  selectJobsError,
+  selectJobsLoading,
+} from "../../slices/jobSlice";
 import { useEffect, useState } from "react";
 import applicationApi from "../../api/applicationsApi";
-
+import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
+import { useNavigate } from "react-router";
 
 const statusOptions = [
-  { label: 'All', value: '' },
-  { label: 'Submitted', value: 'Submitted' },
-  { label: 'Under Review', value: 'Under Review' },
-  { label: 'Shortlisted', value: 'Shortlisted' },
-  { label: 'Rejected', value: 'Rejected' },
-  { label: 'Hired', value: 'Hired' },
+  { label: "All", value: "" },
+  { label: "Submitted", value: "Submitted" },
+  { label: "Under Review", value: "Under Review" },
+  { label: "Shortlisted", value: "Shortlisted" },
+  { label: "Rejected", value: "Rejected" },
+  { label: "Hired", value: "Hired" },
 ];
 
 const ApplicationReviewPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const jobs = useSelector(selectJobs);
   const jobsLoading = useSelector(selectJobsLoading);
   const jobsError = useSelector(selectJobsError);
+  const user = useSelector((state) => state.auth.user);
+  const company = useSelector(selectAllCompanies);
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({ jobId: '', status: '' });
+  const [filters, setFilters] = useState({ jobId: "", status: "" });
 
   useEffect(() => {
     dispatch(fetchJobs());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchCompanies());
+  }, [dispatch]);
+
+  // Filter companies for the current user
+  const userCompanies = company.filter((c) => c.user === user._id);
+  const userCompanyIds = userCompanies.map((c) => c._id);
+
+  // Filter jobs belonging to companies of current user
+  const filteredJobs = jobs.filter((j) => userCompanyIds.includes(j.company));
 
   // Fetch applications based on filters
   const fetchApplications = async () => {
@@ -37,10 +57,10 @@ const ApplicationReviewPage = () => {
       if (filters.jobId) params.jobId = filters.jobId;
       if (filters.status) params.status = filters.status;
 
-      const response = await applicationApi.getCompanyApplications(params);
+      const response = await applicationApi.getCompanyApplications({ params });
       setApplications(response.data.data);
     } catch (err) {
-      setError('Failed to fetch applications', err.message);
+      setError("Failed to fetch applications", err.message);
     }
     setLoading(false);
   };
@@ -73,7 +93,7 @@ const ApplicationReviewPage = () => {
             className="p-2 border rounded w-1/3"
           >
             <option value="">All Jobs</option>
-            {jobs.map((job) => (
+            {filteredJobs.map((job) => (
               <option key={job._id} value={job._id}>
                 {job.title}
               </option>
@@ -113,38 +133,39 @@ const ApplicationReviewPage = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.length === 0 && (
+            {applications.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center p-4">
                   No applications found.
                 </td>
               </tr>
+            ) : (
+              applications.map((app) => (
+                <tr key={app._id} className="hover:bg-gray-50" onClick={()=>{navigate(`/company/applications/${app._id}`)}}>
+                  <td className="border border-gray-300 p-2">{app.candidate?.name || "N/A"}</td>
+                  <td className="border border-gray-300 p-2">{app.candidate?.email || "N/A"}</td>
+                  <td className="border border-gray-300 p-2">{app.job?.title || "N/A"}</td>
+                  <td className="border border-gray-300 p-2">{app.status}</td>
+                  <td className="border border-gray-300 p-2">
+                    {new Date(app.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {app.resume ? (
+                      <a
+                        href={app.resume}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        View Resume
+                      </a>
+                    ) : (
+                      "No resume"
+                    )}
+                  </td>
+                </tr>
+              ))
             )}
-            {applications.map((app) => (
-              <tr key={app._id} className="hover:bg-gray-50">
-                <td className="border border-gray-300 p-2">{app.candidate?.name || 'N/A'}</td>
-                <td className="border border-gray-300 p-2">{app.candidate?.email || 'N/A'}</td>
-                <td className="border border-gray-300 p-2">{app.job?.title || 'N/A'}</td>
-                <td className="border border-gray-300 p-2">{app.status}</td>
-                <td className="border border-gray-300 p-2">
-                  {new Date(app.createdAt).toLocaleDateString()}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {app.resume ? (
-                    <a
-                      href={app.resume}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      View Resume
-                    </a>
-                  ) : (
-                    'No resume'
-                  )}
-                </td>
-              </tr>
-            ))}
           </tbody>
         </table>
       )}

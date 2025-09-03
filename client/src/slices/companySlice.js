@@ -57,7 +57,6 @@ export const fetchCompanyDashboard = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await companyApi.getDashboard();  // Define getDashboard in your companyApi
-             console.log("Applications API response:", response);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);

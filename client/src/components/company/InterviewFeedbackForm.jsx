@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { clearInterviewError, clearSelectedInterview, clearSuccess, fetchInterviewById, selectCurrentInterview, selectInterviewError, selectInterviewLoading, updateInterview } from "../../slices/interviewSlice";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 
-const InterviewFeedbackForm = ({ interviewId }) => {
+const InterviewFeedbackForm = () => {
   const dispatch = useDispatch();
+  const { interviewId } = useParams();
 
   // Redux state
   const interview = useSelector(selectCurrentInterview);
@@ -46,12 +48,13 @@ const InterviewFeedbackForm = ({ interviewId }) => {
   // Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     if (name === 'score') {
       // Ensure score stays between 0 and 100 numeric
       const numericVal = value === '' ? '' : Math.min(100, Math.max(0, Number(value)));
-      setForm(prev => ({ ...prev, [name]: numericVal }));
+      setForm(prev => ({ ...prev, [name]: numericVal,emailType: 'result' }));
     } else {
-      setForm(prev => ({ ...prev, [name]: value }));
+      setForm(prev => ({ ...prev, [name]: value, emailType: 'result' }));
     }
   };
 
@@ -60,8 +63,11 @@ const InterviewFeedbackForm = ({ interviewId }) => {
     setSubmitError('');
     setSubmitSuccess(false);
 
+    
+
     try {
-      await dispatch(updateInterview({ id: interviewId, data: form })).unwrap();
+      await dispatch(updateInterview({ id: interviewId, data: form  })).unwrap();
+      
       setSubmitSuccess(true);
     } catch (err) {
       setSubmitError(err || 'Failed to update interview feedback');

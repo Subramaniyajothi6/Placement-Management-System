@@ -7,8 +7,9 @@ import {
   selectAuthLoading,
   selectAuthUser,
 } from "../../slices/authSlice";
+import { fetchStudents } from "../../slices/studentSlice";
+import { fetchCompanies } from "../../slices/companySlice";
 import { useEffect, useState } from "react";
-import {  fetchStudents } from "../../slices/studentSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -21,92 +22,70 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // console.log('user',user.role);
-
   useEffect(() => {
-  // async function checkProfile() {
-  //   if (user?.role === "student") {
-  //     try {
-  //       const resAction = await dispatch(fetchStudents(user._id));
-  //       if (fetchStudents.fulfilled.match(resAction) && resAction.payload) {
-  //         // Profile found, redirect to profile page
-  //         navigate(`/${user._id}/profile`);
-  //       } else {
-  //         // No profile, redirect to student dashboard
-  //         navigate("/studentUser/dashboard");
-  //       }
-  //     } catch {
-  //       navigate("/studentUser/dashboard"); // fallback
-  //     }
-  //   } else if (user?.role === "company") {
-  //     navigate("/companyUser/dashboard");
-  //   } else if (user?.role === "admin") {
-  //     navigate("/adminUser/dashboard");
-  //   }
-  // }
-  async function checkProfile() {
-  if (user?.role === "student") {
-    try {
-      const resAction = await dispatch(fetchStudents()); // fetch all profiles
-      if (
-        fetchStudents.fulfilled.match(resAction) &&
-        resAction.payload &&
-        Array.isArray(resAction.payload)
-      ) {
-        const profileExists = resAction.payload.some(
-          (profile) => profile.userId === user._id
-        );
+    async function checkProfile() {
+      if (user?.role === "student") {
+        try {
+          const resAction = await dispatch(fetchStudents()); // fetch all student profiles
+          if (
+            fetchStudents.fulfilled.match(resAction) &&
+            resAction.payload &&
+            Array.isArray(resAction.payload)
+          ) {
+            const profileExists = resAction.payload.some(
+              (profile) => profile.userId === user._id
+            );
 
-        if (profileExists) {
-          // Profile exists, redirect to dashboard
-          navigate("/studentUser/dashboard");
-        } else {
-          // No profile, redirect to profile creation page
-          navigate(`/${user._id}/profile`);
+            if (profileExists) {
+              navigate("/student/dashboard");
+            } else {
+              navigate(`/${user._id}/profile`);
+            }
+          } else {
+            navigate("/student/dashboard");
+          }
+        } catch {
+          navigate("/student/dashboard");
         }
-      } else {
-        // In case fetching students fails or returns empty list, redirect to dashboard
-        navigate("/studentUser/dashboard");
+      } else if (user?.role === "company") {
+        try {
+          const resAction = await dispatch(fetchCompanies());
+          console.log(resAction.payload.filter((c) => c.user === user._id));
+          
+          // fetch all company profiles
+          if (
+            fetchCompanies.fulfilled.match(resAction) &&
+            resAction.payload &&
+            Array.isArray(resAction.payload)
+          ) {
+            const profileExists = resAction.payload.some(
+              (profile) => profile.user === user._id
+            );
+            console.log(profileExists);
+            
+
+            if (profileExists) {
+              navigate("/company/dashboard");
+            } else {
+              navigate(`/${user._id}/companyProfile`);
+            }
+          } else {
+            navigate("/company/dashboard");
+          }
+        } catch {
+          navigate("/company/dashboard");
+        }
+      } else if (user?.role === "admin") {
+        navigate("/admin/dashboard");
       }
-    } catch {
-      // On any error fallback to dashboard
-      navigate("/studentUser/dashboard");
     }
-  } else if (user?.role === "company") {
-    navigate("/companyUser/dashboard");
-  } else if (user?.role === "admin") {
-    navigate("/adminUser/dashboard");
-  }
-}
 
-
-  if (user) {
-    checkProfile();
-  } else {
-    navigate("/login");
-  }
-}, [user, dispatch, navigate]);
-
-  
-  
-
-  // useEffect(() => {
-  // if (user) { 
-  //    if (user.role == "student" ) {
-  //     navigate("/studentUser/dashboard");
-  //   }
-  //   else if (user.role == "company") {
-  //     navigate("/companyUser/dashboard");
-  //   }
-  //   else if (user.role == "admin") {
-  //     navigate("/adminUser/dashboard");
-  //   }
-  // }
-  // else{
-  //   navigate("/login");
-  // } 
-    
-  // }, [user, navigate]);
+    if (user) {
+      checkProfile();
+    } else {
+      navigate("/login");
+    }
+  }, [user, dispatch, navigate]);
 
   useEffect(() => {
     return () => {
@@ -120,7 +99,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-w-md w-full p-8">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Welcome Back

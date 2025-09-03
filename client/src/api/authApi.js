@@ -7,6 +7,7 @@ const authApi = {
     getProfile: () => axiosClient.get('/auth/profile'),
     updateProfile: (formData) => axiosClient.put('/auth/profile', formData),
     getUsers: () => axiosClient.get('/auth/users'),
+    getUserById: (id) => axiosClient.get(`/auth/users/${id}`),
 
 }
 

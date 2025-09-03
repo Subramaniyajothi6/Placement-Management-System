@@ -6,7 +6,6 @@ export const fetchApplications = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getApplications();
-            console.log("Applications API response:", response);
             return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -40,6 +39,8 @@ export const fetchCompanyApplications = createAsyncThunk(
 
 
 
+
+
 export const createApplication = createAsyncThunk(
     'applications/createApplication',
     async (data, { rejectWithValue }) => {
@@ -58,6 +59,7 @@ export const updateApplication = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const response = await applicationApi.updateApplication(id, data);
+            
             return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -82,7 +84,7 @@ export const getApplicationById = createAsyncThunk(
     async (id, { rejectWithValue }) => {
         try {
             const response = await applicationApi.getById(id);
-            return response.data.data || response.data;
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }
@@ -128,6 +130,7 @@ const applicationSlice = createSlice({
                 state.message = action.payload;
             })
 
+            // student
             .addCase(fetchMyApplications.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -146,6 +149,7 @@ const applicationSlice = createSlice({
                 state.success = false;
                 state.message = action.payload;
             })
+            // company
 
             .addCase(fetchCompanyApplications.pending, (state) => {
                 state.loading = true;
@@ -166,6 +170,7 @@ const applicationSlice = createSlice({
                 state.success = false;
                 state.message = action.payload;
             })
+
 
             // create
 
@@ -189,6 +194,31 @@ const applicationSlice = createSlice({
                 state.message = action.payload;
             })
 
+
+            .addCase(getApplicationById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+                state.message = null;
+
+            })
+            .addCase(getApplicationById.fulfilled, (state, action) => {
+                state.loading = false;
+                const index = state.items.findIndex(app => app._id === action.payload._id);
+                if (index !== -1) {
+                    state.items[index] = action.payload;
+                } else {
+                    state.items.push(action.payload);
+                }
+                state.success = true;
+                state.message = "Fetched application successfully";
+            })
+            .addCase(getApplicationById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.success = false;
+                state.message = action.payload;
+            })
             // update
 
             .addCase(updateApplication.pending, (state) => {

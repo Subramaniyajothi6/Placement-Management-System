@@ -1,6 +1,4 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
-// import Home from './Home'
-// import StudentDashboard from './components/students/StudentDashBoard'
 import StudentApplicationForm from './components/students/StudentApplicationForm'
 import StudentDashboard from './components/students/StudentDashBoard'
 import InterviewSchedulePage from './components/students/InterviewSchedulePage'
@@ -26,10 +24,17 @@ import Dashboard from './components/Dashboard'
 import RegisterPage from './components/Authentication/RegisterPage'
 import StudentApplicationPage from './components/students/StudentApplicationPage'
 import PlacementDriveJobPostWrapper from './components/company/PlacementDriveJobPostWrapper'
-import DriveCompanyJobsPage from './DriveCompanyJobsPage'
+
 import CreateCompanyProfileForm from './components/company/CompanyForm'
 import CompaniesInPlacementDrive from './components/students/CompaniesInPlacementDrive'
 import JobsByDriveAndCompany from './components/students/JobsByDriveAndCompany'
+import InterviewDetailPage from './components/company/InterviewDetailPage'
+import CompanyForm from './components/company/CompanyForm'
+import ApplicationDetailPage from './components/company/ApplicationDetailPage'
+import CompanyProfilePage from './components/company/CompanyProfilePage'
+import CommonDashboard from './components/CommonDashboard'
+import AllDrivesCompaniesJobs from './pages/AllDrivesCompaniesJobs'
+import ViewProfilePage from './pages/ViewProfilePage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -50,42 +55,85 @@ const App = () => {
       // element:<StudentApplicationPage/>
       // element:<InterviewSchedulePage/>
       // element:<ProfilePage/>
-      // element:<CompanyDashboard/>
       // element:<PostJob/>
-      // element:<ApplicationReviewPage/>
-      element : <InterviewSchedulingForm/>
-      // element : <InterviewFeedbackForm/>
       // element :<AdminDashboard/>
       // element:<ManagePlacementDrives/>
       // element:<StudentList/>
       // element:<StudentDetail/>
       // element:<StudentManagementPage/>
-      // element:<CompanyList/>
       // element:<ReportsPage/>
       // element: <LoginPage />
       // element:<RegisterPage/>
-      // element:<CompanyDashboard/>
       // element:<DriveCompanyJobsPage/>
-      // element:<CreateCompanyProfileForm/>
+      
+      //   Company
+      // element:<ApplicationReviewPage/>
+      element:<CompanyDashboard/>
+      // element:<CompanyForm/>
+      // element:<CompanyProfilePage/>
+      
+      // element : <InterviewDetailPage/>
+      // element : <InterviewFeedbackForm/>
+      // element : <InterviewSchedulingForm/>
+      // element : <PlacementDriveJobPostWrapper/>
+      // element : <PostJob/>
+
+      // element:<CompanyList/>
       // element:<CompaniesInPlacementDrive/>
-     
+      // element:<CreateCompanyProfileForm/>
+
+      // element:<CommonDashboard/>
+      // element:<AdminDashboard/>
+      // element:<CompanyList/>
+      // element:<AllDrivesCompaniesJobs/>
+      // element:<ManagePlacementDrives/>
+      // element:<StudentList/>
+      // element:<StudentDetail/>
+      // element:<StudentManagementPage/>
+      
+
+      
 
     }
     ,
     // { path:'reports/:id',element:<ReportDetailsPage/>}
-    { path: '/:user/dashboard', element: <Dashboard /> },
-    { path: '/login', element: <LoginPage /> },
-    // { path: '/student/:companyId', 
-    //    element:<StudentApplicationPage/> }
     { path: '/:user/postJob/:placementDriveId', element: <PostJob /> },
     { path: '/:user/postJob', element: <PlacementDriveJobPostWrapper /> },
     // { path: '/:user/drives', element: <ManagePlacementDrives /> }
-    // { path: '/:user/:driveId', element: <StudentApplicationPage /> }
     { path: '/:user/applyJob/:driveId', element: <CompaniesInPlacementDrive /> },
     { path: '/:user/applyJob/:driveId/:companyId', element: <JobsByDriveAndCompany /> },
     { path: '/:user/applyJob/:driveId/:companyId/:jobId', element: <StudentApplicationPage/>  },
-    { path: '/:user/profile', element: <ProfilePage /> },
+    { path: '/:user/studentProfile', element: <ProfilePage /> },
+    { path: '/:user/viewStudentProfile', element: <ViewProfilePage /> },
+    { path: '/:user/companyProfile', element: <CreateCompanyProfileForm /> },
+    { path: '/:user/interview', element: <InterviewSchedulingForm /> },
+    { path: '/:user/interview/:interviewId', element: <InterviewDetailPage /> },
+    { path: '/:user/interview/interviewFeedback/:interviewId', element: <InterviewFeedbackForm /> },
+    { path: '/:user/applications', element: < ApplicationReviewPage/> },
+    { path: '/:user/applications/:id', element: < ApplicationDetailPage/> },
+    { path: '/:user/profile/:id', element: < CompanyProfilePage/> },
 
+
+
+    // admin
+
+    { path: '/:user/reports', element: <ReportsPage/> },
+    { path: '/dashboard/reports/:id', element: <ReportDetailsPage/> },
+    { path: '/:user/student/profiles', element: <StudentManagementPage/> },
+    { path: '/:user/student/profiles/:studentId', element: <StudentDetail/> },
+    { path: '/:user/placementDrive', element: <ManagePlacementDrives/> },
+    { path: '/:user/placementDrive', element: <ManagePlacementDrives/> },
+
+
+
+
+    { path: '/:user/dashboard', element: <Dashboard /> },
+    { path: '/login', element: <LoginPage /> },
+
+    // company  
+
+
+    
 
   ]
 

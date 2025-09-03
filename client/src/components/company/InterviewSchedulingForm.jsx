@@ -6,12 +6,14 @@ import { fetchJobs, selectJobs } from '../../slices/jobSlice';
 import { fetchUsers, selectUsers } from '../../slices/authSlice';
 import { useEffect, useState } from 'react';
 import applicationApi from '../../api/applicationsApi';
+import {  useNavigate } from 'react-router';
 
 
 Modal.setAppElement('#root');
 
 const InterviewSchedulingForm = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // Redux state
     const interviews = useSelector(selectAllInterviews);
@@ -138,6 +140,7 @@ const InterviewSchedulingForm = () => {
         setModalIsOpen(true);
     };
 
+
     // Submit form for create or update
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -169,6 +172,7 @@ const InterviewSchedulingForm = () => {
             location: form.interviewType === 'Offline' ? form.location : '',
             meetingId: form.interviewType === 'Online' ? form.meetingId : '',
             round: form.round,
+            emailType: 'schedule',
         };
 
         try {
@@ -231,7 +235,8 @@ const InterviewSchedulingForm = () => {
                             </tr>
                         ) : (
                             companyInterviews.map((interview) => (
-                                <tr key={interview._id} className="hover:bg-gray-50">
+                                
+                                <tr key={interview._id} className="hover:bg-gray-50"  onClick={()=>{navigate(`/company/interview/${interview._id}`)}} >
                                     <td className="border border-gray-300 p-2">{getCandidateName(interview.candidate)}</td>
                                     <td className="border border-gray-300 p-2">{getJobTitle(interview.job)}</td>
                                     <td className="border border-gray-300 p-2">{new Date(interview.interviewDate).toLocaleString()}</td>
@@ -252,6 +257,7 @@ const InterviewSchedulingForm = () => {
                                         </button>
                                     </td>
                                 </tr>
+                                
                             ))
                         )}
                     </tbody>
