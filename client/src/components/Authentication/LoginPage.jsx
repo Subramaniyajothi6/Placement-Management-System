@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   loginUser,
   resetState,
@@ -39,7 +39,7 @@ const LoginPage = () => {
             if (profileExists) {
               navigate("/student/dashboard");
             } else {
-              navigate(`/${user._id}/profile`);
+              navigate(`/student/studentProfile`);
             }
           } else {
             navigate("/student/dashboard");
@@ -50,9 +50,6 @@ const LoginPage = () => {
       } else if (user?.role === "company") {
         try {
           const resAction = await dispatch(fetchCompanies());
-          console.log(resAction.payload.filter((c) => c.user === user._id));
-          
-          // fetch all company profiles
           if (
             fetchCompanies.fulfilled.match(resAction) &&
             resAction.payload &&
@@ -61,8 +58,6 @@ const LoginPage = () => {
             const profileExists = resAction.payload.some(
               (profile) => profile.user === user._id
             );
-            console.log(profileExists);
-            
 
             if (profileExists) {
               navigate("/company/dashboard");
@@ -99,12 +94,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-w-md w-full p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-indigo-50 p-6 sm:p-12">
+      <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-w-md w-full p-10 sm:p-12">
+        <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-800">
           Welcome Back
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-7">
           <div>
             <label
               htmlFor="email"
@@ -115,7 +110,7 @@ const LoginPage = () => {
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -134,7 +129,7 @@ const LoginPage = () => {
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -143,25 +138,24 @@ const LoginPage = () => {
             />
           </div>
           {error && (
-            <p className="text-red-600 text-sm mb-2 text-center">{error}</p>
+            <p className="text-red-600 text-sm text-center mt-2">{error}</p>
           )}
           <button
             type="submit"
-            className={`w-full py-3 rounded-md text-white font-semibold text-lg transition-colors ${
-              isLoading
+            className={`w-full py-4 rounded-md text-white font-semibold text-lg transition-colors ${isLoading
                 ? "bg-indigo-300 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700"
-            }`}
+              }`}
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-8 text-center text-sm text-gray-600">
           Don't have an account?{" "}
-          <a href="/register" className="text-indigo-600 hover:underline">
+          <Link to="/register" className="text-indigo-600 hover:underline">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

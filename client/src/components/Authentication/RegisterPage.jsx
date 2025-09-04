@@ -1,8 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { registerUser, resetState, selectAuthError, selectAuthLoading, selectAuthMessage, selectAuthSuccess } from "../../slices/authSlice";
+import {
+  registerUser,
+  resetState,
+  selectAuthError,
+  selectAuthLoading,
+  selectAuthMessage,
+  selectAuthSuccess,
+} from "../../slices/authSlice";
 import { useEffect, useState } from "react";
-
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -10,7 +16,7 @@ const RegisterPage = () => {
 
   const isLoading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
-   const message = useSelector(selectAuthMessage);
+  const message = useSelector(selectAuthMessage);
   const isSuccess = useSelector(selectAuthSuccess);
 
   const [name, setName] = useState("");
@@ -20,11 +26,11 @@ const RegisterPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate("/login"); // Redirect to login on successful registration
+      navigate("/login");
     }
-    
+
     if (message) {
-      alert(message); // Show success or error message
+      alert(message);
     }
   }, [isSuccess, navigate, message]);
 
@@ -40,12 +46,12 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  p-4">
-      <div className="bg-white border border-gray-300 rounded-lg shadow-lg max-w-md w-full p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-indigo-50 p-6 sm:p-12">
+      <div className="bg-white border border-gray-300 rounded-lg shadow-lg max-w-md w-full p-10 sm:p-12">
+        <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-800">
           Create an Account
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-7">
           <div>
             <label
               htmlFor="name"
@@ -56,7 +62,7 @@ const RegisterPage = () => {
             <input
               type="text"
               id="name"
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               placeholder="Your full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -77,7 +83,7 @@ const RegisterPage = () => {
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               placeholder="your.email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +104,7 @@ const RegisterPage = () => {
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               placeholder="Minimum 6 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -117,7 +123,7 @@ const RegisterPage = () => {
             </label>
             <select
               id="role"
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               disabled={isLoading}
@@ -130,13 +136,13 @@ const RegisterPage = () => {
           </div>
 
           {error && (
-            <p className="text-red-600 text-sm mb-2 text-center">{error}</p>
+            <p className="text-red-600 text-sm mt-2 mb-1 text-center">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 rounded-md text-white font-semibold text-lg transition-colors ${
+            className={`w-full py-4 rounded-md text-white font-semibold text-lg transition-colors ${
               isLoading
                 ? "bg-indigo-300 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700"
@@ -145,7 +151,8 @@ const RegisterPage = () => {
             {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600">
+
+        <p className="mt-8 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <a href="/login" className="text-indigo-600 hover:underline">
             Login

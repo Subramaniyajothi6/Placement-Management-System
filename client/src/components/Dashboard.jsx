@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import Navbar from "./Navbar";
 
 const CommonDashboard = () => {
+
+
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
   const placementDrives = useSelector(selectPlacementDrives);
@@ -67,7 +69,7 @@ const CommonDashboard = () => {
                       <div>
                         <h3 className="text-xl font-semibold text-indigo-800 mb-1 truncate">{drive.title}</h3>
                         <div className="flex items-center text-sm mb-3 text-gray-500">
-                          <span className="">{new Date(drive.date).toLocaleDateString()}</span>
+                          <span>{drive.startDate ? new Date(drive.startDate).toLocaleDateString() : "N/A"}</span>
                         </div>
                         <p className="text-gray-700 line-clamp-3 min-h-[56px]">{drive.description}</p>
                       </div>
@@ -93,7 +95,7 @@ const CommonDashboard = () => {
                       <div>
                         <h3 className="text-xl font-semibold text-indigo-800 mb-1 truncate">{drive.title}</h3>
                         <div className="flex items-center text-sm mb-3 text-gray-500">
-                          <span className="">{new Date(drive.date).toLocaleDateString()}</span>
+                         <span>{drive.startDate ? new Date(drive.startDate).toLocaleDateString() : "N/A"}</span>
                         </div>
                         <p className="text-gray-700 line-clamp-3 min-h-[56px]">{drive.description}</p>
                       </div>
@@ -119,7 +121,7 @@ const CommonDashboard = () => {
                     <div>
                       <h3 className="text-xl font-semibold text-indigo-800 mb-1 truncate">{drive.title}</h3>
                       <div className="flex items-center text-sm mb-3 text-gray-500">
-                        <span>{new Date(drive.date).toLocaleDateString()}</span>
+                        <span>{drive.startDate ? new Date(drive.startDate).toLocaleDateString() : "N/A"}</span>
                       </div>
                       <p className="text-gray-700 line-clamp-3 min-h-[56px]">{drive.description}</p>
                     </div>

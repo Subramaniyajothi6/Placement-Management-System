@@ -21,9 +21,12 @@ const PostJob = () => {
   }, [dispatch]);
 
   const userId = user?._id;
-  const companyId = companies.find((c) => c.user === userId)?.id || "";
+  const companyId = companies.filter((c) => c.user === userId).map((c) => c._id)[0] || "";
+  // console.log("companies", companies.filter((c) => c.user === userId).map((c) => c._id)[0]);
+  // console.log("Company ID:", companyId);
 
-  const { placementId } = useParams();
+  const { placementDriveId } = useParams();
+
 
   const [formData, setFormData] = useState({
     placementDrive: "",
@@ -40,17 +43,16 @@ const PostJob = () => {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      placementDrive: placementId || "",
+      placementDrive: placementDriveId || "",
       company: companyId,
     }));
-  }, [placementId, companyId]);
+  }, [placementDriveId, companyId]);
 
   useEffect(() => {
     if (isSuccess) {
-      alert("Job posted successfully!");
       dispatch(resetJobState());
       setFormData({
-        placementDrive: placementId || "",
+        placementDrive: placementDriveId || "",
         company: companyId,
         title: "",
         description: "",
@@ -65,7 +67,7 @@ const PostJob = () => {
     return () => {
       dispatch(clearJobError());
     };
-  }, [isSuccess, dispatch, placementId, companyId]);
+  }, [isSuccess, dispatch, placementDriveId, companyId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,6 +88,7 @@ const PostJob = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     if (!formData.title || !formData.placementDrive) {
       alert("Please fill in all required fields.");
       return;
@@ -98,6 +101,7 @@ const PostJob = () => {
       }
     }
     dispatch(createJob(formData));
+    alert("Job posted successfully!");
   };
 
   return (
@@ -111,7 +115,7 @@ const PostJob = () => {
       </button>
 
       <h2 className="text-3xl font-extrabold mb-8 text-center text-indigo-700">
-        {placementId ? "Post a New Job for Drive" : "Post a New Job"}
+        {placementDriveId ? "Post a New Job for Drive" : "Post a New Job"}
       </h2>
 
       {error && (

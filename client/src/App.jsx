@@ -34,6 +34,7 @@ import CompanyProfilePage from './components/company/CompanyProfilePage'
 import CommonDashboard from './components/CommonDashboard'
 import AllDrivesCompaniesJobs from './pages/AllDrivesCompaniesJobs'
 import ViewProfilePage from './pages/ViewProfilePage'
+import RegisterPage from './components/Authentication/RegisterPage'
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -47,61 +48,7 @@ const App = () => {
 
   const routes = [
     {
-      // element:<StudentApplicationForm/>             // dont use this one 
-
-      path: "/",
-      // element:<PostJob/>
-      // element :<AdminDashboard/>
-      // element:<ManagePlacementDrives/>
-      // element:<StudentList/>
-      // element:<StudentDetail/>
-      // element:<StudentManagementPage/>
-      // element:<ReportsPage/>
-      // element: <LoginPage />
-      // element:<DriveCompanyJobsPage/>
-      // element:<RegisterPage/>
-      /////////////////////////////////////////// student //////////////////////////////////////////////////
-      // element:<CompaniesInPlacementDrive/>
-      // element:<JobsByDriveAndCompany/>
-      // element:<ProfilePage/> // for creating profile
-      // element:<StudentApplicationPage/>
-      // element:<InterviewSchedulePage/>
-      // element:<StudentDashboard/>
-      // element:<ViewProfilePage/>
-
-
-
-
-
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////
-      //   Company
-      // element:<ApplicationReviewPage/>
-      // element:<CompanyDashboard/>
-      // element:<CompanyForm/>
-      // element:<CompanyProfilePage/>
-      
-      // element : <InterviewDetailPage/>
-      // element : <InterviewFeedbackForm/>
-      // element : <InterviewSchedulingForm/>
-      // element : <PlacementDriveJobPostWrapper/>
-      // element : <PostJob/>
-
-      // element:<CompanyList/>
-      // element:<CreateCompanyProfileForm/>
-
-      // element:<CommonDashboard/>
-      // element:<AdminDashboard/>
-      // element:<CompanyList/>
-      // element:<AllDrivesCompaniesJobs/>
-      // element:<ManagePlacementDrives/>
-      // element:<StudentList/>
-      // element:<StudentDetail/>
-      // element:<StudentManagementPage/>
-      
-
-      
-
+      path: "/", element: <CommonDashboard /> ,
     }
     ,
     // { path:'reports/:id',element:<ReportDetailsPage/>}
@@ -122,10 +69,7 @@ const App = () => {
     { path: '/:user/profile/:id', element: < CompanyProfilePage/> },
     { path: '/companydashboard', element: < CompanyDashboard/> },
     { path: '/studentdashboard', element: < StudentDashboard/> },
-    
-
-
-
+  
 
     // admin
 
@@ -135,16 +79,12 @@ const App = () => {
     { path: '/:user/student/profiles/:studentId', element: <StudentDetail/> },
     { path: '/:user/placementDrive', element: <ManagePlacementDrives/> },
 
-
-
-
+    
     { path: '/:user/dashboard', element: <Dashboard /> },
     { path: '/login', element: <LoginPage /> },
-
+    { path: '/register', element: <RegisterPage /> },
+  
     // company  
-
-
-    
 
   ]
 

@@ -4,6 +4,7 @@ const User = require("../models/User");
 const CompanyProfile = require("../models/CompanyProfile");
 const { sendInterviewEmail } = require("../utils/emailService"); // Import email util
 const Job = require("../models/Job");
+const { InterviewEmail } = require("../utils/interviewEmail");
 
 const interviewController = {
   createInterview: async (req, res) => {
@@ -14,7 +15,7 @@ const interviewController = {
       const candidateUser = await User.findById(interview.candidate).select('email name');
       if (candidateUser) {
         try {
-          await sendInterviewEmail(candidateUser.email, interview);
+          await InterviewEmail(candidateUser.email, interview);
           console.log('Interview email sent successfully');
         } catch (emailErr) {
           console.error('Error sending interview email:', emailErr);
