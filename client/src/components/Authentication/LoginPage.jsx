@@ -62,7 +62,7 @@ const LoginPage = () => {
             if (profileExists) {
               navigate("/company/dashboard");
             } else {
-              navigate(`/${user._id}/companyProfile`);
+              navigate(`/company/companyProfile`);
             }
           } else {
             navigate("/company/dashboard");

@@ -31,7 +31,7 @@ const COLORS = ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc'];
 
 const formatNumber = (num) => (num ? num.toLocaleString() : "N/A");
 
-const ReportDetails = () => {
+const ReportDetailsPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -251,4 +251,4 @@ const ReportDetails = () => {
   );
 };
 
-export default ReportDetails;
+export default ReportDetailsPage;

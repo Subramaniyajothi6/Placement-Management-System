@@ -5,7 +5,7 @@ import { fetchPlacementDrives, selectPlacementDrives } from "../slices/placement
 import { useEffect } from "react";
 import Navbar from "./Navbar";
 
-const CommonDashboard = () => {
+const Dashboard = () => {
 
 
   const dispatch = useDispatch();
@@ -136,4 +136,4 @@ const CommonDashboard = () => {
   );
 };
 
-export default CommonDashboard;
+export default Dashboard;
