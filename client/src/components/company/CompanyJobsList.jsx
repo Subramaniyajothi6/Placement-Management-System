@@ -14,7 +14,7 @@ const CompanyJobsList = () => {
   const loading = useSelector(selectJobsLoading);
   const error = useSelector(selectJobsError);
 
-//   console.log("Jobs:", jobs);
+  console.log("Jobs:", jobs);
 const companyId = user.companyId;
 // console.log("Company ID:", companyId);
 
@@ -27,7 +27,7 @@ const companyId = user.companyId;
     return (typeof job.company === "string" ? job.company : job.company?._id) === companyId;
   });
 
-
+console.log("Filtered Jobs:", filteredJobs);
   // Handle delete job
   const handleDelete = (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {

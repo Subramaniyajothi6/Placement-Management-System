@@ -99,7 +99,7 @@ const applicationController = {
             if (candidateEmail) {
                 // Compose email content
                 const subject = `Update on your application for ${jobTitle}`;
-                const text = `Hello ${candidateName},\n\nYour application status has been  ${application.status}.\n\nThank you for your interest.\n\nBest regards,\nCompany Team`;
+                const text = `Hello ${candidateName},\n\nYour application status has been  ${req.body.status}.\n\nThank you for your interest.\n\nBest regards,\nCompany Team`;
 
                 // Send email using your mailer utility (replace this with your mail service)
                 await applicationEmail.sendEmail(candidateEmail, subject, text);
