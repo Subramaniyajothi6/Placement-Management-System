@@ -10,7 +10,7 @@ const CommonDashboard = () => {
   useEffect(() => {
     if (user) {
       console.log(user);
-      navigate("/dashboard", { replace: true });
+      navigate(`/${user.role}/dashboard`, { replace: true });
     }
   }, [user, navigate]);
 
