@@ -223,6 +223,8 @@ export const selectJobsLoading = (state) => state.jobs.loading;
 export const selectJobsError = (state) => state.jobs.error;
 export const selectJobsSuccess = (state) => state.jobs.success;
 export const selectJobsMessage = (state) => state.jobs.message;
+export const selectJobById = (state, id) => state.jobs.jobs.find((job) => job._id === id);
+export const updateJobById = (state, id) => state.jobs.jobs.find((job) => job._id === id);
 
 
 export default jobSlice.reducer;

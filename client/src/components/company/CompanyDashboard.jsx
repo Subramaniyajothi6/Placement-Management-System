@@ -43,7 +43,7 @@ const CompanyDashboard = () => {
       count: jobsPosted,
       bgColor: 'bg-blue-100',
       hoverBgColor: 'hover:bg-blue-200',
-      navigateTo: '/company/postJob',
+      navigateTo: '/company/companyJobs',
     },
     {
       label: 'Applications Received',
@@ -65,7 +65,7 @@ const CompanyDashboard = () => {
     <div className="max-w-5xl mx-auto p-6">
       {/* Back Button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/')}
         className="mb-6 px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
       >
         &larr; Back

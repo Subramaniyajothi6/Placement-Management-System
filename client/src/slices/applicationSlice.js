@@ -58,9 +58,10 @@ export const updateApplication = createAsyncThunk(
     'applications/updateApplication',
     async ({ id, data }, { rejectWithValue }) => {
         try {
+            console.log("id:",id,'data',data);
             const response = await applicationApi.updateApplication(id, data);
 
-            return response.data.data || response.data;
+            return response.data.data ;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || error.message);
         }

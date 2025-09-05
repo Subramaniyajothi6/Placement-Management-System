@@ -1,21 +1,11 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import {
-  getApplicationById,
-  selectApplicationById,
-  updateApplication,
-} from "../../slices/applicationSlice";
+import { getApplicationById, selectApplicationById, updateApplication } from "../../slices/applicationSlice";
 import { fetchJobById, selectSelectedJob } from "../../slices/jobSlice";
+import { useEffect, useState } from "react";
 import { fetchUserById } from "../../slices/authSlice";
-import {
-  FaUser,
-  FaEnvelope,
-  FaBriefcase,
-  FaMapMarkerAlt,
-  FaCalendarCheck,
-  FaFileAlt,
-} from "react-icons/fa";
+import { FaBriefcase, FaCalendarCheck, FaFileAlt, FaMapMarkerAlt, FaUser } from "react-icons/fa";
+
 
 const statusOptions = [
   "Submitted",
@@ -62,13 +52,15 @@ const ApplicationDetailPage = () => {
   };
 
   const handleSave = async () => {
+    console.log(status);
+    console.log(application._id);
     if (!application) return;
     setSaving(true);
     setError(null);
     setSuccessMessage(null);
     try {
       await dispatch(
-        updateApplication({ id: application._id, data: { status } })
+        updateApplication({ id: application?._id, data: { status } })
       ).unwrap();
       setSuccessMessage("Status updated successfully.");
     } catch {
@@ -86,7 +78,7 @@ const ApplicationDetailPage = () => {
 
   if (error)
     return (
-      <div className="text-center py-12 text-red-600 font-semibold">{error}</div>
+      <div className="text-center py-12 text-red-600 font-semibold">error: {error}</div>
     );
 
   return (

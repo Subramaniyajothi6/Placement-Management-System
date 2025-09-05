@@ -77,6 +77,8 @@ const applicationController = {
             const application = await Application.findByIdAndUpdate(
                 req.params.id,
                 req.body,
+                console.log(req.body),
+                console.log(req.params.id),
                 { new: true, runValidators: true }
             )
                 .populate('candidate', 'name email')   // User model fields
@@ -111,6 +113,7 @@ const applicationController = {
             });
         } catch (error) {
             res.status(500).json({ message: error.message });
+            console.log(error);
         }
     },
 

@@ -28,6 +28,8 @@ import LoginPage from "./components/Authentication/LoginPage";
 import RegisterPage from "./components/Authentication/RegisterPage";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import CompanyForm from "./components/company/CompanyForm";
+import CompanyJobsList from "./components/company/CompanyJobsList";
+import EditJob from "./components/company/EditJob";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -61,6 +63,7 @@ const App = () => {
     { path: '/:user/profile/:id', element: < CompanyProfilePage/> },
     { path: '/companydashboard', element: < CompanyDashboard/> },
     { path: '/studentdashboard', element: < StudentDashBoard/> },
+
   
 
     // admin
@@ -77,6 +80,9 @@ const App = () => {
     { path: '/register', element: <RegisterPage /> },
   
     // company  
+
+    {path: '/company/companyJobs', element: <CompanyJobsList/>},
+    {path: '/company/editJob/:id', element: <EditJob/>},
 
   ]
 

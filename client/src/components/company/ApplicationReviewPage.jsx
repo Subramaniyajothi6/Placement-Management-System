@@ -1,14 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchJobs,
-  selectJobs,
-  selectJobsError,
-  selectJobsLoading,
-} from "../../slices/jobSlice";
+import { useNavigate } from "react-router";
+import { fetchJobs, selectJobs, selectJobsError, selectJobsLoading } from "../../slices/jobSlice";
+import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
 import { useEffect, useState } from "react";
 import applicationApi from "../../api/applicationsApi";
-import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
-import { useNavigate } from "react-router";
 
 const statusOptions = [
   { label: "All", value: "" },
@@ -74,7 +69,7 @@ const ApplicationReviewPage = () => {
 
   // Back button handler
   const handleBack = () => {
-    navigate(-1);
+    navigate("/companyDashboard");
   };
 
   return (
