@@ -43,6 +43,7 @@ const RegisterPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser({ name, email, password, role }));
+    
   };
 
   return (

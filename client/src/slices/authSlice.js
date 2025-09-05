@@ -125,12 +125,13 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.message = '';  // clear message on success
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+        localStorage.setItem('token', action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        // action.payload contains backend error message, assign to message
         state.message = action.payload || 'Registration failed';
       })
 
@@ -158,7 +159,7 @@ const authSlice = createSlice({
 
       // Get Users
 
-       .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.users = [];
@@ -168,7 +169,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.users = action.payload;
         state.message = '';
-      
+
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
