@@ -9,6 +9,7 @@ const CommonDashboard = () => {
 
   useEffect(() => {
     if (user) {
+      console.log(user);
       navigate("/dashboard", { replace: true });
     }
   }, [user, navigate]);
