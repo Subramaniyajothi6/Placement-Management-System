@@ -119,14 +119,15 @@ const authSlice = createSlice({
         state.isSuccess = false;
         state.message = '';
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.message = '';  // clear message on success
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('token', action.payload.token);
+        // state.user = action.payload.user;
+        // state.token = action.payload.token;
+        // state.message = '';  // clear message on success
+        // localStorage.setItem('user', JSON.stringify(action.payload.user));
+        // localStorage.setItem('token', action.payload.token);
+        state.message = 'Registration successful, please log in.';
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;

@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import {
+  logout,
   registerUser,
   resetState,
   selectAuthError,
@@ -25,14 +26,12 @@ const RegisterPage = () => {
   const [role, setRole] = useState("student");
 
   useEffect(() => {
-    if (isSuccess) {
-      navigate("/login");
-    }
+
 
     if (message) {
       alert(message);
     }
-  }, [isSuccess, navigate, message]);
+  }, [isSuccess, message]);
 
   useEffect(() => {
     return () => {
@@ -43,7 +42,10 @@ const RegisterPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser({ name, email, password, role }));
-    
+    dispatch(logout());
+    navigate('/login')
+
+
   };
 
   return (
@@ -143,11 +145,10 @@ const RegisterPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-4 rounded-md text-white font-semibold text-lg transition-colors ${
-              isLoading
+            className={`w-full py-4 rounded-md text-white font-semibold text-lg transition-colors ${isLoading
                 ? "bg-indigo-300 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700"
-            }`}
+              }`}
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
@@ -155,10 +156,10 @@ const RegisterPage = () => {
 
         <p className="mt-8 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login"  className="text-indigo-600 hover:underline" >
+          <Link to="/login" className="text-indigo-600 hover:underline" >
             Login
           </Link>
-          
+
         </p>
       </div>
     </div>
