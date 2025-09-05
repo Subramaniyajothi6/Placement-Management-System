@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   registerUser,
   resetState,
@@ -154,9 +154,10 @@ const RegisterPage = () => {
 
         <p className="mt-8 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-indigo-600 hover:underline">
+          <Link to="/login"  className="text-indigo-600 hover:underline" >
             Login
-          </a>
+          </Link>
+          
         </p>
       </div>
     </div>
