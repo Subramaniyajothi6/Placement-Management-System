@@ -3,9 +3,11 @@ import { Link, useNavigate} from "react-router";
 import { deleteJob, fetchJobs, selectJobs, selectJobsError, selectJobsLoading } from "../../slices/jobSlice";
 import { useEffect } from "react";
 import { selectAuthUser } from "../../slices/authSlice";
+import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
 
 const CompanyJobsList = () => {
-    const user = useSelector(selectAuthUser);
+    const currentUser = useSelector(selectAuthUser);
+    const company = useSelector(selectAllCompanies)
     
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -14,20 +16,24 @@ const CompanyJobsList = () => {
   const loading = useSelector(selectJobsLoading);
   const error = useSelector(selectJobsError);
 
-  console.log("User:", user);
-  const companyId = user.companyId;
-  console.log("Jobs:", jobs);
+  // console.log("User:", currentUser);
+  // const companyId = currentUser.companyId;
+  // console.log("Jobs:", jobs);
 // console.log("Company ID:", companyId);
+const companyIdFromUser = company.filter(c => c.user===currentUser._id)[0]?._id;
+// console.log("Company ID from User:", companyIdFromUser);
+// console.log("company:", company.filter(c => c.user===currentUser._id));
 
 
 useEffect(() => {
   dispatch(fetchJobs());
+  dispatch(fetchCompanies());
 }, [dispatch]);
 
 const filteredJobs = jobs.filter((job) => {
-  return  job.company  === companyId;
+  return  job.company  === companyIdFromUser;
 });
-console.log("Filtered Jobs:", filteredJobs);
+// console.log("Filtered Jobs:", filteredJobs);
 
   // Handle delete job
   const handleDelete = (jobId) => {
