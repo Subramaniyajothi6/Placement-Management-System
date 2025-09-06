@@ -14,20 +14,20 @@ const CompanyJobsList = () => {
   const loading = useSelector(selectJobsLoading);
   const error = useSelector(selectJobsError);
 
+  const companyId = user.companyId;
   console.log("Jobs:", jobs);
-const companyId = user.companyId;
-// console.log("Company ID:", companyId);
+console.log("Company ID:", companyId);
 
 
-  useEffect(() => {
-    dispatch(fetchJobs());
-  }, [dispatch]);
+useEffect(() => {
+  dispatch(fetchJobs());
+}, [dispatch]);
 
-  const filteredJobs = jobs.filter((job) => {
-    return (typeof job.company === "string" ? job.company : job.company?._id) === companyId;
-  });
-
+const filteredJobs = jobs.filter((job) => {
+  return  job.company  === companyId;
+});
 console.log("Filtered Jobs:", filteredJobs);
+
   // Handle delete job
   const handleDelete = (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
