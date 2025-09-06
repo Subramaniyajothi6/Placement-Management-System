@@ -16,6 +16,7 @@ const InterviewModal = ({
   setCandidates,
   selectedCandidate,
   setSelectedCandidate,
+  
 }) => {
   const [selectedJob, setSelectedJob] = useState('');
   const [form, setForm] = useState({
@@ -29,9 +30,7 @@ const InterviewModal = ({
     round: 'Round 1',
     interviewers: [],
     attachments: [],
-    createdBy: '',
-    cancelledBy: '',
-    cancelReason: '',
+    // Removed createdBy, cancelledBy, cancelReason
     reminder: [],
     videoProvider: {
       providerName: '',
@@ -56,9 +55,6 @@ const InterviewModal = ({
         round: initialData.round || 'Round 1',
         interviewers: initialData.interviewers || [],
         attachments: initialData.attachments || [],
-        createdBy: initialData.createdBy || '',
-        cancelledBy: initialData.cancelledBy || '',
-        cancelReason: initialData.cancelReason || '',
         reminder: initialData.reminder || [],
         videoProvider: initialData.videoProvider || {
           providerName: '',
@@ -81,9 +77,6 @@ const InterviewModal = ({
         round: 'Round 1',
         interviewers: [],
         attachments: [],
-        createdBy: '',
-        cancelledBy: '',
-        cancelReason: '',
         reminder: [],
         videoProvider: {
           providerName: '',
@@ -104,7 +97,6 @@ const InterviewModal = ({
       const values = Array.from(e.target.selectedOptions, (option) => option.value);
       setForm((prev) => ({ ...prev, interviewers: values }));
     } else if (name === 'reminderWhen') {
-      // Manage single reminder input for adding reminders
       const val = Number(value);
       setForm((prev) => ({ ...prev, reminder: [{ whenMinutesBefore: val, sentAt: null }] }));
     } else if (name.startsWith('videoProvider.')) {
@@ -126,8 +118,6 @@ const InterviewModal = ({
     setSelectedCandidate('');
     fetchCandidatesForJob(jobId);
   };
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -161,9 +151,6 @@ const InterviewModal = ({
       round: form.round,
       interviewers: form.interviewers,
       attachments: form.attachments.length > 0 ? form.attachments : undefined,
-      createdBy: form.createdBy || undefined,
-      cancelledBy: form.cancelledBy || undefined,
-      cancelReason: form.cancelReason || undefined,
       reminder: form.reminder.length > 0 ? form.reminder : undefined,
       videoProvider: form.videoProvider.providerName ? form.videoProvider : undefined,
     });
@@ -341,42 +328,6 @@ const InterviewModal = ({
               attachments: [...prev.attachments, { url, name }],
             }));
           }} />
-        </div>
-
-        {/* Created By */}
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Created By (User ID)</label>
-          <input
-            name="createdBy"
-            value={form.createdBy}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            placeholder="User ID"
-          />
-        </div>
-
-        {/* Cancelled By */}
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Cancelled By (User ID)</label>
-          <input
-            name="cancelledBy"
-            value={form.cancelledBy}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            placeholder="User ID"
-          />
-        </div>
-
-        {/* Cancel Reason */}
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Cancel Reason</label>
-          <input
-            name="cancelReason"
-            value={form.cancelReason}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            placeholder="Reason for cancellation"
-          />
         </div>
 
         {/* Reminder - single input to set whenMinutesBefore */}

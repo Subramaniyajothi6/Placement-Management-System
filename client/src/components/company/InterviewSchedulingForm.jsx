@@ -641,6 +641,7 @@ const InterviewSchedulingForm = () => {
         setCandidates={setCandidates}
         selectedCandidate={selectedCandidate}
         setSelectedCandidate={setSelectedCandidate}
+        user={user}
       />
     </div>
   );
