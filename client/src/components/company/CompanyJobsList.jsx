@@ -14,9 +14,10 @@ const CompanyJobsList = () => {
   const loading = useSelector(selectJobsLoading);
   const error = useSelector(selectJobsError);
 
+  console.log("User:", user);
   const companyId = user.companyId;
   console.log("Jobs:", jobs);
-console.log("Company ID:", companyId);
+// console.log("Company ID:", companyId);
 
 
 useEffect(() => {
