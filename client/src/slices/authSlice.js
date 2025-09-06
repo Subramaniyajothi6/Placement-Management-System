@@ -51,6 +51,7 @@ export const loginUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
+
     }
   }
 );
@@ -122,11 +123,6 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
-        // state.user = action.payload.user;
-        // state.token = action.payload.token;
-        // state.message = '';  // clear message on success
-        // localStorage.setItem('user', JSON.stringify(action.payload.user));
-        // localStorage.setItem('token', action.payload.token);
         state.message = 'Registration successful, please log in.';
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -155,7 +151,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = action.payload;
+        state.message = action.payload;  // This should be the error message string
       })
 
       // Get Users
@@ -166,55 +162,55 @@ const authSlice = createSlice({
         state.users = [];
         state.message = '';
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loading = false;
-        state.users = action.payload;
-        state.message = '';
+    .addCase(fetchUsers.fulfilled, (state, action) => {
+      state.loading = false;
+      state.users = action.payload;
+      state.message = '';
 
-      })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload
-        state.message = action.payload;
-      })
-      // Get Profile
-      .addCase(getUserProfile.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = '';
-      })
-      .addCase(getUserProfile.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload.user ?? action.payload;
-        state.isSuccess = true;
-      })
-      .addCase(getUserProfile.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = action.payload;
-      })
-      // updateUserProfile
-      .addCase(updateUserProfile.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = '';
-      })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload.user ?? action.payload;
-        state.isSuccess = true;
-        localStorage.setItem('user', JSON.stringify(state.user));  // update localStorage user too
-      })
-      .addCase(updateUserProfile.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = action.payload;
-      });
-  }
+    })
+    .addCase(fetchUsers.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload
+      state.message = action.payload;
+    })
+    // Get Profile
+    .addCase(getUserProfile.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+    })
+    .addCase(getUserProfile.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.user ?? action.payload;
+      state.isSuccess = true;
+    })
+    .addCase(getUserProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload;
+    })
+    // updateUserProfile
+    .addCase(updateUserProfile.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = '';
+    })
+    .addCase(updateUserProfile.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.user ?? action.payload;
+      state.isSuccess = true;
+      localStorage.setItem('user', JSON.stringify(state.user));  // update localStorage user too
+    })
+    .addCase(updateUserProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload;
+    });
+}
 });
 
 export const { resetState, logout, updateProfile } = authSlice.actions;

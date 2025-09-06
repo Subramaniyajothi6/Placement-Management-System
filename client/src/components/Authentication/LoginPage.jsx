@@ -5,6 +5,7 @@ import {
   resetState,
   selectAuthError,
   selectAuthLoading,
+  selectAuthMessage,
   selectAuthUser,
 } from "../../slices/authSlice";
 import { fetchStudents } from "../../slices/studentSlice";
@@ -18,6 +19,7 @@ const LoginPage = () => {
   const isLoading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
   const user = useSelector(selectAuthUser);
+  const message = useSelector(selectAuthMessage);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -87,6 +89,13 @@ const LoginPage = () => {
       dispatch(resetState());
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      alert(message || "Login failed, please try again.");
+    }
+  }, [error, message]);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
