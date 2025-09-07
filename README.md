@@ -12,8 +12,8 @@ A full-stack MERN project for managing the college placement process, including:
 
 ## 🚀 Live Demo
 
-* Frontend (Netlify): Placement Management System Frontend
-* Backend (Render): Placement Management System API
+* Frontend (Netlify): [Placement Management System Frontend](https://placementmanagementsystem-project.netlify.app/)
+* Backend (Render): [Placement Management System API](https://placement-management-system-2d32.onrender.com/)
 
 ---
 
@@ -135,7 +135,6 @@ EMAIL_PASS=your_email_password
 * Export results to PDF for official records
 
 ---
-
 
 
 ## ⚠️ Note
