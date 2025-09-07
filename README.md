@@ -136,11 +136,7 @@ EMAIL_PASS=your_email_password
 
 ---
 
-## 📸 Screenshots
 
-👉 Add actual screenshots from the Placement Management System project here for better clarity.
-
----
 
 ## ⚠️ Note
 
