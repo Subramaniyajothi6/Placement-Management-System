@@ -1,6 +1,6 @@
-# 📌 College Placement Management System
+# 📌 Placement Management System
 
-A full-stack MERN project for managing the **college placement process**, including:
+A full-stack MERN project for managing the college placement process, including:
 
 * Student application tracking
 * Interview scheduling
@@ -12,8 +12,8 @@ A full-stack MERN project for managing the **college placement process**, includ
 
 ## 🚀 Live Demo
 
-* **Frontend (Netlify):** [Placement Management System Frontend](https://placementmanagementsystem-project.netlify.app/admin/dashboard)
-* **Backend (Render):** [Placement Management System API](https://placement-management-system-2d32.onrender.com/)
+* Frontend (Netlify): [Placement Management System Frontend](https://placementmanagementsystem-project.netlify.app/)
+* Backend (Render): [Placement Management System API](https://placement-management-system-2d32.onrender.com/)
 
 ---
 
@@ -21,16 +21,16 @@ A full-stack MERN project for managing the **college placement process**, includ
 
 You can use the following demo accounts to explore the system:
 
-* **Admin**
-  Email: `admin@gmail.com`
-  Password: `123456`
+* Admin
+  Email: [admin@gmail.com](mailto:admin@gmail.com)
+  Password: 123456
 
-* **Company**
-  Email: `company3@gmail.com`
-  Password: `123456`
+* Company
+  Email: [company@gmail.com](mailto:company@gmail.com)
+  Password: 123456
 
-* **Student**
-  (Use your own test student account while running locally)
+* Student
+  Create your own test account using the signup option.
 
 ---
 
@@ -40,7 +40,7 @@ You can use the following demo accounts to explore the system:
 
 * Submit applications with resume & cover letter
 * Track application status
-* Receive **email notifications** (via Nodemailer) for updates
+* Receive email notifications (via Nodemailer) for updates
 * View & manage interview schedules
 
 ### 🏢 Company
@@ -48,8 +48,8 @@ You can use the following demo accounts to explore the system:
 * Choose placement drive & post job openings
 * Manage company profile
 * View applications received
-* Update application status (**triggers email to student**)
-* Schedule interviews and update results (**emails sent to student**)
+* Update application status (triggers email to student)
+* Schedule interviews and update results (emails sent to student)
 
 ### 👨‍💼 Admin
 
@@ -57,21 +57,22 @@ You can use the following demo accounts to explore the system:
 * Manage student lists
 * Create new placement drives
 * View reports of past drives
-* Export reports as **PDF** (using HTML-to-PDF)
-* Visualize reports using **Recharts**
+* Export reports as PDF (using jsPDF / html-pdf)
+* Visualize reports using Recharts
 
 ---
 
 ## ⚙️ Tech Stack
 
-* **Frontend:** React.js, TailwindCSS
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB
-* **Authentication:** JWT
-* **Email Notifications:** Nodemailer
-* **Charts & Reports:** Recharts
-* **PDF Export:** html-to-pdf
-* **Deployment:**
+* Frontend: React.js, TailwindCSS, Redux (for state management)
+* Backend: Node.js, Express.js
+* Database: MongoDB
+* Authentication: JWT
+* Email Notifications: Nodemailer
+* State Management: Redux (used for managing authentication, roles, job postings, placement drives, interviews, and reports data consistently across the app)
+* Charts & Reports: Recharts
+* PDF Export: jsPDF / html-pdf
+* Deployment:
 
   * Frontend → Netlify
   * Backend → Render
@@ -81,10 +82,10 @@ You can use the following demo accounts to explore the system:
 ## 🗂️ Project Structure
 
 ```
-/placement-management-system
-  ├── backend   # Express.js API, MongoDB models & controllers
-  ├── frontend  # React.js with TailwindCSS
-  └── README.md
+/Placement-Management-System
+ ├── backend   # Express.js API, MongoDB models & controllers
+ ├── frontend  # React.js with TailwindCSS + Redux (slices, store, state management)
+ └── README.md
 ```
 
 ---
@@ -94,8 +95,8 @@ You can use the following demo accounts to explore the system:
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/placement-management-system.git
-cd placement-management-system
+git clone https://github.com/Subramaniyajothi6/Placement-Management-System.git
+cd Placement-Management-System
 ```
 
 ### 2️⃣ Setup Backend
@@ -116,7 +117,7 @@ npm run dev
 
 ### 4️⃣ Environment Variables
 
-Create a `.env` file in **backend**:
+Create a `.env` file in backend:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
@@ -135,14 +136,15 @@ EMAIL_PASS=your_email_password
 
 ---
 
+
 ## ⚠️ Note
 
-* This project is for **educational/demo purposes only**
+* This project is for educational/demo purposes only
 * Do not use real credentials when testing
-* Student account credentials are **kept private**
+* Student account credentials are kept private
 
 ---
 
 ## 📜 License
 
-This project is **open-source** under the MIT License.
+This project is open-source under the MIT License.
