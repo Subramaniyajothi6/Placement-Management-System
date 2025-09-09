@@ -9,6 +9,7 @@ const authApi = {
     getUsers: () => axiosClient.get('/auth/users'),
     getUserById: (id) => axiosClient.get(`/auth/users/${id}`),
 
+
 }
 
 export default authApi;

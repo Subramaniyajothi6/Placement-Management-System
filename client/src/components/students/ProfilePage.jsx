@@ -1,6 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuthUser } from "../../slices/authSlice";
-import { createStudent, selectStudentLoading, selectStudentError } from "../../slices/studentSlice";
+import {
+  createStudent,
+  selectStudentLoading,
+  selectStudentError,
+  uploadStudentResume,
+} from "../../slices/studentSlice";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
@@ -48,6 +53,7 @@ const ProfilePage = () => {
     if (user) {
       setForm((prev) => ({
         ...prev,
+        userId: user._id,
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
@@ -102,6 +108,25 @@ const ProfilePage = () => {
       newArray.splice(index, 1);
       return { ...prev, [field]: newArray.length ? newArray : [""] };
     });
+  };
+
+  const handleResumeUpload = async (file) => {
+    if (!file) return;
+    const id = form.userId || user?._id;
+    try {
+      const action = await dispatch(uploadStudentResume({ id, file }));
+      if (uploadStudentResume.fulfilled.match(action)) {
+        setForm((prev) => ({
+          ...prev,
+          resume: action.payload.resume,
+        }));
+        alert("Resume uploaded successfully!");
+      } else {
+        alert("Resume upload failed: " + action.payload);
+      }
+    } catch (error) {
+      alert("Unexpected error uploading resume",error.message);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -213,7 +238,9 @@ const ProfilePage = () => {
                   type="text"
                   placeholder="Institution"
                   value={edu.institution}
-                  onChange={(e) => handleArrayChange("education", i, "institution", e.target.value)}
+                  onChange={(e) =>
+                    handleArrayChange("education", i, "institution", e.target.value)
+                  }
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
                 <input
@@ -227,7 +254,9 @@ const ProfilePage = () => {
                   type="text"
                   placeholder="Field Of Study"
                   value={edu.fieldOfStudy}
-                  onChange={(e) => handleArrayChange("education", i, "fieldOfStudy", e.target.value)}
+                  onChange={(e) =>
+                    handleArrayChange("education", i, "fieldOfStudy", e.target.value)
+                  }
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
                 <div className="flex space-x-4">
@@ -392,20 +421,29 @@ const ProfilePage = () => {
             </button>
           </fieldset>
 
-          {/* Resume URL */}
+          {/* Resume Upload */}
           <div>
-            <label htmlFor="resume" className="block mb-2 font-semibold text-gray-800">
-              Resume URL
+            <label htmlFor="resumeFile" className="block mb-2 font-semibold text-gray-800">
+              Upload Resume (PDF, DOC, DOCX)
             </label>
             <input
-              id="resume"
-              name="resume"
-              type="url"
-              value={form.resume}
-              onChange={handleChange}
-              placeholder="Enter link to your resume"
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+              id="resumeFile"
+              name="resumeFile"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => handleResumeUpload(e.target.files[0])}
+              className="w-full p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
+            {form.resume && (
+              <a
+                href={form.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block text-indigo-600 underline"
+              >
+                View uploaded resume
+              </a>
+            )}
           </div>
 
           <button

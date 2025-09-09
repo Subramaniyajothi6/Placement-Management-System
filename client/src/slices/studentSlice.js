@@ -57,22 +57,37 @@ export const deleteStudent = createAsyncThunk(
             return rejectWithValue(error.response?.data?.message || error.message)
         }
     }
+)
+
+export const uploadStudentResume = createAsyncThunk(
+    'student/uploadResume',
+    async ({ id, file }, { rejectWithValue }) => {
+        try {
+            const formData = new FormData();
+            formData.append('resume', file);
+
+            const response = await studentApi.uploadResume(id, formData);
+            return response.data.data; // Updated student object with resume URL
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
 );
 
 const studentSlice = createSlice({
     name: 'student',
-     initialState: {
-    students: [],               
-    selectedStudent: null,      
-    applications: [],            
-    interviews: [],              
-    drives: [],                  
-    companies: [],               
-    jobs: [],                    
-    stats: {},                   
-    loading: false,
-    error: null,
-  },
+    initialState: {
+        students: [],
+        selectedStudent: null,
+        applications: [],
+        interviews: [],
+        drives: [],
+        companies: [],
+        jobs: [],
+        stats: {},
+        loading: false,
+        error: null,
+    },
     reducers: {
         clearSelectedStudent: (state) => {
             state.selectedStudent = null;
@@ -92,7 +107,7 @@ const studentSlice = createSlice({
             .addCase(createStudent.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-                
+
                 // fetch all
             })
             .addCase(fetchStudents.pending, (state) => {
@@ -131,10 +146,10 @@ const studentSlice = createSlice({
             })
             .addCase(updateStudent.fulfilled, (state, action) => {
                 state.loading = false;
-               const index = state.students.findIndex(item => item._id === action.payload._id);
-               if(index !== -1){
-                state.students[index] = action.payload;
-               }
+                const index = state.students.findIndex(item => item._id === action.payload._id);
+                if (index !== -1) {
+                    state.students[index] = action.payload;
+                }
             })
             .addCase(updateStudent.rejected, (state, action) => {
                 state.loading = false;
@@ -155,11 +170,29 @@ const studentSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
+
+            .addCase(uploadStudentResume.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(uploadStudentResume.fulfilled, (state, action) => {
+                state.loading = false;
+                const index = state.students.findIndex((item) => item._id === action.payload._id);
+                if (index !== -1) {
+                    state.students[index] = action.payload;
+                }
+                state.selectedStudent = action.payload; // update selected too if needed
+            })
+            .addCase(uploadStudentResume.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
     }
 })
 
-export const {clearSelectedStudent} = studentSlice.actions;
-export default studentSlice.reducer 
+export const { clearSelectedStudent } = studentSlice.actions;
+export default studentSlice.reducer
 export const selectStudents = (state) => state.student.students;
 export const selectSelectedStudent = (state) => state.student.selectedStudent;
 export const selectStudentLoading = (state) => state.student.loading;
