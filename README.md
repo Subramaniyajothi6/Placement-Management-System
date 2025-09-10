@@ -13,7 +13,7 @@ A full-stack MERN project for managing the college placement process, including:
 ## 🚀 Live Demo
 
 * Frontend (Netlify): [Placement Management System Frontend](https://placementmanagementsystem-project.netlify.app/)
-* Backend (Render): [Placement Management System API](https://placement-management-system-2d32.onrender.com/)
+* Backend (Render): [Placement Management System API](https://placement-management-system-9vxu.onrender.com/)
 
 ---
 
