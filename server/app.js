@@ -15,7 +15,7 @@ const reportRouter = require('./routes/reportRouter');
 
 
 app.use(cors({
-    origin: ['http://localhost:3000','https://placement-management-system-2d32.onrender.com','http://localhost:5173','https://placementmanagementsystem-project.netlify.app'],
+    origin: ['http://localhost:3000','https://placement-management-system-9vxu.onrender.com','http://localhost:5173','https://placementmanagementsystem-project.netlify.app'],
     methods:['GET','POST', 'DELETE', 'UPDATE', 'PUT'],
     credentials:true
 }))
