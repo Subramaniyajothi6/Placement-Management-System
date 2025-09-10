@@ -15,6 +15,7 @@ const PostJob = () => {
   const isSuccess = useSelector(selectJobsSuccess);
   const companies = useSelector(selectAllCompanies);
   const user = useSelector(selectAuthUser);
+  
 
   useEffect(() => {
     dispatch(fetchCompanies());

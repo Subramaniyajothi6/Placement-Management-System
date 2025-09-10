@@ -38,6 +38,16 @@ const CompanyForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const isValidURL = (string) => {
+    if (!string) return true; // Allow empty field as valid
+    try {
+      new URL(string.trim());
+      return true;
+    } catch (e) {
+      return e || false;
+    }
+  };
+
   const handleNestedChange = (e, parentKey) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -63,10 +73,36 @@ const CompanyForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Trim logo and website URLs before validation
+    const logoUrl = formData.logo.trim();
+    const websiteUrl = formData.website.trim();
+
+    if (logoUrl && !isValidURL(logoUrl)) {
+      setErrorMessage("Please enter a valid Logo URL.");
+      return;
+    }
+
+    if (websiteUrl && !isValidURL(websiteUrl)) {
+      setErrorMessage("Please enter a valid Website URL.");
+      return;
+    }
+
+    // Validate socialLinks URLs if not empty
+    const socialLinks = formData.socialLinks;
+    for (const key in socialLinks) {
+      if (socialLinks[key] && !isValidURL(socialLinks[key])) {
+        setErrorMessage(`Please enter a valid URL for ${key}.`);
+        return;
+      }
+    }
+
     if (!formData.name) {
       setErrorMessage("Company name is required.");
       return;
     }
+
+    setErrorMessage("");
 
     const payload = {
       ...formData,
@@ -77,6 +113,7 @@ const CompanyForm = () => {
       .unwrap()
       .then(() => {
         setSuccessMessage("Company profile created successfully!");
+        alert("Company profile created successfully!");
         setFormData({
           name: "",
           industry: "",
@@ -114,7 +151,7 @@ const CompanyForm = () => {
       <button
         onClick={() => navigate(-1)}
         aria-label="Go back"
-        className="fixed top-6 left-6 bg-indigo-300 text-indigo-900 font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-400 transition z-50"
+        className="fixed top-16 left-6 bg-indigo-300 text-indigo-900 font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-400 transition z-50"
       >
         &larr; Back
       </button>

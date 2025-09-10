@@ -60,18 +60,18 @@ export const deleteStudent = createAsyncThunk(
 )
 
 export const uploadStudentResume = createAsyncThunk(
-    'student/uploadResume',
-    async ({ id, file }, { rejectWithValue }) => {
-        try {
-            const formData = new FormData();
-            formData.append('resume', file);
+  'student/uploadResume',
+  async ({ file }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append('resume', file);
 
-            const response = await studentApi.uploadResume(id, formData);
-            return response.data.data; // Updated student object with resume URL
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message || error.message);
-        }
+      const response = await studentApi.uploadResume(formData); // no id needed
+      return response.data.url; // just the URL string
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
+  }
 );
 
 const studentSlice = createSlice({

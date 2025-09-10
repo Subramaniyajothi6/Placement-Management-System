@@ -13,30 +13,20 @@ const InterviewModal = ({
   mode,
   fetchCandidatesForJob,
   candidates,
-  setCandidates,
+  setCandidates = () => { },
   selectedCandidate,
   setSelectedCandidate,
-  
+  user,
 }) => {
   const [selectedJob, setSelectedJob] = useState('');
   const [form, setForm] = useState({
     startTime: '',
     durationMinutes: 30,
     interviewType: 'Online',
-    platform: '',
     location: '',
-    meetingId: '',
-    meetingPassword: '',
     round: 'Round 1',
-    interviewers: [],
     attachments: [],
-    // Removed createdBy, cancelledBy, cancelReason
     reminder: [],
-    videoProvider: {
-      providerName: '',
-      externalMeetingId: '',
-      webhookStatus: 'pending',
-    },
   });
   const [formError, setFormError] = useState('');
 
@@ -48,19 +38,10 @@ const InterviewModal = ({
         startTime: initialData.startTime ? new Date(initialData.startTime).toISOString().substring(0, 16) : '',
         durationMinutes: initialData.durationMinutes || 30,
         interviewType: initialData.interviewType || 'Online',
-        platform: initialData.platform || '',
         location: initialData.location || '',
-        meetingId: initialData.meetingId || '',
-        meetingPassword: '',
         round: initialData.round || 'Round 1',
-        interviewers: initialData.interviewers || [],
         attachments: initialData.attachments || [],
         reminder: initialData.reminder || [],
-        videoProvider: initialData.videoProvider || {
-          providerName: '',
-          externalMeetingId: '',
-          webhookStatus: 'pending',
-        },
       });
       fetchCandidatesForJob(initialData.job);
     } else {
@@ -70,41 +51,26 @@ const InterviewModal = ({
         startTime: '',
         durationMinutes: 30,
         interviewType: 'Online',
-        platform: '',
         location: '',
-        meetingId: '',
-        meetingPassword: '',
         round: 'Round 1',
-        interviewers: [],
         attachments: [],
         reminder: [],
-        videoProvider: {
-          providerName: '',
-          externalMeetingId: '',
-          webhookStatus: 'pending',
-        },
       });
       setFormError('');
       setCandidates([]);
     }
   }, [mode, initialData, fetchCandidatesForJob, setCandidates, setSelectedCandidate]);
 
+  // Attachment input fields state for new attachment
+  const [newAttachmentUrl, setNewAttachmentUrl] = useState('');
+  const [newAttachmentName, setNewAttachmentName] = useState('');
+
+  const canAddAttachment = newAttachmentUrl.trim() !== '' && newAttachmentName.trim() !== '';
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (name === 'candidate') {
       setSelectedCandidate(value);
-    } else if (name === 'interviewers') {
-      const values = Array.from(e.target.selectedOptions, (option) => option.value);
-      setForm((prev) => ({ ...prev, interviewers: values }));
-    } else if (name === 'reminderWhen') {
-      const val = Number(value);
-      setForm((prev) => ({ ...prev, reminder: [{ whenMinutesBefore: val, sentAt: null }] }));
-    } else if (name.startsWith('videoProvider.')) {
-      const key = name.split('.')[1];
-      setForm((prev) => ({
-        ...prev,
-        videoProvider: { ...prev.videoProvider, [key]: value },
-      }));
     } else if (type === 'checkbox') {
       setForm((prev) => ({ ...prev, [name]: checked }));
     } else {
@@ -117,6 +83,32 @@ const InterviewModal = ({
     setSelectedJob(jobId);
     setSelectedCandidate('');
     fetchCandidatesForJob(jobId);
+  };
+
+  const handleAddAttachment = () => {
+    if (!canAddAttachment) return;
+    setForm((prev) => ({
+      ...prev,
+      attachments: [...prev.attachments, { url: newAttachmentUrl, name: newAttachmentName }],
+    }));
+    setNewAttachmentUrl('');
+    setNewAttachmentName('');
+  };
+
+  const handleRemoveAttachment = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleReminderChange = (e) => {
+    const val = Number(e.target.value);
+    if (isNaN(val) || val < 0) return;
+    setForm((prev) => ({
+      ...prev,
+      reminder: val ? [{ whenMinutesBefore: val, sentAt: null }] : [],
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -133,6 +125,10 @@ const InterviewModal = ({
       setFormError('Please select an interview date and time.');
       return;
     }
+    if ((form.interviewType === 'Offline' || form.interviewType === 'Hybrid') && !form.location.trim()) {
+      setFormError('Please enter the interview location.');
+      return;
+    }
     setFormError('');
     const start = new Date(form.startTime);
     const end = new Date(start.getTime() + form.durationMinutes * 60000);
@@ -144,16 +140,27 @@ const InterviewModal = ({
       interviewDate: start.toISOString(),
       durationMinutes: Number(form.durationMinutes),
       interviewType: form.interviewType,
-      platform: form.platform || undefined,
-      location: form.interviewType === 'Offline' ? form.location : '',
-      meetingId: form.interviewType === 'Online' ? form.meetingId : '',
-      meetingPassword: form.meetingPassword || undefined,
+      location: form.interviewType === 'Offline' || form.interviewType === 'Hybrid' ? form.location : '',
       round: form.round,
-      interviewers: form.interviewers,
-      attachments: form.attachments.length > 0 ? form.attachments : undefined,
-      reminder: form.reminder.length > 0 ? form.reminder : undefined,
-      videoProvider: form.videoProvider.providerName ? form.videoProvider : undefined,
+      attachments: form.attachments.length ? form.attachments : undefined,
+      reminder: form.reminder.length ? form.reminder : undefined,
+      interviewers: user._id,
     });
+
+    setSelectedJob('');
+    setSelectedCandidate('');
+    setForm({
+      startTime: '',
+      durationMinutes: 30,
+      interviewType: 'Online',
+      location: '',
+      round: 'Round 1',
+      attachments: [],
+      reminder: [],
+    });
+    setFormError('');
+    onClose();
+    alert('Interview scheduled successfully!');
   };
 
   return (
@@ -185,7 +192,9 @@ const InterviewModal = ({
           >
             <option value="">Select Job</option>
             {jobs.filter((job) => job.company === userCompanyId).map((job) => (
-              <option key={job._id} value={job._id}>{job.title}</option>
+              <option key={job._id} value={job._id}>
+                {job.title}
+              </option>
             ))}
           </select>
         </div>
@@ -202,8 +211,8 @@ const InterviewModal = ({
             className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 bg-white"
           >
             <option value="">Select Candidate</option>
-            {candidates.map((app) => (
-              <option key={app.candidate._id} value={app.candidate._id}>
+            {candidates.map((app, index) => (
+              <option key={app.candidate._id + '-' + index} value={app.candidate._id}>
                 {app.candidate.name} ({app.candidate.email})
               </option>
             ))}
@@ -251,45 +260,75 @@ const InterviewModal = ({
           </select>
         </div>
 
-        {/* Online specific inputs */}
-        {form.interviewType === 'Online' && (
-          <>
-            <div>
-              <label className="block mb-2 font-medium text-indigo-900">Meeting Link/ID</label>
-              <input
-                name="meetingId"
-                value={form.meetingId}
-                onChange={handleChange}
-                className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-              />
-            </div>
-            <div>
-              <label className="block mb-2 font-medium text-indigo-900">Meeting Password</label>
-              <input
-                name="meetingPassword"
-                type="password"
-                value={form.meetingPassword}
-                onChange={handleChange}
-                className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-              />
-            </div>
-          </>
-        )}
-
-        {/* Offline specific input */}
-        {form.interviewType === 'Offline' && (
+        {/* Offline or Hybrid: Location Input */}
+        {(form.interviewType === 'Offline' || form.interviewType === 'Hybrid') && (
           <div>
             <label className="block mb-2 font-medium text-indigo-900">Location</label>
             <input
               name="location"
               value={form.location}
               onChange={handleChange}
+              required
               className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
             />
           </div>
         )}
 
-        {/* Round */}
+        {/* Attachments */}
+        <div>
+          <label className="block mb-2 font-medium text-indigo-900">Attachments</label>
+          {form.attachments.map((att, idx) => (
+            <div key={idx} className="flex space-x-2 mb-2 items-center">
+              <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-indigo-700 underline">
+                {att.name || att.url}
+              </a>
+              <button
+                type="button"
+                onClick={() => handleRemoveAttachment(idx)}
+                className="text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <div className="flex space-x-2 mb-4">
+            <input
+              placeholder="Attachment URL"
+              value={newAttachmentUrl}
+              onChange={(e) => setNewAttachmentUrl(e.target.value)}
+              className="flex-grow p-2 border rounded"
+            />
+            <input
+              placeholder="Attachment Name"
+              value={newAttachmentName}
+              onChange={(e) => setNewAttachmentName(e.target.value)}
+              className="flex-grow p-2 border rounded"
+            />
+            <button
+              type="button"
+              disabled={!canAddAttachment}
+              onClick={handleAddAttachment}
+              className={`px-3 rounded font-semibold text-white ${canAddAttachment ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-300 cursor-not-allowed'}`}
+            >
+              Add
+            </button>
+          </div>
+        </div>
+
+        {/* Reminder (minutes before) */}
+        <div>
+          <label className="block mb-2 font-medium text-indigo-900">Reminder (minutes before)</label>
+          <input
+            type="number"
+            min={0}
+            value={form.reminder.length > 0 ? form.reminder[0].whenMinutesBefore : ''}
+            onChange={handleReminderChange}
+            placeholder="Minutes before interview"
+            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+          />
+        </div>
+
+        {/* Interview Round */}
         <div>
           <label className="block mb-2 font-medium text-indigo-900">Interview Round</label>
           <input
@@ -300,87 +339,7 @@ const InterviewModal = ({
           />
         </div>
 
-        {/* Attachments - add/remove URLs & names */}
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Attachments</label>
-          {form.attachments.map((att, idx) => (
-            <div key={idx} className="flex space-x-2 mb-2 items-center">
-              <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-indigo-700 underline">
-                {att.name || att.url}
-              </a>
-              <button
-                type="button"
-                onClick={() => {
-                  setForm(prev => ({
-                    ...prev,
-                    attachments: prev.attachments.filter((_, i) => i !== idx),
-                  }));
-                }}
-                className="text-red-600 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <AttachmentInput onAdd={(url, name) => {
-            setForm(prev => ({
-              ...prev,
-              attachments: [...prev.attachments, { url, name }],
-            }));
-          }} />
-        </div>
-
-        {/* Reminder - single input to set whenMinutesBefore */}
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Reminder (minutes before)</label>
-          <input
-            type="number"
-            name="reminderWhen"
-            value={form.reminder.length > 0 ? form.reminder[0].whenMinutesBefore : ''}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            placeholder="Minutes before interview"
-            min={0}
-          />
-        </div>
-
-        {/* Video Provider */}
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Video Provider Name</label>
-          <input
-            name="videoProvider.providerName"
-            value={form.videoProvider.providerName}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            placeholder="Provider name (e.g. Zoom)"
-          />
-        </div>
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">External Meeting ID</label>
-          <input
-            name="videoProvider.externalMeetingId"
-            value={form.videoProvider.externalMeetingId}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            placeholder="External meeting ID"
-          />
-        </div>
-        <div>
-          <label className="block mb-2 font-medium text-indigo-900">Webhook Status</label>
-          <select
-            name="videoProvider.webhookStatus"
-            value={form.videoProvider.webhookStatus}
-            onChange={handleChange}
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-          >
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
-            <option value="failed">Failed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-
-        {/* Buttons */}
+        {/* Submit and Cancel buttons */}
         <div className="flex justify-end space-x-4 pt-2 border-t">
           <button
             type="button"
@@ -400,41 +359,5 @@ const InterviewModal = ({
     </Modal>
   );
 };
-
-// Simple separate component for adding attachments (url + name inputs)
-function AttachmentInput({ onAdd }) {
-  const [url, setUrl] = useState('');
-  const [name, setName] = useState('');
-  const canAdd = url.trim() && name.trim();
-
-  return (
-    <div className="flex space-x-2 mb-4">
-      <input
-        placeholder="Attachment URL"
-        value={url}
-        onChange={e => setUrl(e.target.value)}
-        className="flex-grow p-2 border rounded"
-      />
-      <input
-        placeholder="Attachment Name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        className="flex-grow p-2 border rounded"
-      />
-      <button
-        type="button"
-        disabled={!canAdd}
-        onClick={() => {
-          onAdd(url, name);
-          setUrl('');
-          setName('');
-        }}
-        className={`px-3 rounded font-semibold text-white ${canAdd ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-300 cursor-not-allowed'}`}
-      >
-        Add
-      </button>
-    </div>
-  );
-}
 
 export default InterviewModal;

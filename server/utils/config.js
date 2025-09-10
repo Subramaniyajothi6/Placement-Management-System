@@ -13,6 +13,5 @@ module.exports = {
     PORT,
     JWT_SECRET,
     EMAIL,
-    EMAIL_PASS
-
+    EMAIL_PASS,
 }

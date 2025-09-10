@@ -7,34 +7,90 @@ const transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: EMAIL,
-    pass: EMAIL_PASS
+    pass: EMAIL_PASS,
   },
 });
 
-// Helper to generate the right email content based on type
+// Helper to generate the right email content based on type and result
 function getMailContent({ type, interview, companyProfile, job }) {
   switch (type) {
     case 'result':
-      return {
-        subject: `Your Interview Result for ${job.title}`,
-        text:
-`Dear Candidate,
+      {
+        // Common score and feedback text, with fallback if not provided
+        const scoreText = `Score: ${typeof interview.score === 'number' ? interview.score : 'N/A'}`;
+        const feedbackText = `Feedback: ${interview.feedback || 'No feedback provided'}`;
 
-Thank you for attending the interview for the role of ${job.title}.
+        switch (interview.result?.toLowerCase()) {
+          case 'shortlisted':
+            return {
+              subject: `Congratulations! You have been shortlisted for ${job.title}`,
+              text: `Dear Candidate,
 
-Result: ${interview.result}
-Score: ${typeof interview.score === 'number' ? interview.score : 'N/A'}
-Feedback: ${interview.feedback || 'No feedback provided'}
+We are pleased to inform you that you have been shortlisted for the position of ${job.title}.
+
+${scoreText}
+${feedbackText}
+
+Please await further instructions from the recruitment team.
 
 Best regards,
 ${companyProfile?.name || 'Company Team'}
-`
+`,
+            };
+          case 'rejected':
+            return {
+              subject: `Interview Result for ${job.title}`,
+              text: `Dear Candidate,
+
+Thank you for your interest and time. Unfortunately, we will not be moving forward with your application for the position of ${job.title}.
+
+${scoreText}
+${feedbackText}
+
+We wish you the best in your job search.
+
+Best regards,
+${companyProfile?.name || 'Company Team'}
+`,
+            };
+          case 'hired':
+            return {
+              subject: `Congratulations! You have been hired for ${job.title}`,
+              text: `Dear Candidate,
+
+We are excited to offer you the position of ${job.title} at ${companyProfile?.name || 'our company'}.
+
+${scoreText}
+${feedbackText}
+
+Please contact us to discuss the next steps.
+
+Best regards,
+${companyProfile?.name || 'Company Team'}
+`,
+            };
+          default:
+            // fallback for any other result value
+            return {
+              subject: `Your Interview Result for ${job.title}`,
+              text: `Dear Candidate,
+
+Your interview result for the position of ${job.title} is: ${interview.result}
+
+${scoreText}
+${feedbackText}
+
+Best regards,
+${companyProfile?.name || 'Company Team'}
+`,
+            };
+        }
       }
-    default: // 'schedule' or unrecognized, fallback to default
+    default:
+      // Scheduling or other emails
       return {
         subject: `Interview Scheduled for Role: ${job.title}`,
-        text:
-`Dear Candidate,
+        text: `Dear Candidate,
 
 Your interview has been scheduled as follows:
 
@@ -50,16 +106,23 @@ Please be prepared accordingly.
 
 Best regards,
 ${companyProfile?.name || 'Company Team'}
-`
-      }
+`,
+      };
   }
 }
 
 // Send interview notification or result email
 async function sendInterviewEmail(toEmail, interview, companyProfile, job, type) {
-  // Choose email template type based on passed type or interview.result
-  const emailType = type || 
-    (interview.result && interview.result !== 'Pending' ? 'result' : 'schedule');
+  // Determine email type from argument or interview.result
+  let emailType = type;
+
+  if (!emailType) {
+    if (!interview.result || interview.result.toLowerCase() === 'pending') {
+      console.log('Interview result is pending; no email sent.');
+      return; // Do NOT send email if result is pending or absent
+    }
+    emailType = 'result';
+  }
 
   const { subject, text } = getMailContent({ type: emailType, interview, companyProfile, job });
 
@@ -67,10 +130,12 @@ async function sendInterviewEmail(toEmail, interview, companyProfile, job, type)
     from: `"${companyProfile?.name || 'Company Team'}" <no-reply@${companyProfile?.name || 'companyteam.com'}>`,
     to: toEmail,
     subject,
-    text
+    text,
   };
 
   return transporter.sendMail(mailOptions);
 }
 
-module.exports = { sendInterviewEmail };
+module.exports = {
+  sendInterviewEmail,
+};

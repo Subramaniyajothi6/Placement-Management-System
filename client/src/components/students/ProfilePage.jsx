@@ -110,24 +110,24 @@ const ProfilePage = () => {
     });
   };
 
-  const handleResumeUpload = async (file) => {
-    if (!file) return;
-    const id = form.userId || user?._id;
-    try {
-      const action = await dispatch(uploadStudentResume({ id, file }));
-      if (uploadStudentResume.fulfilled.match(action)) {
-        setForm((prev) => ({
-          ...prev,
-          resume: action.payload.resume,
-        }));
-        alert("Resume uploaded successfully!");
-      } else {
-        alert("Resume upload failed: " + action.payload);
-      }
-    } catch (error) {
-      alert("Unexpected error uploading resume",error.message);
+const handleResumeUpload = async (file) => {
+  if (!file) return;
+  console.log(user);
+  try {
+    const action = await dispatch(uploadStudentResume({ file }));
+    if (uploadStudentResume.fulfilled.match(action)) {
+      setForm((prev) => ({
+        ...prev,
+        resume: action.payload, // just the URL string now
+      }));
+      alert("Resume uploaded successfully!");
+    } else {
+      alert("Resume upload failed: " + action.payload);
     }
-  };
+  } catch (error) {
+    alert("Unexpected error uploading resume: " + error.message);
+  }
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -151,7 +151,7 @@ const ProfilePage = () => {
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="fixed top-6 left-6 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
+        className="fixed top-20 left-6 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
         aria-label="Go Back"
       >
         <FaArrowLeft className="mr-2" /> Back

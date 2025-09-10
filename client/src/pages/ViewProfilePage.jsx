@@ -175,7 +175,7 @@ const ViewProfilePage = () => {
     <div className="min-h-screen bg-indigo-50 " >
 
 
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 max-w-7xl mx-auto ">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)} // Go back to the previous page

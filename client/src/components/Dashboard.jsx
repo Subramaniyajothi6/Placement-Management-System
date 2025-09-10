@@ -31,7 +31,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-indigo-50">
-      <Navbar />
       <div className="p-6 max-w-7xl mx-auto">
         <header className="mb-12 flex flex-col items-center justify-center">
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-indigo-800 text-center">

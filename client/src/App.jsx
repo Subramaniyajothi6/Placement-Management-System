@@ -26,10 +26,12 @@ import ManagePlacementDrives from "./pages/ManagePlacementDrives";
 import Dashboard from "./components/Dashboard";
 import LoginPage from "./components/Authentication/LoginPage";
 import RegisterPage from "./components/Authentication/RegisterPage";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
 import CompanyForm from "./components/company/CompanyForm";
 import CompanyJobsList from "./components/company/CompanyJobsList";
 import EditJob from "./components/company/EditJob";
+import JitsiMeetComponent from "./components/company/JitsiMeetComponent";
+import Layout from "./components/company/Layout";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,49 +44,52 @@ const App = () => {
     }
   }, [dispatch, user]);
 
-  const routes = [
-    {
-      path: "/", element: <CommonDashboard /> ,
-    }
-    ,
-    { path: '/:user/postJob/:placementDriveId', element: <PostJob /> },
-    { path: '/:user/postJob', element: <PlacementDriveJobPostWrapper /> },
-    { path: '/:user/applyJob/:driveId', element: <CompaniesInPlacementDrive /> },
-    { path: '/:user/applyJob/:driveId/:companyId', element: <JobsByDriveAndCompany /> },
-    { path: '/:user/applyJob/:driveId/:companyId/:jobId', element: <StudentApplicationPage/>  },
-    { path: '/:user/studentProfile', element: <ProfilePage/> },
-    { path: '/:user/viewStudentProfile', element: <ViewProfilePage/> },
-    { path: '/:user/companyProfile', element: <CompanyForm/> },
-    { path: '/:user/interview', element: <InterviewSchedulingForm/> },
-    { path: '/:user/interview/:interviewId', element: <InterviewDetailPage/> },
-    { path: '/:user/interview/interviewFeedback/:interviewId', element: <InterviewFeedbackForm/> },
-    { path: '/:user/applications', element: < ApplicationReviewPage/> },
-    { path: '/:user/applications/:id', element: < ApplicationDetailPage/> },
-    { path: '/:user/profile/:id', element: < CompanyProfilePage/> },
-    { path: '/companydashboard', element: < CompanyDashboard/> },
-    { path: '/studentdashboard', element: < StudentDashBoard/> },
 
-  
+  const LayoutWithNavbar = () => (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
 
-    // admin
+const routes = [
+  // Public or minimal-layout routes (login, signup, etc.)
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <RegisterPage /> },
+  { path: "/", element: <CommonDashboard /> },
 
-    { path: '/:user/reports', element: <ReportsPage/> },
-    { path: '/dashboard/reports/:id', element: <ReportDetailsPage/> },
-    { path: '/:user/student/profiles', element: <StudentManagementPage/> },
-    { path: '/:user/student/profiles/:studentId', element: <StudentDetail/> },
-    { path: '/:user/placementDrive', element: <ManagePlacementDrives/> },
-
-    
-    { path: '/:user/dashboard', element: <Dashboard/> },
-    { path: '/login', element: <LoginPage /> },
-    { path: '/register', element: <RegisterPage /> },
-  
-    // company  
-
-    {path: '/company/companyJobs', element: <CompanyJobsList/>},
-    {path: '/company/editJob/:id', element: <EditJob/>},
-
-  ]
+  // All main app routes in a layout with Navbar:
+  {
+    path: "/",
+    element: <LayoutWithNavbar />,
+    children: [
+      { path: ":user/postJob/:placementDriveId", element: <PostJob /> },
+      { path: ":user/postJob", element: <PlacementDriveJobPostWrapper /> },
+      { path: ":user/applyJob/:driveId", element: <CompaniesInPlacementDrive /> },
+      { path: ":user/applyJob/:driveId/:companyId", element: <JobsByDriveAndCompany /> },
+      { path: ":user/applyJob/:driveId/:companyId/:jobId", element: <StudentApplicationPage/> },
+      { path: ":user/studentProfile", element: <ProfilePage/> },
+      { path: ":user/viewStudentProfile", element: <ViewProfilePage/> },
+      { path: ":user/companyProfile", element: <CompanyForm/> },
+      { path: ":user/interview", element: <InterviewSchedulingForm/> },
+      { path: ":user/interview/:interviewId", element: <InterviewDetailPage/> },
+      { path: ":user/interview/interviewFeedback/:interviewId", element: <InterviewFeedbackForm/> },
+      { path: ":user/applications", element: <ApplicationReviewPage/> },
+      { path: ":user/applications/:id", element: <ApplicationDetailPage/> },
+      { path: ":user/profile/:id", element: <CompanyProfilePage/> },
+      { path: "companydashboard", element: <CompanyDashboard/> },
+      { path: "studentdashboard", element: <StudentDashBoard/> },
+      { path: ":user/:meetingId", element: <JitsiMeetComponent/> },
+      { path: ":user/reports", element: <ReportsPage/> },
+      { path: "dashboard/reports/:id", element: <ReportDetailsPage/> },
+      { path: ":user/student/profiles", element: <StudentManagementPage/> },
+      { path: ":user/student/profiles/:studentId", element: <StudentDetail/> },
+      { path: ":user/placementDrive", element: <ManagePlacementDrives/> },
+      { path: ":user/dashboard", element: <Dashboard/> },
+      { path: "company/companyJobs", element: <CompanyJobsList/> },
+      { path: "company/editJob/:id", element: <EditJob/> },
+    ]
+  }
+];
 
   const router = createBrowserRouter(routes, {
     future: {

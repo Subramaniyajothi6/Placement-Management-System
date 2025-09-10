@@ -44,6 +44,7 @@ const RegisterPage = () => {
     dispatch(registerUser({ name, email, password, role }));
     dispatch(logout());
     navigate('/login')
+    alert("Registration successful!");
 
 
   };

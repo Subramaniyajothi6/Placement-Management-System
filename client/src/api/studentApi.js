@@ -12,10 +12,11 @@ const studentApi = {
 
     delete: (id) => axiosClient.delete(`/student/${id}`),
 
-    uploadResume: (id, formData) =>
-        axiosClient.post(`/student/${id}/uploadResume`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },  // important for file uploads
-        }),
+    uploadResume: (formData) =>
+        axiosClient.post(`/student/uploadResume`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        })
 }
 
 export default studentApi; 
+

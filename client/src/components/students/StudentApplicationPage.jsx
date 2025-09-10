@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuthUser } from "../../slices/authSlice";
 import { useNavigate, useParams } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createApplication } from "../../slices/applicationSlice";
 import { FaArrowLeft } from "react-icons/fa";
+import { fetchStudents, selectStudents } from "../../slices/studentSlice";
 
 const StudentApplicationPage = () => {
   const dispatch = useDispatch();
   const { placementDriveId, companyId, jobId } = useParams();
   const user = useSelector(selectAuthUser);
+  const students = useSelector(selectStudents);
   const userId = user?._id;
   const navigate = useNavigate();
 
@@ -19,6 +21,21 @@ const StudentApplicationPage = () => {
     email: user?.email || "",
     phone: user?.phone || "",
   });
+
+  // Fetch all students when component mounts
+  useEffect(() => {
+    dispatch(fetchStudents());
+  }, [dispatch]);
+
+  // Find current student profile based on logged-in userId
+  const currentStudentProfile = students.find((student) => student.userId === userId);
+
+  // Set resume from the current student's profile when it becomes available
+  useEffect(() => {
+    if (currentStudentProfile?.resume) {
+      setForm((prev) => ({ ...prev, resume: currentStudentProfile.resume }));
+    }
+  }, [currentStudentProfile]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +69,7 @@ const StudentApplicationPage = () => {
     alert("Application submitted successfully!");
     setForm((prev) => ({
       ...prev,
-      resume: "",
+      resume: currentStudentProfile?.resume || "",
       coverLetter: "",
     }));
   };
@@ -133,6 +150,11 @@ const StudentApplicationPage = () => {
               className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
               required
             />
+            {currentStudentProfile?.resume && (
+              <p className="mt-1 text-sm text-indigo-600">
+                Using uploaded resume from your profile.
+              </p>
+            )}
           </div>
 
           <div>

@@ -30,7 +30,7 @@ const ReportsPage = () => {
       <div className="max-w-7xl mx-auto relative">
         {/* Back Button */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/admin/dashboard')}
           className="flex items-center absolute left-0 top-0 text-indigo-600 font-semibold hover:text-indigo-800 transition focus:outline-none mb-6"
         >
           <FaArrowLeft className="mr-2" /> Back

@@ -62,27 +62,18 @@ const studentController = {
    },
 
 
-   uploadResumeFile: async (req, res) => {
-      try {
-         if (!req.file || !req.file.path) {
-            return res.status(400).json({ success: false, message: 'No resume file uploaded' });
-         }
+uploadResumeFile: async (req, res) => {
+  try {
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ success: false, message: 'No resume file uploaded' });
+    }
+    res.json({ success: true, url: req.file.path });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
 
-         const updatedStudent = await StudentProfile.findByIdAndUpdate(
-            req.params.id,
-            { resume: req.file.path },
-            { new: true, runValidators: true }
-         );
 
-         if (!updatedStudent) {
-            return res.status(404).json({ success: false, message: 'Student not found' });
-         }
-
-         res.json({ success: true, data: updatedStudent });
-      } catch (error) {
-         res.status(500).json({ success: false, message: error.message });
-      }
-   }
 }
 
 module.exports = studentController;

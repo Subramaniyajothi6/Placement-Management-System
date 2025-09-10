@@ -93,6 +93,9 @@ const ManagePlacementDrives = () => {
     setShowForm(false);
     setEditingId(null);
     setFormData(emptyDrive);
+    if(editingId){alert("Placement Drive updated successfully!");}
+    else{alert("Placement Drive created successfully!");}
+    
   };
 
   const handleCancel = () => {
@@ -105,7 +108,7 @@ const ManagePlacementDrives = () => {
     <div className="p-6 max-w-7xl mx-auto">
       {/* Back Button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(`/admin/dashboard`)}
         className="flex items-center mb-8 text-indigo-600 font-semibold hover:text-indigo-800 focus:outline-none transition"
       >
         <FaArrowLeft className="mr-2" /> Back
