@@ -13,7 +13,7 @@ A full-stack MERN project for managing the college placement process, including:
 ## 🚀 Live Demo
 
 * Frontend (Netlify): [Placement Management System Frontend](https://placementmanagementsystem-project.netlify.app/)
-* Backend (Render): [Placement Management System API](https://placement-management-system-2d32.onrender.com/)
+* Backend (Render): [Placement Management System API](https://placement-management-system-9vxu.onrender.com/)
 
 ---
 
@@ -38,18 +38,20 @@ You can use the following demo accounts to explore the system:
 
 ### 🧑‍🎓 Student
 
-* Submit applications with resume & cover letter
+* Submit applications with resume & cover letter (resumes stored securely in **Cloudinary**)
 * Track application status
 * Receive email notifications (via Nodemailer) for updates
 * View & manage interview schedules
+* Attend interviews via integrated **Jitsi Meet video conferencing**
 
 ### 🏢 Company
 
 * Choose placement drive & post job openings
 * Manage company profile
-* View applications received
+* View applications received (resumes fetched from Cloudinary)
 * Update application status (triggers email to student)
 * Schedule interviews and update results (emails sent to student)
+* Conduct video interviews directly using **Jitsi integration**
 
 ### 👨‍💼 Admin
 
@@ -68,6 +70,8 @@ You can use the following demo accounts to explore the system:
 * Backend: Node.js, Express.js
 * Database: MongoDB
 * Authentication: JWT
+* File Storage: **Cloudinary** (for resumes and documents)
+* Video Conferencing: **Jitsi Meet** (for online interviews)
 * Email Notifications: Nodemailer
 * State Management: Redux (used for managing authentication, roles, job postings, placement drives, interviews, and reports data consistently across the app)
 * Charts & Reports: Recharts
@@ -124,6 +128,14 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_password
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Jitsi (optional if you use custom domain/config)
+JITSI_DOMAIN=meet.jit.si
 ```
 
 ---
@@ -135,7 +147,6 @@ EMAIL_PASS=your_email_password
 * Export results to PDF for official records
 
 ---
-
 
 ## ⚠️ Note
 
