@@ -155,9 +155,9 @@ const CompanyForm = () => {
     <div className="min-h-screen relative bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex flex-col items-center py-10 px-6 sm:px-12 lg:px-24">
       {/* Back button fixed top-left */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/company/dashboard')}
         aria-label="Go back"
-        className="absolute top-2 left-3 bg-indigo-300 text-indigo-900 font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-400 transition z-50"
+        className="absolute top-2 left-3  px-4 py-2 rounded-lg  z-50 bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
       >
         &larr; Back
       </button>

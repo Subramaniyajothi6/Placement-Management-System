@@ -65,8 +65,8 @@ const CompanyDashboard = () => {
     <div className="container mx-auto p-6">
       {/* Back Button */}
       <button
-        onClick={() => navigate('/')}
-        className="mb-6 px-4 py-2 rounded bg-indigo-300 text-indigo-900 font-semibold hover:bg-gray-300 transition"
+        onClick={() => navigate('/company/dashboard')}
+        className="mb-6 px-4 py-2 rounded  bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
       >
         &larr; Back
       </button>

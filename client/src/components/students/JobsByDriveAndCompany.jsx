@@ -27,7 +27,7 @@ const JobsByDriveAndCompany = () => {
     <div className="container mx-auto my-12 p-6 bg-white rounded-lg shadow-lg">
       {/* Back button */}
       <button
-        onClick={() => navigate(-1)} // Go back to the previous page
+        onClick={() => navigate(`/student/applyJob/${driveId}`)} // Go back to the previous page
         className="mb-6 px-5 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
       >
         &larr; Back

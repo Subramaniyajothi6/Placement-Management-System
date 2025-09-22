@@ -144,15 +144,15 @@ const handleResumeUpload = async (file) => {
     
     dispatch(createStudent(payload));
     toast.success("Profile created successfully!");
-    setForm(initialState);
     navigate("/student/dashboard")
+    setForm(initialState);
   };
 
   return (
     <div className="relative min-h-screen   bg-indigo-50 py-12 px-6 sm:px-8 lg:px-15">
       {/* Back Button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(`/student/dashboard`)}
         className=" relative top-0 left-0 my-3 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
         aria-label="Go Back"
       >

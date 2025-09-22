@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 Modal.setAppElement('#root');
 
@@ -160,7 +161,7 @@ const InterviewModal = ({
     });
     setFormError('');
     onClose();
-    alert('Interview scheduled successfully!');
+    toast.success('Interview scheduled successfully!');
   };
 
   return (

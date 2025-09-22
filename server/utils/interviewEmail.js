@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 async function InterviewEmail(toEmail, interview) {
   try {
-    const baseAppUrl = 'http://localhost:5173'; // Update with your frontend URL
+    const baseAppUrl = 'https://placementmanagementsystem-project.netlify.app'; // Update with your frontend URL
 
     const meetingUrl = interview.meetingId
       ? `${baseAppUrl}/student/${interview.meetingId}`

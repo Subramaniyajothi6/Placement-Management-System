@@ -104,6 +104,7 @@ const PostJob = () => {
     }
     dispatch(createJob(formData));
     toast.success("Job posted successfully!");
+    navigate("/company/dashboard");
   };
 
   return (
@@ -111,7 +112,7 @@ const PostJob = () => {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="mb-6 px-4 py-2 bg-indigo-300 text-indigo-900 font-semibold  rounded hover:bg-gray-300 transition"
+        className="mb-6 px-4 py-2   rounded  bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
       >
         &larr; Back
       </button>
