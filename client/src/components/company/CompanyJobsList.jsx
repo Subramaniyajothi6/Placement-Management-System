@@ -43,7 +43,7 @@ const filteredJobs = jobs.filter((job) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-lg shadow-lg">
+    <div className="  container mx-auto my-12 p-6 bg-white rounded-lg shadow-lg">
       <button
         onClick={() => navigate("/companydashboard")}
         className="mb-6 px-5 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"

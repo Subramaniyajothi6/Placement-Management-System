@@ -82,7 +82,7 @@ const ApplicationDetailPage = () => {
     );
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-8 mt-10 relative">
+    <div className="container mx-auto bg-white shadow-xl rounded-xl p-8 my-10 relative">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}

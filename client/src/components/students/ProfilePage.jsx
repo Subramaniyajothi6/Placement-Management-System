@@ -140,24 +140,25 @@ const handleResumeUpload = async (file) => {
       portfolioLinks: form.portfolioLinks.filter((l) => l.trim() !== ""),
       resume: form.resume.trim(),
     };
-
+    
     dispatch(createStudent(payload));
     alert("Profile created successfully!");
     setForm(initialState);
+    navigate("/student/dashboard")
   };
 
   return (
-    <div className="relative min-h-screen bg-indigo-50 py-12 px-6 sm:px-12 lg:px-20">
+    <div className="relative min-h-screen   bg-indigo-50 py-12 px-6 sm:px-8 lg:px-15">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="fixed top-20 left-6 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
+        className=" relative top-0 left-0 my-3 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
         aria-label="Go Back"
       >
         <FaArrowLeft className="mr-2" /> Back
       </button>
 
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-10">
+      <div className="  relative max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-10">
         <h2 className="text-3xl font-bold mb-8 text-indigo-700 text-center">Create Your Profile</h2>
 
         {loading && <p className="text-center text-gray-600 mb-4">Processing...</p>}

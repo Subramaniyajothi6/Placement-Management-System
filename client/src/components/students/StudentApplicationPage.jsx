@@ -75,17 +75,17 @@ const StudentApplicationPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-6 left-6 flex items-center px-3 py-1 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+        className="relative mb-5 top-0 left-0 flex items-center px-3 py-1 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         aria-label="Go back"
       >
         <FaArrowLeft className="mr-2" /> Back
       </button>
 
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-xl border border-gray-200 p-8 pt-16">
+      <div className="container mx-auto bg-white rounded-lg shadow-xl border border-gray-200 p-8 pt-16">
         <h2 className="text-3xl font-extrabold text-center mb-10 text-indigo-700">
           Job Application
         </h2>

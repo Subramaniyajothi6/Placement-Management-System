@@ -47,11 +47,11 @@ const StudentDashBoard = () => {
   }, [dispatch, userId]);
 
   return (
-    <div className="relative min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-gray-50 py-8 sm:py-6 px-4 sm:px-6 lg:px-8">
       {/* Back button fixed top-left */}
       <button
         onClick={() => navigate(-1)}
-        className="fixed top-6 left-6 z-50 flex items-center px-3 py-1 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+        className="relative top-2 left-2 z-50 flex items-center px-3 py-1 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         aria-label="Go back"
       >
         <FaArrowLeft className="mr-2" /> Back

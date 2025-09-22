@@ -36,7 +36,7 @@ const CompaniesInPlacementDrive = () => {
   );
 
   return (
-    <div className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-lg shadow-lg">
+    <div className="container mx-auto my-12 p-6 bg-white rounded-lg shadow-lg">
       {/* Back button */}
       <button
         onClick={() => navigate("/student/dashboard")}

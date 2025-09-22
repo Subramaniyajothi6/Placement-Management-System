@@ -143,20 +143,26 @@ const CompanyForm = () => {
       .catch((err) => {
         setErrorMessage(err || "Failed to create company profile.");
       });
+
+
+      alert("Company profile created successfully!");
+      navigate("/company/dashboard");
   };
 
+  /////////////
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex flex-col items-center py-10 px-6 sm:px-12 lg:px-24">
+    <div className="min-h-screen relative bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex flex-col items-center py-10 px-6 sm:px-12 lg:px-24">
       {/* Back button fixed top-left */}
       <button
         onClick={() => navigate(-1)}
         aria-label="Go back"
-        className="fixed top-16 left-6 bg-indigo-300 text-indigo-900 font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-400 transition z-50"
+        className="absolute top-2 left-3 bg-indigo-300 text-indigo-900 font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-400 transition z-50"
       >
         &larr; Back
       </button>
 
-      <div className="w-full max-w-4xl bg-gradient-to-br from-indigo-100 via-indigo-50 to-indigo-100 rounded-lg shadow-lg p-10">
+      <div className="w-full mt-6 max-w-6xl bg-gradient-to-br from-indigo-100 via-indigo-50 to-indigo-100 rounded-lg shadow-lg p-10">
         <h2 className="text-4xl font-extrabold mb-10 text-center text-indigo-700 drop-shadow">
           Create Company Profile
         </h2>
