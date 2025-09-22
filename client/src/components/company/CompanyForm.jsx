@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createCompany } from "../../slices/companySlice"; // Your Redux thunk
 import { selectAuthUser } from "../../slices/authSlice";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const CompanyForm = () => {
   const dispatch = useDispatch();
@@ -113,7 +114,6 @@ const CompanyForm = () => {
       .unwrap()
       .then(() => {
         setSuccessMessage("Company profile created successfully!");
-        alert("Company profile created successfully!");
         setFormData({
           name: "",
           industry: "",
@@ -145,7 +145,7 @@ const CompanyForm = () => {
       });
 
 
-      alert("Company profile created successfully!");
+      toast.success("Company profile created successfully!");
       navigate("/company/dashboard");
   };
 

@@ -52,7 +52,7 @@ const StudentList = () => {
         placeholder="Search by name..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-6 w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-lg transition"
+        className="mb-6 w-full p-3 border border-gray-300 outline-0 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-lg transition"
       />
 
       {loading && <p className="text-center py-8 text-gray-500">Loading students...</p>}

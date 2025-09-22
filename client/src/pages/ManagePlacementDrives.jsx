@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const emptyDrive = {
   title: '',
@@ -93,8 +94,8 @@ const ManagePlacementDrives = () => {
     setShowForm(false);
     setEditingId(null);
     setFormData(emptyDrive);
-    if(editingId){alert("Placement Drive updated successfully!");}
-    else{alert("Placement Drive created successfully!");}
+    if(editingId){toast.success("Placement Drive updated successfully!");}
+    else{toast.success("Placement Drive created successfully!");}
     
   };
 

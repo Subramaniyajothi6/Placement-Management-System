@@ -32,6 +32,7 @@ import CompanyJobsList from "./components/company/CompanyJobsList";
 import EditJob from "./components/company/EditJob";
 import JitsiMeetComponent from "./components/company/JitsiMeetComponent";
 import Layout from "./components/company/Layout";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -103,10 +104,13 @@ const routes = [
   })
 
   return (
+<>
     <RouterProvider
       router={router}
       future={{ v7_startTransition: true }}
     />
+    <Toaster position="top-center" reverseOrder={false} />
+</>
   )
 }
 

@@ -446,6 +446,7 @@ import { useEffect, useState, useCallback } from 'react';
 import InterviewModal from './InterviewModal';
 import { useNavigate } from 'react-router';
 import applicationApi from '../../api/applicationsApi';
+import toast from 'react-hot-toast';
 
 const InterviewSchedulingForm = () => {
   const dispatch = useDispatch();
@@ -526,7 +527,7 @@ const InterviewSchedulingForm = () => {
       dispatch(fetchInterviews());
       setModalIsOpen(false);
     } catch (error) {
-      alert(error || 'Failed to save interview');
+      toast.error(error || 'Failed to save interview');
     }
   };
 
@@ -536,7 +537,7 @@ const InterviewSchedulingForm = () => {
       await dispatch(deleteInterview(id)).unwrap();
       dispatch(fetchInterviews());
     } catch (error) {
-      alert(error || 'Failed to delete interview.');
+      toast.error(error || 'Failed to delete interview.');
     }
   };
 

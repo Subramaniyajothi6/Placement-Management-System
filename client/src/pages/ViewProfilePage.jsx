@@ -10,6 +10,7 @@ import {
   updateStudent,
 } from "../slices/studentSlice";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const ViewProfilePage = () => {
   const dispatch = useDispatch();
@@ -145,7 +146,7 @@ const ViewProfilePage = () => {
     };
     dispatch(updateStudent({ id: form._id, data: payload }));
     setEditMode(false);
-    alert("Profile updated successfully!");
+    toast.success("Profile updated successfully!");
   };
 
   if (loading || !form) {

@@ -42,7 +42,7 @@ const StudentDetail = () => {
         return <div className="text-center py-14 text-red-600 font-semibold">Student not found.</div>;
 
     return (
-        <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-10">
+        <div className="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-4">
             {/* Back Button */}
             <button
                 onClick={() => navigate(-1)}

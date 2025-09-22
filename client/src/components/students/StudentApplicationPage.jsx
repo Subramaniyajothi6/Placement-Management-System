@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { createApplication } from "../../slices/applicationSlice";
 import { FaArrowLeft } from "react-icons/fa";
 import { fetchStudents, selectStudents } from "../../slices/studentSlice";
+import toast from "react-hot-toast";
 
 const StudentApplicationPage = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const StudentApplicationPage = () => {
     e.preventDefault();
 
     if (!form.resume) {
-      alert("Please fill in your resume URL.");
+      toast.error("Please fill in your resume URL.");
       return;
     }
 
@@ -66,7 +67,7 @@ const StudentApplicationPage = () => {
     };
 
     dispatch(createApplication(payload));
-    alert("Application submitted successfully!");
+    toast.success("Application submitted successfully!");
     setForm((prev) => ({
       ...prev,
       resume: currentStudentProfile?.resume || "",

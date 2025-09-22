@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchCompanies, selectAllCompanies } from "../../slices/companySlice";
 import { selectAuthUser } from "../../slices/authSlice";
 import { clearJobError, createJob, resetJobState, selectJobsError, selectJobsLoading, selectJobsSuccess } from "../../slices/jobSlice";
+import toast from "react-hot-toast";
 
 const PostJob = () => {
   const dispatch = useDispatch();
@@ -91,18 +92,18 @@ const PostJob = () => {
     e.preventDefault();
     console.log(formData);
     if (!formData.title || !formData.placementDrive) {
-      alert("Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
       return;
     }
     if (formData.applicationDeadline) {
       const deadline = new Date(formData.applicationDeadline);
       if (isNaN(deadline.getTime())) {
-        alert("Please enter a valid date.");
+        toast.error("Please enter a valid date.");
         return;
       }
     }
     dispatch(createJob(formData));
-    alert("Job posted successfully!");
+    toast.success("Job posted successfully!");
   };
 
   return (

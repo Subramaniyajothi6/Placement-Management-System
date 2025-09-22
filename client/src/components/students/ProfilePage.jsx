@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -120,12 +121,12 @@ const handleResumeUpload = async (file) => {
         ...prev,
         resume: action.payload, // just the URL string now
       }));
-      alert("Resume uploaded successfully!");
+      toast.success("Resume uploaded successfully!");
     } else {
-      alert("Resume upload failed: " + action.payload);
+      toast.error("Resume upload failed: " + action.payload);
     }
   } catch (error) {
-    alert("Unexpected error uploading resume: " + error.message);
+    toast.error("Unexpected error uploading resume: " + error.message);
   }
 };
 
@@ -142,7 +143,7 @@ const handleResumeUpload = async (file) => {
     };
     
     dispatch(createStudent(payload));
-    alert("Profile created successfully!");
+    toast.success("Profile created successfully!");
     setForm(initialState);
     navigate("/student/dashboard")
   };
