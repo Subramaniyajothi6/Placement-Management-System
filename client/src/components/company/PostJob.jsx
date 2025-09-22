@@ -106,11 +106,11 @@ const PostJob = () => {
   };
 
   return (
-    <div className="container mx-auto p-8 bg-indigo-300 text-indigo-900 rounded-lg shadow-lg  my-10">
+    <div className="container mx-auto p-8   rounded-lg shadow-lg  my-10">
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="mb-6 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition"
+        className="mb-6 px-4 py-2 bg-indigo-300 text-indigo-900 font-semibold  rounded hover:bg-gray-300 transition"
       >
         &larr; Back
       </button>
