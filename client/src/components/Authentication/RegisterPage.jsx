@@ -10,6 +10,7 @@ import {
   selectAuthSuccess,
 } from "../../slices/authSlice";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const RegisterPage = () => {
 
 
     if (message) {
-      alert(message);
+      toast.message(message);
     }
   }, [isSuccess, message]);
 
@@ -44,7 +45,7 @@ const RegisterPage = () => {
     dispatch(registerUser({ name, email, password, role }));
     dispatch(logout());
     navigate('/login')
-    alert("Registration successful!");
+    toast.success("Registration successful!");
 
 
   };

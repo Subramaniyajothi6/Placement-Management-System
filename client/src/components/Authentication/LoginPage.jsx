@@ -11,6 +11,7 @@ import {
 import { fetchStudents } from "../../slices/studentSlice";
 import { fetchCompanies } from "../../slices/companySlice";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -92,7 +93,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (error) {
-      alert(message || "Login failed, please try again.");
+      toast.error(message || "Login failed, please try again.");
     }
   }, [error, message]);
 
