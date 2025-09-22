@@ -78,7 +78,7 @@ const routes = [
       { path: ":user/applications/:id", element: <ApplicationDetailPage/> },
       { path: ":user/profile/:id", element: <CompanyProfilePage/> },
       { path: "companydashboard", element: <CompanyDashboard/> },
-      { path: "studentdashboard", element: <StudentDashBoard/> },
+      { path: "studentdashboard", element: <StudentDashBoard/> }, 
       { path: ":user/:meetingId", element: <JitsiMeetComponent/> },
       { path: ":user/reports", element: <ReportsPage/> },
       { path: "dashboard/reports/:id", element: <ReportDetailsPage/> },
