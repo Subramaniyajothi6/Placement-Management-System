@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { fetchJobById, resetJobState, selectJobsError, selectJobsLoading, selectSelectedJob, updateJob } from "../../slices/jobSlice";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const EditJob = () => {
   const {id:jobId} = useParams();
@@ -64,6 +65,7 @@ const EditJob = () => {
     e.preventDefault();
     dispatch(updateJob({ id: jobId, data: form })).then((res) => {
       if (!res.error) {
+        toast.success("Job updated successfully!");
         navigate("/company/companyJobs"); 
       }
     });

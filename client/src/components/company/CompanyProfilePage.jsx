@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { fetchCompanies, selectAllCompanies, updateCompany } from "../../slices/companySlice";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const CompanyProfilePage = () => {
   const { id } = useParams();
@@ -76,6 +77,7 @@ const CompanyProfilePage = () => {
       .unwrap()
       .then(() => {
         setEditMode(false);
+        toast.success("Company profile updated successfully!");
         setSuccess("Company profile updated successfully!");
       })
       .catch((err) =>

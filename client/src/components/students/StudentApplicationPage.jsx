@@ -72,7 +72,8 @@ const StudentApplicationPage = () => {
       ...prev,
       resume: currentStudentProfile?.resume || "",
       coverLetter: "",
-    }));
+    }))
+    navigate(`/student/dashoboard`);  
   };
 
   return (
