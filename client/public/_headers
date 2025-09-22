@@ -1,0 +1,2 @@
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-src 'self' https://meet.jit.si;
