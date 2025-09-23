@@ -14,7 +14,7 @@ const InterviewModal = ({
   mode,
   fetchCandidatesForJob,
   candidates,
-  setCandidates = () => {},
+  setCandidates = () => { },
   selectedCandidate,
   setSelectedCandidate,
   user,
@@ -85,12 +85,12 @@ const InterviewModal = ({
   };
 
   const validateUrl = (value) => {
-    if (!value) return 'Attachment URL is required.';
+    if (!value.trim()) return "";
     try {
       new URL(value);
-      return '';
+      return "";
     } catch {
-      return 'Invalid URL format.';
+      return "Invalid URL format.";
     }
   };
 
@@ -124,7 +124,6 @@ const InterviewModal = ({
     const error = validateUrl(url);
     setFieldErrors((prev) => ({ ...prev, newAttachmentUrl: error }));
   };
-
   const handleNewAttachmentNameChange = (e) => {
     setNewAttachmentName(e.target.value);
   };
@@ -295,9 +294,8 @@ const InterviewModal = ({
             value={form.startTime}
             onChange={handleChange}
             required
-            className={`p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${
-              fieldErrors.startTime ? 'border-red-600' : ''
-            }`}
+            className={`p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${fieldErrors.startTime ? 'border-red-600' : ''
+              }`}
           />
           {fieldErrors.startTime && (
             <p className="text-red-600 text-sm mt-1">{fieldErrors.startTime}</p>
@@ -348,9 +346,9 @@ const InterviewModal = ({
 
         {/* Attachments */}
         <div>
-          <label className="block mb-2 font-medium text-indigo-900">Attachments</label>
+          <label className="block mb-2 font-medium text-indigo-900 ">Attachments</label>
           {form.attachments.map((att, idx) => (
-            <div key={idx} className="flex space-x-2 mb-2 items-center">
+            <div key={idx} className="flex space-x-2 mb-2 items-center ">
               <a
                 href={att.url}
                 target="_blank"
@@ -368,40 +366,55 @@ const InterviewModal = ({
               </button>
             </div>
           ))}
-          <div className="flex space-x-2 mb-4">
-            <input
+          <div className="flex space-x-2 mb-4   ">
+         <div className='flex flex-col  relative'>
+             <input
               placeholder="Attachment URL"
               value={newAttachmentUrl}
               onChange={handleNewAttachmentUrlChange}
-              className={`flex-grow p-2 border rounded ${
-                fieldErrors.newAttachmentUrl ? 'border-red-600' : ''
-              }`}
+              className={`flex-grow p-2 border rounded ${fieldErrors.newAttachmentUrl ? 'border-red-600' : ''
+                }`}
             />
+            <p className="text-red-600 text-sm mt-1 min-h-[1.25rem]">
+              {fieldErrors.newAttachmentUrl || '\u00A0'}
+            </p>
+         </div>
+
+
             {fieldErrors.newAttachmentUrl && (
               <p className="text-red-600 text-sm mt-1 absolute z-10 bg-white px-1 rounded">
                 {fieldErrors.newAttachmentUrl}
               </p>
             )}
-            <input
+  <div>
+              <input
               placeholder="Attachment Name"
               value={newAttachmentName}
               onChange={handleNewAttachmentNameChange}
-              className="flex-grow p-2 border rounded"
+              className=" p-2 border rounded"
             />
-            <button
+  </div>
+           <div className='flex  '>
+             <button
               type="button"
               disabled={!canAddAttachment}
               onClick={handleAddAttachment}
-              className={`px-3 rounded font-semibold text-white ${
-                canAddAttachment
-                  ? 'bg-indigo-600 hover:bg-indigo-700'
-                  : 'bg-indigo-300 cursor-not-allowed'
-              }`}
+              className={`px-3 h-10 rounded font-semibold text-white ${canAddAttachment
+                ? 'bg-indigo-600 hover:bg-indigo-700'
+                : 'bg-indigo-300 cursor-not-allowed'
+                }`}
             >
               Add
             </button>
+           </div>
           </div>
         </div>
+
+
+
+
+
+
 
         {/* Reminder (minutes before) */}
         <div>
