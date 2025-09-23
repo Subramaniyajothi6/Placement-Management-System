@@ -5,6 +5,7 @@ import { fetchJobById, selectSelectedJob } from "../../slices/jobSlice";
 import { useEffect, useState } from "react";
 import { fetchUserById } from "../../slices/authSlice";
 import { FaBriefcase, FaCalendarCheck, FaFileAlt, FaMapMarkerAlt, FaUser } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 
 const statusOptions = [
@@ -67,6 +68,8 @@ const ApplicationDetailPage = () => {
       setError("Failed to update status.");
     }
     setSaving(false);
+
+    toast.success("Status updated successfully.");
   };
 
   if (!application)

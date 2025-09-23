@@ -14,7 +14,7 @@ const InterviewModal = ({
   mode,
   fetchCandidatesForJob,
   candidates,
-  setCandidates = () => { },
+  setCandidates = () => {},
   selectedCandidate,
   setSelectedCandidate,
   user,
@@ -31,6 +31,12 @@ const InterviewModal = ({
   });
   const [formError, setFormError] = useState('');
 
+  // State for inline field errors
+  const [fieldErrors, setFieldErrors] = useState({
+    startTime: '',
+    newAttachmentUrl: '',
+  });
+
   useEffect(() => {
     if (mode === 'edit' && initialData) {
       setSelectedJob(initialData.job);
@@ -44,6 +50,8 @@ const InterviewModal = ({
         attachments: initialData.attachments || [],
         reminder: initialData.reminder || [],
       });
+      setFormError('');
+      setFieldErrors({ startTime: '', newAttachmentUrl: '' });
       fetchCandidatesForJob(initialData.job);
     } else {
       setSelectedJob('');
@@ -58,6 +66,7 @@ const InterviewModal = ({
         reminder: [],
       });
       setFormError('');
+      setFieldErrors({ startTime: '', newAttachmentUrl: '' });
       setCandidates([]);
     }
   }, [mode, initialData, fetchCandidatesForJob, setCandidates, setSelectedCandidate]);
@@ -66,7 +75,24 @@ const InterviewModal = ({
   const [newAttachmentUrl, setNewAttachmentUrl] = useState('');
   const [newAttachmentName, setNewAttachmentName] = useState('');
 
-  const canAddAttachment = newAttachmentUrl.trim() !== '' && newAttachmentName.trim() !== '';
+  // Validation functions
+  const validateDateTime = (value) => {
+    if (!value) return 'Interview date and time is required.';
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return 'Invalid date and time format.';
+    if (date < new Date()) return 'Interview date and time cannot be in the past.';
+    return '';
+  };
+
+  const validateUrl = (value) => {
+    if (!value) return 'Attachment URL is required.';
+    try {
+      new URL(value);
+      return '';
+    } catch {
+      return 'Invalid URL format.';
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -76,6 +102,12 @@ const InterviewModal = ({
       setForm((prev) => ({ ...prev, [name]: checked }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
+
+      // Inline validation for startTime
+      if (name === 'startTime') {
+        const error = validateDateTime(value);
+        setFieldErrors((prev) => ({ ...prev, startTime: error }));
+      }
     }
   };
 
@@ -86,6 +118,22 @@ const InterviewModal = ({
     fetchCandidatesForJob(jobId);
   };
 
+  const handleNewAttachmentUrlChange = (e) => {
+    const url = e.target.value;
+    setNewAttachmentUrl(url);
+    const error = validateUrl(url);
+    setFieldErrors((prev) => ({ ...prev, newAttachmentUrl: error }));
+  };
+
+  const handleNewAttachmentNameChange = (e) => {
+    setNewAttachmentName(e.target.value);
+  };
+
+  const canAddAttachment =
+    newAttachmentUrl.trim() !== '' &&
+    newAttachmentName.trim() !== '' &&
+    !fieldErrors.newAttachmentUrl;
+
   const handleAddAttachment = () => {
     if (!canAddAttachment) return;
     setForm((prev) => ({
@@ -94,6 +142,7 @@ const InterviewModal = ({
     }));
     setNewAttachmentUrl('');
     setNewAttachmentName('');
+    setFieldErrors((prev) => ({ ...prev, newAttachmentUrl: '' }));
   };
 
   const handleRemoveAttachment = (index) => {
@@ -114,6 +163,12 @@ const InterviewModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check inline validation errors first
+    if (fieldErrors.startTime) {
+      setFormError(fieldErrors.startTime);
+      return;
+    }
     if (!selectedJob) {
       setFormError('Please select a job.');
       return;
@@ -160,6 +215,9 @@ const InterviewModal = ({
       reminder: [],
     });
     setFormError('');
+    setFieldErrors({ startTime: '', newAttachmentUrl: '' });
+    setNewAttachmentUrl('');
+    setNewAttachmentName('');
     onClose();
     toast.success('Interview scheduled successfully!');
   };
@@ -173,8 +231,14 @@ const InterviewModal = ({
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start"
     >
       <div className="flex justify-between items-center mb-6 border-b pb-3">
-        <h3 className="text-xl font-semibold text-indigo-700">{mode === 'create' ? 'Schedule New Interview' : 'Edit Interview'}</h3>
-        <button aria-label="Close modal" className="text-indigo-400 hover:text-indigo-700 text-2xl font-bold" onClick={onClose}>
+        <h3 className="text-xl font-semibold text-indigo-700">
+          {mode === 'create' ? 'Schedule New Interview' : 'Edit Interview'}
+        </h3>
+        <button
+          aria-label="Close modal"
+          className="text-indigo-400 hover:text-indigo-700 text-2xl font-bold"
+          onClick={onClose}
+        >
           &times;
         </button>
       </div>
@@ -192,11 +256,13 @@ const InterviewModal = ({
             className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
           >
             <option value="">Select Job</option>
-            {jobs.filter((job) => job.company === userCompanyId).map((job) => (
-              <option key={job._id} value={job._id}>
-                {job.title}
-              </option>
-            ))}
+            {jobs
+              .filter((job) => job.company === userCompanyId)
+              .map((job) => (
+                <option key={job._id} value={job._id}>
+                  {job.title}
+                </option>
+              ))}
           </select>
         </div>
 
@@ -229,8 +295,13 @@ const InterviewModal = ({
             value={form.startTime}
             onChange={handleChange}
             required
-            className="p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+            className={`p-3 border rounded w-full focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${
+              fieldErrors.startTime ? 'border-red-600' : ''
+            }`}
           />
+          {fieldErrors.startTime && (
+            <p className="text-red-600 text-sm mt-1">{fieldErrors.startTime}</p>
+          )}
         </div>
 
         {/* Duration */}
@@ -280,7 +351,12 @@ const InterviewModal = ({
           <label className="block mb-2 font-medium text-indigo-900">Attachments</label>
           {form.attachments.map((att, idx) => (
             <div key={idx} className="flex space-x-2 mb-2 items-center">
-              <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-indigo-700 underline">
+              <a
+                href={att.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-700 underline"
+              >
                 {att.name || att.url}
               </a>
               <button
@@ -296,20 +372,31 @@ const InterviewModal = ({
             <input
               placeholder="Attachment URL"
               value={newAttachmentUrl}
-              onChange={(e) => setNewAttachmentUrl(e.target.value)}
-              className="flex-grow p-2 border rounded"
+              onChange={handleNewAttachmentUrlChange}
+              className={`flex-grow p-2 border rounded ${
+                fieldErrors.newAttachmentUrl ? 'border-red-600' : ''
+              }`}
             />
+            {fieldErrors.newAttachmentUrl && (
+              <p className="text-red-600 text-sm mt-1 absolute z-10 bg-white px-1 rounded">
+                {fieldErrors.newAttachmentUrl}
+              </p>
+            )}
             <input
               placeholder="Attachment Name"
               value={newAttachmentName}
-              onChange={(e) => setNewAttachmentName(e.target.value)}
+              onChange={handleNewAttachmentNameChange}
               className="flex-grow p-2 border rounded"
             />
             <button
               type="button"
               disabled={!canAddAttachment}
               onClick={handleAddAttachment}
-              className={`px-3 rounded font-semibold text-white ${canAddAttachment ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-300 cursor-not-allowed'}`}
+              className={`px-3 rounded font-semibold text-white ${
+                canAddAttachment
+                  ? 'bg-indigo-600 hover:bg-indigo-700'
+                  : 'bg-indigo-300 cursor-not-allowed'
+              }`}
             >
               Add
             </button>

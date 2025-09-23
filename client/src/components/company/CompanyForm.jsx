@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createCompany } from "../../slices/companySlice"; // Your Redux thunk
+import { createCompany } from "../../slices/companySlice";
 import { selectAuthUser } from "../../slices/authSlice";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
@@ -11,7 +11,7 @@ const CompanyForm = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: authUser.name,
+    name: authUser.name || "",
     industry: "",
     size: "1-10",
     description: "",
@@ -36,17 +36,53 @@ const CompanyForm = () => {
     },
   });
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [errors, setErrors] = useState({});
 
-  const isValidURL = (string) => {
-    if (!string) return true; 
-    try {
-      new URL(string.trim());
-      return true;
-    } catch (e) {
-      return e || false;
+const isValidURL = (string) => {
+  if (!string) return true;
+
+  try {
+    new URL(string.trim());
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+  const isValidPhone = (phone) => {
+    if (!phone) return true;
+    const digits = phone.replace(/\D/g, "");
+    return digits.length === 10;
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Company name is required.";
     }
+
+    if (formData.logo && !isValidURL(formData.logo)) {
+      newErrors.logo = "Please enter a valid Logo URL.";
+    }
+
+    if (formData.website && !isValidURL(formData.website)) {
+      newErrors.website = "Please enter a valid Website URL.";
+    }
+
+    Object.entries(formData.socialLinks).forEach(([key, value]) => {
+      if (value && !isValidURL(value)) {
+        newErrors[`socialLinks_${key}`] = `Please enter a valid URL for ${key}.`;
+      }
+    });
+
+    if (formData.contactPerson.phone && !isValidPhone(formData.contactPerson.phone)) {
+      newErrors.contactPerson_phone = "Contact person phone must have exactly 10 digits.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleNestedChange = (e, parentKey) => {
@@ -58,8 +94,25 @@ const CompanyForm = () => {
         [name]: value,
       },
     }));
-    setErrorMessage("");
-    setSuccessMessage("");
+
+    // Inline validation for phone
+    if (parentKey === "contactPerson" && name === "phone") {
+      setErrors((prev) => ({
+        ...prev,
+        contactPerson_phone: isValidPhone(value) ? "" : "Contact person phone must have exactly 10 digits.",
+      }));
+    }
+
+    // Inline validation for URLs
+    if (parentKey === "socialLinks" || name === "logo" || name === "website") {
+      const urlValue = parentKey === "socialLinks" ? value : formData[name];
+      const isValid = isValidURL(urlValue);
+      const errorKey = parentKey === "socialLinks" ? `socialLinks_${name}` : name;
+      setErrors((prev) => ({
+        ...prev,
+        [errorKey]: isValid ? "" : `Please enter a valid URL for ${errorKey.replace("socialLinks_", "")}.`,
+      }));
+    }
   };
 
   const handleChange = (e) => {
@@ -68,42 +121,30 @@ const CompanyForm = () => {
       ...prev,
       [name]: value,
     }));
-    setErrorMessage("");
-    setSuccessMessage("");
+
+    if (name === "logo" || name === "website") {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: isValidURL(value) ? "" : `Please enter a valid URL for ${name}.`,
+      }));
+    }
+
+    // Clear error for name field on edit
+    if (name === "name") {
+      setErrors((prev) => ({
+        ...prev,
+        name: "",
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Trim logo and website URLs before validation
-    const logoUrl = formData.logo.trim();
-    const websiteUrl = formData.website.trim();
-
-    if (logoUrl && !isValidURL(logoUrl)) {
-      setErrorMessage("Please enter a valid Logo URL.");
+    if (!validateForm()) {
+      toast.error("Please fix the errors in the form.");
       return;
     }
-
-    if (websiteUrl && !isValidURL(websiteUrl)) {
-      setErrorMessage("Please enter a valid Website URL.");
-      return;
-    }
-
-    // Validate socialLinks URLs if not empty
-    const socialLinks = formData.socialLinks;
-    for (const key in socialLinks) {
-      if (socialLinks[key] && !isValidURL(socialLinks[key])) {
-        setErrorMessage(`Please enter a valid URL for ${key}.`);
-        return;
-      }
-    }
-
-    if (!formData.name) {
-      setErrorMessage("Company name is required.");
-      return;
-    }
-
-    setErrorMessage("");
 
     const payload = {
       ...formData,
@@ -113,7 +154,7 @@ const CompanyForm = () => {
     dispatch(createCompany(payload))
       .unwrap()
       .then(() => {
-        setSuccessMessage("Company profile created successfully!");
+        toast.success("Company profile created successfully!");
         setFormData({
           name: "",
           industry: "",
@@ -139,25 +180,21 @@ const CompanyForm = () => {
             facebook: "",
           },
         });
+        setErrors({});
+        navigate("/company/dashboard");
       })
       .catch((err) => {
-        setErrorMessage(err || "Failed to create company profile.");
+        toast.error(err || "Failed to create company profile.");
       });
-
-
-      toast.success("Company profile created successfully!");
-      navigate("/company/dashboard");
   };
-
-  /////////////
 
   return (
     <div className="min-h-screen relative bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex flex-col items-center py-10 px-6 sm:px-12 lg:px-24">
       {/* Back button fixed top-left */}
       <button
-        onClick={() => navigate('/company/dashboard')}
+        onClick={() => navigate("/company/dashboard")}
         aria-label="Go back"
-        className="absolute top-2 left-3  px-4 py-2 rounded-lg  z-50 bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
+        className="absolute top-2 left-3 px-4 py-2 rounded-lg z-50 bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
       >
         &larr; Back
       </button>
@@ -166,13 +203,6 @@ const CompanyForm = () => {
         <h2 className="text-4xl font-extrabold mb-10 text-center text-indigo-700 drop-shadow">
           Create Company Profile
         </h2>
-
-        {errorMessage && (
-          <p className="text-red-600 mb-6 text-center font-semibold">{errorMessage}</p>
-        )}
-        {successMessage && (
-          <p className="text-green-600 mb-6 text-center font-semibold">{successMessage}</p>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -188,6 +218,9 @@ const CompanyForm = () => {
                 className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 required
               />
+              {errors.name && (
+                <p className="text-red-600 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
             <div>
               <label className="block mb-2 font-semibold text-indigo-700">Industry</label>
@@ -238,6 +271,9 @@ const CompanyForm = () => {
                 onChange={handleChange}
                 className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
+              {errors.logo && (
+                <p className="text-red-600 text-sm mt-1">{errors.logo}</p>
+              )}
             </div>
             <div>
               <label className="block mb-2 font-semibold text-indigo-700">Website</label>
@@ -249,6 +285,9 @@ const CompanyForm = () => {
                 className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 placeholder="https://example.com"
               />
+              {errors.website && (
+                <p className="text-red-600 text-sm mt-1">{errors.website}</p>
+              )}
             </div>
           </div>
 
@@ -257,7 +296,9 @@ const CompanyForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {["address", "city", "state", "country", "pincode"].map((field) => (
                 <div key={field}>
-                  <label className="block mb-2 capitalize font-semibold text-indigo-700">{field}</label>
+                  <label className="block mb-2 capitalize font-semibold text-indigo-700">
+                    {field}
+                  </label>
                   <input
                     type="text"
                     name={field}
@@ -275,7 +316,9 @@ const CompanyForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {["name", "email", "phone"].map((field) => (
                 <div key={field}>
-                  <label className="block mb-2 capitalize font-semibold text-indigo-700">{field}</label>
+                  <label className="block mb-2 capitalize font-semibold text-indigo-700">
+                    {field}
+                  </label>
                   <input
                     type={field === "email" ? "email" : "text"}
                     name={field}
@@ -283,6 +326,11 @@ const CompanyForm = () => {
                     onChange={(e) => handleNestedChange(e, "contactPerson")}
                     className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
+                  {field === "phone" && errors.contactPerson_phone && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.contactPerson_phone}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -293,7 +341,9 @@ const CompanyForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {["linkedin", "twitter", "facebook"].map((field) => (
                 <div key={field}>
-                  <label className="block mb-2 capitalize font-semibold text-indigo-700">{field}</label>
+                  <label className="block mb-2 capitalize font-semibold text-indigo-700">
+                    {field}
+                  </label>
                   <input
                     type="url"
                     name={field}
@@ -302,6 +352,9 @@ const CompanyForm = () => {
                     className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
                     placeholder={`https://www.${field}.com/yourpage`}
                   />
+                  {errors[`socialLinks_${field}`] && (
+                    <p className="text-red-600 text-sm mt-1">{errors[`socialLinks_${field}`]}</p>
+                  )}
                 </div>
               ))}
             </div>
