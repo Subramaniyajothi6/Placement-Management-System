@@ -113,6 +113,15 @@ const ProfilePage = () => {
     return errors;
   };
 
+  const validateUrl = (value) => {
+  if (!value.trim()) return ""; // no error if empty (not required)
+  try {
+    new URL(value);
+    return "";
+  } catch {
+    return "Invalid URL format.";
+  }
+};
   // Handlers with live validation
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -138,6 +147,7 @@ const ProfilePage = () => {
 
     setErrors((prev) => {
       const newErrors = { ...prev };
+
 
       if (field === "education" && key && (key === "startYear" || key === "endYear")) {
         const edu = form.education[index];
@@ -169,6 +179,11 @@ const ProfilePage = () => {
         if (expErrors.startDate) newErrors[`experience_startDate_${index}`] = expErrors.startDate;
         if (expErrors.endDate) newErrors[`experience_endDate_${index}`] = expErrors.endDate;
         if (expErrors.dateOrder) newErrors[`experience_dateOrder_${index}`] = expErrors.dateOrder;
+      }
+      if (field === "portfolioLinks" && !key) {
+        const error = validateUrl(value);
+        if (error) newErrors[`portfolioLinks_${index}`] = error;
+        else delete newErrors[`portfolioLinks_${index}`];
       }
 
       return newErrors;
@@ -257,11 +272,19 @@ const ProfilePage = () => {
       if (expErrors.endDate) newErrors[`experience_endDate_${idx}`] = expErrors.endDate;
       if (expErrors.dateOrder) newErrors[`experience_dateOrder_${idx}`] = expErrors.dateOrder;
     });
+    form.portfolioLinks.forEach((link, i) => {
+      const error = validateUrl(link);
+      if (error) newErrors[`portfolioLinks_${i}`] = error;
+    });
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
+
+
   };
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -556,7 +579,7 @@ const ProfilePage = () => {
           </fieldset>
 
           {/* Portfolio Links */}
-          <fieldset className="border border-gray-300 rounded-md p-6 space-y-4">
+          {/* <fieldset className="border border-gray-300 rounded-md p-6 space-y-4">
             <legend className="font-semibold text-lg text-gray-800 mb-4">Portfolio Links</legend>
             {form.portfolioLinks.map((link, i) => (
               <div key={i} className="flex items-center space-x-2">
@@ -584,7 +607,47 @@ const ProfilePage = () => {
             >
               + Add Link
             </button>
-          </fieldset>
+          </fieldset> */}
+
+<fieldset className="border border-gray-300 rounded-md p-6 space-y-4">
+  <legend className="font-semibold text-lg text-gray-800 mb-4">Portfolio Links</legend>
+  {form.portfolioLinks.map((link, i) => (
+    <div key={i} className="flex flex-col space-y-1">
+      <div className="flex items-center space-x-2">
+        <input
+          type="url"
+          placeholder="https://example.com"
+          value={link}
+          onChange={(e) => handleArrayChange("portfolioLinks", i, null, e.target.value)}
+          className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 transition ${
+            errors[`portfolioLinks_${i}`] ? "border-red-600 focus:ring-red-400" : "border-gray-300 focus:ring-indigo-400"
+          }`}
+        />
+        <button
+          type="button"
+          className="text-red-600 hover:underline"
+          onClick={() => removeItem("portfolioLinks", i)}
+          disabled={form.portfolioLinks.length === 1}
+        >
+          Remove
+        </button>
+      </div>
+      {errors[`portfolioLinks_${i}`] && (
+        <p className="text-red-600 text-sm ml-1">{errors[`portfolioLinks_${i}`]}</p>
+      )}
+    </div>
+  ))}
+  <button
+    type="button"
+    className="text-blue-600 hover:underline"
+    onClick={() => addItem("portfolioLinks")}
+  >
+    + Add Link
+  </button>
+</fieldset>
+
+
+
 
           {/* Resume Upload */}
           <div>
