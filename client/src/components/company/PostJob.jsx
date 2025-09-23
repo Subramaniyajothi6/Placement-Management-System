@@ -16,7 +16,6 @@ const PostJob = () => {
   const isSuccess = useSelector(selectJobsSuccess);
   const companies = useSelector(selectAllCompanies);
   const user = useSelector(selectAuthUser);
-  
 
   useEffect(() => {
     dispatch(fetchCompanies());
@@ -24,11 +23,8 @@ const PostJob = () => {
 
   const userId = user?._id;
   const companyId = companies.filter((c) => c.user === userId).map((c) => c._id)[0] || "";
-  // console.log("companies", companies.filter((c) => c.user === userId).map((c) => c._id)[0]);
-  // console.log("Company ID:", companyId);
 
   const { placementDriveId } = useParams();
-
 
   const [formData, setFormData] = useState({
     placementDrive: "",
@@ -41,6 +37,9 @@ const PostJob = () => {
     openings: 1,
     applicationDeadline: "",
   });
+
+  // Application deadline error state
+  const [deadlineError, setDeadlineError] = useState("");
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -64,6 +63,7 @@ const PostJob = () => {
         openings: 1,
         applicationDeadline: "",
       });
+      setDeadlineError("");
     }
 
     return () => {
@@ -73,6 +73,25 @@ const PostJob = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "applicationDeadline") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      setDeadlineError(""); // Reset previous errors
+
+      if (value) {
+        const deadline = new Date(value);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Compare only dates
+        if (isNaN(deadline.getTime())) {
+          setDeadlineError("Please enter a valid date.");
+        } else if (deadline <= now) {
+          setDeadlineError("Date must be in the future.");
+        }
+      }
+      if (error) dispatch(clearJobError());
+      return;
+    }
+
     if (name === "skillsRequired") {
       const skillsArray = value
         .split(",")
@@ -85,34 +104,43 @@ const PostJob = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+
     if (error) dispatch(clearJobError());
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    if (formData.applicationDeadline) {
+      const deadline = new Date(formData.applicationDeadline);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      if (isNaN(deadline.getTime())) {
+        setDeadlineError("Please enter a valid date.");
+        return;
+      } else if (deadline <= now) {
+        setDeadlineError("Date must be in the future.");
+        return;
+      }
+    }
+    setDeadlineError(""); // Clear previous error if valid
+
     if (!formData.title || !formData.placementDrive) {
       toast.error("Please fill in all required fields.");
       return;
     }
-    if (formData.applicationDeadline) {
-      const deadline = new Date(formData.applicationDeadline);
-      if (isNaN(deadline.getTime())) {
-        toast.error("Please enter a valid date.");
-        return;
-      }
-    }
+
     dispatch(createJob(formData));
     toast.success("Job posted successfully!");
     navigate("/company/dashboard");
   };
 
   return (
-    <div className="container mx-auto p-8   rounded-lg shadow-lg  my-10">
+    <div className="container mx-auto p-8 rounded-lg shadow-lg my-10">
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="mb-6 px-4 py-2   rounded  bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
+        className="mb-6 px-4 py-2 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
       >
         &larr; Back
       </button>
@@ -231,6 +259,9 @@ const PostJob = () => {
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
           />
+          {deadlineError && (
+            <span className="text-red-600 text-sm">{deadlineError}</span>
+          )}
         </div>
 
         <button

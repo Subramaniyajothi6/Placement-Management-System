@@ -45,7 +45,7 @@ const companyProfileSchema = new mongoose.Schema({
     contactPerson: {
         name: { type: String, trim: true },
         email: { type: String, trim: true, match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address'] },
-        phone: { type: String, trim: true },
+        phone: { type: String, trim: true , match: [/^\d{10}$/, 'Please enter a valid phone number']},
     },
     socialLinks: {
         linkedin: String,

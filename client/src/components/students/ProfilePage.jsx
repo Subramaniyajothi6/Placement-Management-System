@@ -48,8 +48,8 @@ const ProfilePage = () => {
   };
 
   const [form, setForm] = useState(initialState);
+  const [errors, setErrors] = useState({});
 
-  // Initialize form fields from logged-in user on mount
   useEffect(() => {
     if (user) {
       setForm((prev) => ({
@@ -62,12 +62,67 @@ const ProfilePage = () => {
     }
   }, [user]);
 
+  // Validation helpers
+  const validateEmail = (email) => {
+    if (!email.trim()) return "Email is required.";
+    if (!/^\S+@\S+\.\S+$/.test(email)) return "Invalid email format.";
+    return "";
+  };
+
+  const validatePhone = (phone) => {
+    const digits = phone.replace(/\D/g, "");
+    if (!phone.trim()) return "Phone number is required.";
+    if (digits.length !== 10) return "Phone number must have exactly 10 digits.";
+    return "";
+  };
+
+  const validateEducationYear = (startYear, endYear) => {
+    const errors = {};
+    const currentYear = new Date().getFullYear();
+
+    if (startYear) {
+      const syNum = Number(startYear);
+      if (isNaN(syNum) || syNum < 1900 || syNum > currentYear) {
+        errors.startYear = "Start Year must be a valid year.";
+      }
+    }
+    if (endYear) {
+      const eyNum = Number(endYear);
+      if (isNaN(eyNum) || eyNum < 1900 || eyNum > currentYear + 10) {
+        errors.endYear = "End Year must be a valid year.";
+      }
+    }
+    if (startYear && endYear && Number(startYear) > Number(endYear)) {
+      errors.yearOrder = "Start Year cannot be greater than End Year.";
+    }
+
+    return errors;
+  };
+
+  const validateExperienceDates = (startDate, endDate) => {
+    const errors = {};
+
+    const isValidDate = (d) => !d || !isNaN(new Date(d).getTime());
+
+    if (!isValidDate(startDate)) errors.startDate = "Start Date is invalid.";
+    if (!isValidDate(endDate)) errors.endDate = "End Date is invalid.";
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      errors.dateOrder = "Start Date cannot be after End Date.";
+    }
+
+    return errors;
+  };
+
+  // Handlers with live validation
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    let errorMsg = "";
+    if (name === "email") errorMsg = validateEmail(value);
+    else if (name === "phone") errorMsg = validatePhone(value);
+
+    setErrors((prev) => ({ ...prev, [name]: errorMsg }));
   };
 
   const handleArrayChange = (field, index, key, value) => {
@@ -79,6 +134,44 @@ const ProfilePage = () => {
         newArray[index] = value;
       }
       return { ...prev, [field]: newArray };
+    });
+
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+
+      if (field === "education" && key && (key === "startYear" || key === "endYear")) {
+        const edu = form.education[index];
+        const testStart = key === "startYear" ? value : edu.startYear;
+        const testEnd = key === "endYear" ? value : edu.endYear;
+
+        const eduErrors = validateEducationYear(testStart, testEnd);
+
+        delete newErrors[`education_startYear_${index}`];
+        delete newErrors[`education_endYear_${index}`];
+        delete newErrors[`education_yearOrder_${index}`];
+
+        if (eduErrors.startYear) newErrors[`education_startYear_${index}`] = eduErrors.startYear;
+        if (eduErrors.endYear) newErrors[`education_endYear_${index}`] = eduErrors.endYear;
+        if (eduErrors.yearOrder) newErrors[`education_yearOrder_${index}`] = eduErrors.yearOrder;
+      }
+
+      if (field === "experience" && key && (key === "startDate" || key === "endDate")) {
+        const exp = form.experience[index];
+        const testStart = key === "startDate" ? value : exp.startDate;
+        const testEnd = key === "endDate" ? value : exp.endDate;
+
+        const expErrors = validateExperienceDates(testStart, testEnd);
+
+        delete newErrors[`experience_startDate_${index}`];
+        delete newErrors[`experience_endDate_${index}`];
+        delete newErrors[`experience_dateOrder_${index}`];
+
+        if (expErrors.startDate) newErrors[`experience_startDate_${index}`] = expErrors.startDate;
+        if (expErrors.endDate) newErrors[`experience_endDate_${index}`] = expErrors.endDate;
+        if (expErrors.dateOrder) newErrors[`experience_dateOrder_${index}`] = expErrors.dateOrder;
+      }
+
+      return newErrors;
     });
   };
 
@@ -109,29 +202,73 @@ const ProfilePage = () => {
       newArray.splice(index, 1);
       return { ...prev, [field]: newArray.length ? newArray : [""] };
     });
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      Object.keys(newErrors).forEach((key) => {
+        if (key.includes(`${field}_`) && key.includes(`_${index}`)) {
+          delete newErrors[key];
+        }
+      });
+      return newErrors;
+    });
   };
 
-const handleResumeUpload = async (file) => {
-  if (!file) return;
-  console.log(user);
-  try {
-    const action = await dispatch(uploadStudentResume({ file }));
-    if (uploadStudentResume.fulfilled.match(action)) {
-      setForm((prev) => ({
-        ...prev,
-        resume: action.payload, // just the URL string now
-      }));
-      toast.success("Resume uploaded successfully!");
-    } else {
-      toast.error("Resume upload failed: " + action.payload);
+  const handleResumeUpload = async (file) => {
+    if (!file) return;
+    try {
+      const action = await dispatch(uploadStudentResume({ file }));
+      if (uploadStudentResume.fulfilled.match(action)) {
+        setForm((prev) => ({
+          ...prev,
+          resume: action.payload,
+        }));
+        toast.success("Resume uploaded successfully!");
+        setErrors((prev) => ({ ...prev, resume: "" }));
+      } else {
+        toast.error("Resume upload failed: " + action.payload);
+      }
+    } catch (error) {
+      toast.error("Unexpected error uploading resume: " + error.message);
     }
-  } catch (error) {
-    toast.error("Unexpected error uploading resume: " + error.message);
-  }
-};
+  };
+
+  const validateForm = () => {
+    // We can call the per-field helper functions and do a full validation on submit
+    const newErrors = {};
+
+    // Email and phone (also live validated but final check here)
+    let emailError = validateEmail(form.email);
+    if (emailError) newErrors.email = emailError;
+
+    let phoneError = validatePhone(form.phone);
+    if (phoneError) newErrors.phone = phoneError;
+
+    // Validate education and experience years/dates
+    form.education.forEach((edu, idx) => {
+      const eduErrors = validateEducationYear(edu.startYear, edu.endYear);
+      if (eduErrors.startYear) newErrors[`education_startYear_${idx}`] = eduErrors.startYear;
+      if (eduErrors.endYear) newErrors[`education_endYear_${idx}`] = eduErrors.endYear;
+      if (eduErrors.yearOrder) newErrors[`education_yearOrder_${idx}`] = eduErrors.yearOrder;
+    });
+
+    form.experience.forEach((exp, idx) => {
+      const expErrors = validateExperienceDates(exp.startDate, exp.endDate);
+      if (expErrors.startDate) newErrors[`experience_startDate_${idx}`] = expErrors.startDate;
+      if (expErrors.endDate) newErrors[`experience_endDate_${idx}`] = expErrors.endDate;
+      if (expErrors.dateOrder) newErrors[`experience_dateOrder_${idx}`] = expErrors.dateOrder;
+    });
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
     const payload = {
       userId: form.userId,
       bio: form.bio,
@@ -141,25 +278,25 @@ const handleResumeUpload = async (file) => {
       portfolioLinks: form.portfolioLinks.filter((l) => l.trim() !== ""),
       resume: form.resume.trim(),
     };
-    
+
     dispatch(createStudent(payload));
     toast.success("Profile created successfully!");
-    navigate("/student/dashboard")
+    navigate("/student/dashboard");
     setForm(initialState);
+    setErrors({});
   };
 
   return (
-    <div className="relative min-h-screen   bg-indigo-50 py-12 px-6 sm:px-8 lg:px-15">
-      {/* Back Button */}
+    <div className="relative min-h-screen bg-indigo-50 py-12 px-6 sm:px-8 lg:px-15">
       <button
         onClick={() => navigate(`/student/dashboard`)}
-        className=" relative top-0 left-0 my-3 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
+        className="relative top-0 left-0 my-3 z-50 flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
         aria-label="Go Back"
       >
         <FaArrowLeft className="mr-2" /> Back
       </button>
 
-      <div className="  relative max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-10">
+      <div className="relative max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-10">
         <h2 className="text-3xl font-bold mb-8 text-indigo-700 text-center">Create Your Profile</h2>
 
         {loading && <p className="text-center text-gray-600 mb-4">Processing...</p>}
@@ -180,6 +317,7 @@ const handleResumeUpload = async (file) => {
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               required
             />
+            {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
           </div>
 
           {/* Email */}
@@ -196,6 +334,7 @@ const handleResumeUpload = async (file) => {
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               required
             />
+            {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
           </div>
 
           {/* Phone */}
@@ -212,6 +351,7 @@ const handleResumeUpload = async (file) => {
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
               required
             />
+            {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone}</p>}
           </div>
 
           {/* Bio */}
@@ -229,6 +369,7 @@ const handleResumeUpload = async (file) => {
               placeholder="Write a short bio (max 500 characters)"
               className="w-full p-3 border border-gray-300 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
+            {errors.bio && <p className="text-red-600 text-sm mt-1">{errors.bio}</p>}
           </div>
 
           {/* Education */}
@@ -240,9 +381,7 @@ const handleResumeUpload = async (file) => {
                   type="text"
                   placeholder="Institution"
                   value={edu.institution}
-                  onChange={(e) =>
-                    handleArrayChange("education", i, "institution", e.target.value)
-                  }
+                  onChange={(e) => handleArrayChange("education", i, "institution", e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
                 <input
@@ -256,31 +395,42 @@ const handleResumeUpload = async (file) => {
                   type="text"
                   placeholder="Field Of Study"
                   value={edu.fieldOfStudy}
-                  onChange={(e) =>
-                    handleArrayChange("education", i, "fieldOfStudy", e.target.value)
-                  }
+                  onChange={(e) => handleArrayChange("education", i, "fieldOfStudy", e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
                 <div className="flex space-x-4">
-                  <input
-                    type="number"
-                    placeholder="Start Year"
-                    value={edu.startYear}
-                    onChange={(e) => handleArrayChange("education", i, "startYear", e.target.value)}
-                    className="w-1/2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-                    min="1900"
-                    max={new Date().getFullYear()}
-                  />
-                  <input
-                    type="number"
-                    placeholder="End Year"
-                    value={edu.endYear}
-                    onChange={(e) => handleArrayChange("education", i, "endYear", e.target.value)}
-                    className="w-1/2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-                    min="1900"
-                    max={new Date().getFullYear() + 10}
-                  />
+                  <div className="flex flex-col w-1/2">
+                    <input
+                      type="number"
+                      placeholder="Start Year"
+                      value={edu.startYear}
+                      onChange={(e) => handleArrayChange("education", i, "startYear", e.target.value)}
+                      className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                      min="1900"
+                      max={new Date().getFullYear()}
+                    />
+                    {errors[`education_startYear_${i}`] && (
+                      <p className="text-red-600 text-sm mt-1">{errors[`education_startYear_${i}`]}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col w-1/2">
+                    <input
+                      type="number"
+                      placeholder="End Year"
+                      value={edu.endYear}
+                      onChange={(e) => handleArrayChange("education", i, "endYear", e.target.value)}
+                      className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                      min="1900"
+                      max={new Date().getFullYear() + 10}
+                    />
+                    {errors[`education_endYear_${i}`] && (
+                      <p className="text-red-600 text-sm mt-1">{errors[`education_endYear_${i}`]}</p>
+                    )}
+                  </div>
                 </div>
+                {errors[`education_yearOrder_${i}`] && (
+                  <p className="text-red-600 text-sm mt-1">{errors[`education_yearOrder_${i}`]}</p>
+                )}
                 <button
                   type="button"
                   className="text-red-600 hover:underline"
@@ -320,21 +470,34 @@ const handleResumeUpload = async (file) => {
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                 />
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="date"
-                    placeholder="Start Date"
-                    value={exp.startDate ? exp.startDate.slice(0, 10) : ""}
-                    onChange={(e) => handleArrayChange("experience", i, "startDate", e.target.value)}
-                    className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-                  />
-                  <input
-                    type="date"
-                    placeholder="End Date"
-                    value={exp.endDate ? exp.endDate.slice(0, 10) : ""}
-                    onChange={(e) => handleArrayChange("experience", i, "endDate", e.target.value)}
-                    className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-                  />
+                  <div className="flex flex-col">
+                    <input
+                      type="date"
+                      placeholder="Start Date"
+                      value={exp.startDate ? exp.startDate.slice(0, 10) : ""}
+                      onChange={(e) => handleArrayChange("experience", i, "startDate", e.target.value)}
+                      className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                    />
+                    {errors[`experience_startDate_${i}`] && (
+                      <p className="text-red-600 text-sm mt-1">{errors[`experience_startDate_${i}`]}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <input
+                      type="date"
+                      placeholder="End Date"
+                      value={exp.endDate ? exp.endDate.slice(0, 10) : ""}
+                      onChange={(e) => handleArrayChange("experience", i, "endDate", e.target.value)}
+                      className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                    />
+                    {errors[`experience_endDate_${i}`] && (
+                      <p className="text-red-600 text-sm mt-1">{errors[`experience_endDate_${i}`]}</p>
+                    )}
+                  </div>
                 </div>
+                {errors[`experience_dateOrder_${i}`] && (
+                  <p className="text-red-600 text-sm mt-1">{errors[`experience_dateOrder_${i}`]}</p>
+                )}
                 <textarea
                   placeholder="Description"
                   value={exp.description}

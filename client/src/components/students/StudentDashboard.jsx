@@ -102,13 +102,13 @@ const StudentDashBoard = () => {
                         <td className="px-4 py-3 whitespace-nowrap text-blue-600 text-base">
                           {interviewType === "Online" ? (
                             <a
-                              href={`https://zoom.us/j/${meetingId}`}
+                              href={`https://placementmanagementsystem-project.netlify.app/students/${meetingId}`}
                               target="_blank"
                               rel="noreferrer"
                               className="hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              Zoom Link
+                              Meeting Link
                             </a>
                           ) : (
                             location || "N/A"

@@ -40,7 +40,7 @@ const CompanyForm = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const isValidURL = (string) => {
-    if (!string) return true; // Allow empty field as valid
+    if (!string) return true; 
     try {
       new URL(string.trim());
       return true;
