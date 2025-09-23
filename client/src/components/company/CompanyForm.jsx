@@ -232,7 +232,7 @@ const CompanyForm = () => {
             <div>
               <label className="block mb-2 font-semibold text-indigo-700">Logo URL</label>
               <input
-                type="text"
+                type="url"
                 name="logo"
                 value={formData.logo}
                 onChange={handleChange}
