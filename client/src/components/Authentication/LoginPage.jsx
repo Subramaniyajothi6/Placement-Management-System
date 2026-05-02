@@ -152,9 +152,9 @@ const LoginPage = () => {
             />
           </div>
 
-          {error && (
+          {error && message && (
             <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
-              <p className="text-red-400 text-sm text-center">{error}</p>
+              <p className="text-red-400 text-sm text-center">{message}</p>
             </div>
           )}
 
