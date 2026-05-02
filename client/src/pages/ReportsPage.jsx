@@ -26,29 +26,29 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto relative">
-        {/* Back Button */}
+    <div className="min-h-screen p-6">
+      <div className="max-w-7xl mx-auto">
         <button
           onClick={() => navigate('/admin/dashboard')}
-          className="flex items-center absolute left-0 top-0 text-indigo-600 font-semibold hover:text-indigo-800 transition focus:outline-none mb-6"
+          className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
         >
-          <FaArrowLeft className="mr-2" /> Back
+          <FaArrowLeft className="text-xs" /> Back
         </button>
 
-        <h1 className="text-4xl font-extrabold mb-10 text-indigo-700 text-center tracking-tight pt-2">
+        <h1 className="text-3xl font-black mb-8 text-white tracking-tight">
           Reports & Analytics
         </h1>
-        <div className="flex flex-col md:flex-row gap-8">
+
+        <div className="flex flex-col md:flex-row gap-6">
           {/* Reports List */}
-          <aside className="w-full md:w-1/3 bg-white border border-indigo-100 rounded-2xl shadow-lg p-6 max-h-[600px] overflow-auto">
-            <h2 className="text-2xl font-bold mb-6 text-indigo-700 border-b border-indigo-100 pb-2">Reports List</h2>
-            {loading && <p className="text-center py-8 text-gray-500">Loading reports...</p>}
-            {error && <p className="text-center py-8 text-red-600">{error}</p>}
+          <aside className="w-full md:w-1/3 bg-[#1e293b] border border-white/[0.08] rounded-2xl p-6 max-h-[600px] overflow-auto">
+            <h2 className="text-lg font-bold mb-5 text-white border-b border-white/[0.08] pb-3">Reports List</h2>
+            {loading && <p className="text-center py-8 text-gray-400 text-sm">Loading reports...</p>}
+            {error && <p className="text-center py-8 text-red-400 text-sm">{error}</p>}
             {reports.length === 0 && !loading ? (
-              <p className="py-12 text-center text-gray-500">No reports found.</p>
+              <p className="py-12 text-center text-gray-500 text-sm">No reports found.</p>
             ) : (
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {reports.map((report) => {
                   const successRate =
                     report.participantCount > 0
@@ -59,30 +59,30 @@ const ReportsPage = () => {
                   return (
                     <li
                       key={report._id}
-                      className={`rounded-lg transition shadow-md bg-white border cursor-pointer ${
+                      className={`rounded-xl transition border cursor-pointer ${
                         isActive
-                          ? "border-indigo-600 ring-2 ring-indigo-300"
-                          : "border-indigo-100 hover:border-indigo-400 hover:shadow-lg"
+                          ? "border-indigo-500/40 bg-indigo-500/10 ring-1 ring-indigo-500/30"
+                          : "border-white/[0.08] bg-[#172033] hover:bg-[#243347] hover:border-white/[0.14]"
                       }`}
                     >
                       <Link to={`/dashboard/reports/${report._id}`}>
                         <button
-                          className="w-full text-left p-4 rounded-lg focus:outline-none"
+                          className="w-full text-left p-4 rounded-xl focus:outline-none"
                           onClick={() => handleSelectReport(report._id)}
                           tabIndex={0}
                         >
-                          <p className="font-bold text-indigo-700 text-lg truncate">
+                          <p className="font-bold text-white text-sm truncate">
                             {report.placementDrive?.title || "Unnamed Placement Drive"}
                           </p>
-                          <p className="text-sm text-indigo-500">{report.placementDrive?.companyName || "Unknown Company"}</p>
-                          <p className="text-sm text-gray-400 mb-2">
+                          <p className="text-xs text-indigo-400 mb-1">{report.placementDrive?.companyName || "Unknown Company"}</p>
+                          <p className="text-xs text-gray-500 mb-2">
                             {new Date(report.startDate).toLocaleDateString()} &ndash; {new Date(report.endDate).toLocaleDateString()}
                           </p>
-                          <div className="flex flex-wrap justify-start gap-2 text-gray-700 text-sm mt-2">
-                            <span className="bg-indigo-50 px-2 py-1 rounded font-medium">Participants: <span className="text-indigo-700">{report.participantCount}</span></span>
-                            <span className="bg-indigo-50 px-2 py-1 rounded font-medium">Offers: <span className="text-indigo-700">{report.offersMade}</span></span>
-                            <span className="bg-indigo-50 px-2 py-1 rounded font-medium">Placed: <span className="text-indigo-700">{report.studentsPlaced}</span></span>
-                            <span className="bg-green-50 px-2 py-1 rounded font-medium">Success: <span className="text-green-700">{successRate}%</span></span>
+                          <div className="flex flex-wrap gap-1.5 text-xs mt-1">
+                            <span className="bg-[#243347] px-2 py-0.5 rounded text-gray-300">Participants: <span className="text-white">{report.participantCount}</span></span>
+                            <span className="bg-[#243347] px-2 py-0.5 rounded text-gray-300">Offers: <span className="text-white">{report.offersMade}</span></span>
+                            <span className="bg-[#243347] px-2 py-0.5 rounded text-gray-300">Placed: <span className="text-white">{report.studentsPlaced}</span></span>
+                            <span className="bg-green-500/10 px-2 py-0.5 rounded text-green-400">Success: {successRate}%</span>
                           </div>
                         </button>
                       </Link>
@@ -92,7 +92,6 @@ const ReportsPage = () => {
               </ul>
             )}
           </aside>
-          {/* (Optional) Place for selected report details/analytics here */}
           <div className="flex-grow" />
         </div>
       </div>

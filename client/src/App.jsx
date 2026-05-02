@@ -33,6 +33,8 @@ import EditJob from "./components/company/EditJob";
 import JitsiMeetComponent from "./components/company/JitsiMeetComponent";
 import Layout from "./components/company/Layout";
 import { Toaster } from "react-hot-toast";
+import NotFoundPage from "./pages/NotFoundPage";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -58,9 +60,8 @@ const routes = [
   { path: "/register", element: <RegisterPage /> },
   { path: "/", element: <CommonDashboard /> },
 
-  // All main app routes in a layout with Navbar:
+  // All main app routes in a layout with Navbar (pathless layout route):
   {
-    path: "/",
     element: <LayoutWithNavbar />,
     children: [
       { path: ":user/postJob/:placementDriveId", element: <PostJob /> },
@@ -89,7 +90,8 @@ const routes = [
       { path: "company/companyJobs", element: <CompanyJobsList/> },
       { path: "company/editJob/:id", element: <EditJob/> },
     ]
-  }
+  },
+  { path: "*", element: <NotFoundPage /> },
 ];
 
   const router = createBrowserRouter(routes, {
@@ -104,13 +106,13 @@ const routes = [
   })
 
   return (
-<>
-    <RouterProvider
-      router={router}
-      future={{ v7_startTransition: true }}
-    />
-    <Toaster position="top-center" reverseOrder={false} />
-</>
+    <ErrorBoundary>
+      <RouterProvider
+        router={router}
+        future={{ v7_startTransition: true }}
+      />
+      <Toaster position="top-center" reverseOrder={false} />
+    </ErrorBoundary>
   )
 }
 

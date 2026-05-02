@@ -36,65 +36,71 @@ const StudentList = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Back button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center mb-6 text-indigo-600 font-semibold hover:text-indigo-800 focus:outline-none transition"
-      >
-        <FaArrowLeft className="mr-2" /> Back
-      </button>
+    <div className="min-h-screen py-8 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
+        >
+          <FaArrowLeft className="text-xs" /> Back
+        </button>
 
-      <h1 className="text-3xl font-bold mb-8 text-indigo-700 border-b pb-2">Student Management</h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-black text-white tracking-tight">Student Management</h1>
+          <p className="text-gray-400 text-sm mt-1">View and manage all registered students</p>
+        </div>
 
-      <input
-        type="text"
-        placeholder="Search by name..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-6 w-full p-3 border border-gray-300 outline-0 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-lg transition"
-      />
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-6 w-full p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 text-sm transition"
+        />
 
-      {loading && <p className="text-center py-8 text-gray-500">Loading students...</p>}
-      {error && <p className="text-center py-8 text-red-600">Error: {error}</p>}
+        {loading && <p className="text-center py-8 text-gray-400 text-sm">Loading students...</p>}
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            Error: {error}
+          </div>
+        )}
 
-      <div className="overflow-x-auto rounded-xl border border-indigo-100 shadow-lg bg-white">
-        <table className="min-w-full">
-          <thead className="bg-indigo-50">
-            <tr>
-              <th className="p-4 text-left text-indigo-700 font-semibold">Name</th>
-              <th className="p-4 text-left text-indigo-700 font-semibold">Email</th>
-              <th className="p-4 text-center text-indigo-700 font-semibold">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStudents.length === 0 ? (
+        <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+          <table className="min-w-full divide-y divide-white/[0.06]">
+            <thead className="bg-[#1e293b]">
               <tr>
-                <td colSpan="3" className="p-6 text-center text-gray-500">
-                  No students found.
-                </td>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
-            ) : (
-              filteredStudents.map((student, idx) => {
-                const user = userMap.get(student.userId);
-                return (
-                  <tr key={student._id} className={idx % 2 ? "bg-indigo-50" : "bg-white"}>
-                    <td className="p-4 break-words">{user?.name || "N/A"}</td>
-                    <td className="p-4 break-all">{user?.email || "N/A"}</td>
-                    <td className="p-4 text-center">
-                      <button
-                        onClick={() => handleViewDetails(student._id)}
-                        className="px-5 py-2 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700 transition"
-                      >
-                        View Details
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {filteredStudents.length === 0 ? (
+                <tr>
+                  <td colSpan="3" className="p-6 text-center text-gray-500 text-sm">No students found.</td>
+                </tr>
+              ) : (
+                filteredStudents.map((student) => {
+                  const user = userMap.get(student.userId);
+                  return (
+                    <tr key={student._id} className="hover:bg-white/[0.04] transition">
+                      <td className="px-6 py-4 text-gray-200 text-sm">{user?.name || "N/A"}</td>
+                      <td className="px-6 py-4 text-gray-300 text-sm break-all">{user?.email || "N/A"}</td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          onClick={() => handleViewDetails(student._id)}
+                          className="px-4 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

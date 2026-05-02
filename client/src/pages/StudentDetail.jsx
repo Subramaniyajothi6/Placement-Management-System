@@ -35,101 +35,86 @@ const StudentDetail = () => {
     }, [dispatch, studentId]);
 
     if (loading)
-        return <div className="text-center py-14 text-indigo-700 font-semibold">Loading student information...</div>;
+        return <div className="text-center py-14 text-gray-400 text-sm">Loading student information...</div>;
     if (error)
-        return <div className="text-center py-14 text-red-600 font-semibold">Error: {error}</div>;
+        return <div className="text-center py-14 text-red-400 text-sm font-semibold">Error: {error}</div>;
     if (!student)
-        return <div className="text-center py-14 text-red-600 font-semibold">Student not found.</div>;
+        return <div className="text-center py-14 text-gray-400 text-sm">Student not found.</div>;
 
     return (
-        <div className="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-4">
-            {/* Back Button */}
+        <div className="min-h-screen py-10 px-4 sm:px-6">
+          <div className="max-w-5xl mx-auto">
             <button
                 onClick={() => navigate(-1)}
-                className="flex items-center mb-8 text-indigo-600 font-semibold hover:text-indigo-800 focus:outline-none transition"
+                className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
             >
-                <FaArrowLeft className="mr-2" /> Back
+                <FaArrowLeft className="text-xs" /> Back
             </button>
 
             {/* Student Header */}
-            <section className="mb-8">
-                <h2 className="text-3xl font-bold text-indigo-700 border-b pb-3 mb-3">
+            <div className="bg-[#1e293b] border border-white/[0.08] rounded-2xl p-6 mb-6">
+                <h2 className="text-2xl font-black text-white mb-4 border-b border-white/[0.08] pb-4">
                     {student.userId?.name || "N/A"}
                 </h2>
-                <div className="space-y-2 ml-1">
-                    <div>
-                        <span className="text-sm font-medium text-indigo-900">User ID:</span> {student.userId?._id || "N/A"}
-                    </div>
-                    <div>
-                        <span className="text-sm font-medium text-indigo-900">Email:</span>{" "}
-                        <span className="break-all">{student.userId?.email || "N/A"}</span>
-                    </div>
-                    <div>
-                        <span className="text-sm font-medium text-indigo-900">Bio:</span>{" "}
-                        {student.bio || <span className="text-gray-500 italic">Not provided</span>}
-                    </div>
+                <div className="space-y-2 text-sm">
+                    <p><span className="text-gray-500 font-medium">User ID:</span> <span className="text-gray-300">{student.userId?._id || "N/A"}</span></p>
+                    <p><span className="text-gray-500 font-medium">Email:</span> <span className="text-gray-300 break-all">{student.userId?.email || "N/A"}</span></p>
+                    <p><span className="text-gray-500 font-medium">Bio:</span> <span className="text-gray-300">{student.bio || <span className="italic text-gray-600">Not provided</span>}</span></p>
                 </div>
-            </section>
+            </div>
 
             {/* Education */}
-            <section className="mb-10">
-                <h3 className="text-xl font-semibold text-indigo-800 mb-2">Education</h3>
+            <div className="bg-[#1e293b] border border-white/[0.08] rounded-xl p-6 mb-6">
+                <h3 className="text-base font-bold text-white mb-4">Education</h3>
                 {student.education?.length ? (
-                    <ul className="list-disc pl-5 space-y-1">
+                    <ul className="space-y-2">
                         {student.education.map((edu, index) => (
-                            <li key={index} className="text-gray-800">
-                                <span className="font-medium text-indigo-700">{edu.degree}</span>
-                                {" in "}
-                                <span className="font-medium">{edu.fieldOfStudy}</span>
-                                {" at "}
-                                <span className="font-medium">{edu.institution}</span>
-                                {" ("}
-                                {edu.startYear} - {edu.endYear}
-                                {")"}
+                            <li key={index} className="text-sm text-gray-300">
+                                <span className="text-indigo-400 font-medium">{edu.degree}</span>
+                                {edu.fieldOfStudy && <span> in <span className="text-gray-200">{edu.fieldOfStudy}</span></span>}
+                                {edu.institution && <span> at <span className="text-gray-200">{edu.institution}</span></span>}
+                                <span className="text-gray-500"> ({edu.startYear} – {edu.endYear})</span>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p className="text-gray-500 italic">No education details provided.</p>
+                    <p className="text-gray-500 italic text-sm">No education details provided.</p>
                 )}
-            </section>
+            </div>
 
             {/* Applications */}
-            <section>
-                <h3 className="text-xl font-semibold text-indigo-800 mb-3">Applications</h3>
+            <div className="bg-[#1e293b] border border-white/[0.08] rounded-xl p-6">
+                <h3 className="text-base font-bold text-white mb-4">Applications</h3>
                 {applications?.length ? (
-                    <div className="overflow-x-auto rounded-lg border border-indigo-100 shadow bg-white">
-                        <table className="min-w-full">
-                            <thead className="bg-indigo-50">
+                    <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+                        <table className="min-w-full divide-y divide-white/[0.06]">
+                            <thead className="bg-[#1e293b]">
                                 <tr>
-                                    <th className="p-4 text-left text-indigo-700 font-semibold">Job Title</th>
-                                    <th className="p-4 text-left text-indigo-700 font-semibold">Company</th>
-                                    <th className="p-4 text-left text-indigo-700 font-semibold">Status</th>
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Title</th>
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Company</th>
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {applications.map((app, idx) => (
-                                    <tr key={app._id} className={idx % 2 ? "bg-indigo-50" : "bg-white"}>
-                                        <td className="p-4">
-                                            {(typeof app.job === "object" && app.job !== null
-                                                ? app.job.title
-                                                : app.job) || "N/A"}
+                            <tbody className="divide-y divide-white/[0.06]">
+                                {applications.map((app) => (
+                                    <tr key={app._id} className="hover:bg-white/[0.04] transition">
+                                        <td className="px-4 py-3 text-gray-200 text-sm">
+                                            {(typeof app.job === "object" && app.job !== null ? app.job.title : app.job) || "N/A"}
                                         </td>
-                                        <td className="p-4">
-                                            {(typeof app.company === "object" && app.company !== null
-                                                ? app.company.name
-                                                : app.company) || "N/A"}
+                                        <td className="px-4 py-3 text-gray-300 text-sm">
+                                            {(typeof app.company === "object" && app.company !== null ? app.company.name : app.company) || "N/A"}
                                         </td>
-                                        <td className="p-4">{app.status}</td>
+                                        <td className="px-4 py-3 text-gray-300 text-sm font-medium">{app.status}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 ) : (
-                    <p className="text-gray-500 italic">No applications found.</p>
+                    <p className="text-gray-500 italic text-sm">No applications found.</p>
                 )}
-            </section>
+            </div>
+          </div>
         </div>
     );
 };

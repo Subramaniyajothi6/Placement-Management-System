@@ -76,129 +76,79 @@ const InterviewDetailPage = () => {
         navigate(-1);
     };
 
-    if (loading) return <div className="text-center py-12 text-indigo-600 font-medium">Loading interview details...</div>;
-    if (error) return <div className="text-center py-12 text-red-600 font-semibold">{error}</div>;
-    if (!interview) return <div className="text-center py-12 text-indigo-600 font-medium">Interview not found.</div>;
+    if (loading) return <div className="text-center py-12 text-gray-400 text-sm">Loading interview details...</div>;
+    if (error) return <div className="text-center py-12 text-red-400 text-sm font-semibold">{error}</div>;
+    if (!interview) return <div className="text-center py-12 text-gray-400 text-sm">Interview not found.</div>;
+
+    const inputClass = "w-full p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition text-sm";
 
     return (
-        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 mt-10">
-            {/* Back button */}
+        <div className="min-h-screen py-10 px-4 sm:px-6">
+          <div className="max-w-3xl mx-auto">
             <button
                 onClick={handleBack}
-                className="inline-flex items-center mb-6 text-indigo-600 font-semibold hover:text-indigo-800 focus:outline-none transition-colors duration-200"
+                className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
                 aria-label="Go back"
             >
-                <FaArrowLeft className="mr-2 text-lg" /> Back
+                <FaArrowLeft className="text-xs" /> Back
             </button>
 
-            <h1 className="text-3xl font-extrabold mb-8 text-indigo-900 border-b border-indigo-300 pb-3">Interview Details</h1>
+            <h1 className="text-2xl font-black mb-8 text-white border-b border-white/[0.08] pb-4">Interview Details</h1>
 
-            <section className="space-y-5 text-indigo-800 mb-8">
-                <div className="flex items-center space-x-3">
-                    <FaUserCheck className="text-indigo-600" />
-                    <span className="font-semibold">Candidate:</span>
-                    <span>{interview.candidate?.name || interview.candidate || 'N/A'}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                    <FaClipboardList className="text-indigo-600" />
-                    <span className="font-semibold">Job:</span>
-                    <span>{interview.job?.title || interview.job || 'N/A'}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                    <FaCalendarAlt className="text-indigo-600" />
-                    <span className="font-semibold">Date & Time:</span>
-                    <span>{new Date(interview.interviewDate).toLocaleString()}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                    <FaClock className="text-indigo-600" />
-                    <span className="font-semibold">Duration:</span>
-                    <span>{interview.durationMinutes} minutes</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                    <FaClipboardList className="text-indigo-600" />
-                    <span className="font-semibold">Type:</span>
-                    <span>{interview.interviewType}</span>
-                </div>
-                <div>
-                    <span className="font-semibold">Status:</span> {interview.status}
-                </div>
-                <div>
-                    <span className="font-semibold">Round:</span> {interview.round}
-                </div>
+            <section className="bg-[#1e293b] border border-white/[0.08] rounded-xl p-6 space-y-3 mb-6 text-sm">
+                {[
+                  { icon: FaUserCheck, label: "Candidate", value: interview.candidate?.name || interview.candidate || 'N/A' },
+                  { icon: FaClipboardList, label: "Job", value: interview.job?.title || interview.job || 'N/A' },
+                  { icon: FaCalendarAlt, label: "Date & Time", value: new Date(interview.interviewDate).toLocaleString() },
+                  { icon: FaClock, label: "Duration", value: `${interview.durationMinutes} minutes` },
+                  { icon: FaClipboardList, label: "Type", value: interview.interviewType },
+                ].map(({ icon: Icon, label, value }) => (
+                  <div key={label} className="flex items-center gap-3">
+                    <Icon className="text-indigo-400 text-xs flex-shrink-0" />
+                    <span className="text-gray-400 font-medium w-28 flex-shrink-0">{label}:</span>
+                    <span className="text-gray-200">{value}</span>
+                  </div>
+                ))}
+                <div className="flex gap-3"><span className="text-gray-400 font-medium w-28 flex-shrink-0 pl-5">Status:</span><span className="text-gray-200">{interview.status}</span></div>
+                <div className="flex gap-3"><span className="text-gray-400 font-medium w-28 flex-shrink-0 pl-5">Round:</span><span className="text-gray-200">{interview.round}</span></div>
             </section>
 
-            <section className="bg-indigo-50 p-6 rounded-md border border-indigo-300 shadow-sm">
-                <h2 className="text-xl font-bold mb-6 text-indigo-900">Update Interview Result</h2>
+            <section className="bg-[#1e293b] border border-white/[0.08] rounded-xl p-6">
+                <h2 className="text-base font-bold mb-5 text-white">Update Interview Result</h2>
 
-                <div className="mb-5">
-                    <label htmlFor="result" className="block mb-2 font-semibold text-indigo-900">Result:</label>
-                    <select
-                        id="result"
-                        name="result"
-                        value={editState.result}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    >
-                        {resultOptions.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
+                <div className="mb-4">
+                    <label htmlFor="result" className="block mb-1.5 text-sm font-medium text-gray-300">Result</label>
+                    <select id="result" name="result" value={editState.result} onChange={handleChange} className={`${inputClass} [&>option]:bg-[#1e293b] [&>option]:text-white`}>
+                        {resultOptions.map(option => <option key={option} value={option}>{option}</option>)}
                     </select>
                 </div>
 
-                <div className="mb-5">
-                    <label htmlFor="score" className="block mb-2 font-semibold text-indigo-900">Score:</label>
-                    <input
-                        id="score"
-                        name="score"
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={editState.score}
-                        onChange={handleChange}
-                        className="w-32 p-3 border border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                        placeholder="0-100"
-                    />
+                <div className="mb-4">
+                    <label htmlFor="score" className="block mb-1.5 text-sm font-medium text-gray-300">Score</label>
+                    <input id="score" name="score" type="number" min="0" max="100" value={editState.score} onChange={handleChange} className="w-32 p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition text-sm" placeholder="0-100" />
                 </div>
 
-                <div className="mb-6">
-                    <label htmlFor="feedback" className="block mb-2 font-semibold text-indigo-900">Feedback:</label>
-                    <textarea
-                        id="feedback"
-                        name="feedback"
-                        rows={4}
-                        value={editState.feedback}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                        placeholder="Enter feedback"
-                    />
+                <div className="mb-5">
+                    <label htmlFor="feedback" className="block mb-1.5 text-sm font-medium text-gray-300">Feedback</label>
+                    <textarea id="feedback" name="feedback" rows={4} value={editState.feedback} onChange={handleChange} className={`${inputClass} resize-y`} placeholder="Enter feedback" />
                 </div>
 
                 {successMessage && (
-                    <p className={`mb-4 font-semibold ${successMessage.includes('Failed') ? 'text-red-600' : 'text-green-600'}`}>
+                    <p className={`mb-4 text-sm font-medium ${successMessage.includes('Failed') ? 'text-red-400' : 'text-green-400'}`}>
                         {successMessage}
                     </p>
                 )}
 
-                <div className="flex space-x-4">
-                    <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className={`px-8 py-3 rounded-md text-white font-semibold transition-transform duration-150
-                            ${saving ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:scale-105'}`}
-                    >
+                <div className="flex gap-3">
+                    <button onClick={handleSave} disabled={saving} className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-lg shadow-indigo-900/40">
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
-
-                    <button
-                        onClick={() => navigate(`/company/interview/interviewFeedback/${id}`)}
-                        disabled={saving}
-                        className={`px-8 py-3 rounded-md text-white font-semibold transition-transform duration-150
-                            ${saving ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 hover:scale-105'}`}
-                    >
+                    <button onClick={() => navigate(`/company/interview/interviewFeedback/${id}`)} disabled={saving} className="px-6 py-2.5 rounded-xl text-white text-sm font-semibold bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-lg shadow-violet-900/40">
                         Send Feedback
                     </button>
                 </div>
             </section>
+          </div>
         </div>
     );
 };

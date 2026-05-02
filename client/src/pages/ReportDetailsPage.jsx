@@ -78,23 +78,13 @@ const ReportDetailsPage = () => {
   };
 
   if (loading)
-    return (
-      <div className="text-center py-16 text-indigo-700 font-medium">
-        Loading report details...
-      </div>
-    );
+    return <div className="text-center py-16 text-gray-400 text-sm">Loading report details...</div>;
 
   if (error)
-    return (
-      <div className="text-center py-16 text-red-600 font-semibold">
-        Error loading report: {error}
-      </div>
-    );
+    return <div className="text-center py-16 text-red-400 text-sm font-semibold">Error loading report: {error}</div>;
 
   if (!selectedReport)
-    return (
-      <div className="text-center py-16 text-indigo-400">No report found.</div>
-    );
+    return <div className="text-center py-16 text-gray-500 text-sm">No report found.</div>;
 
   const {
     placementDrive,
@@ -121,109 +111,85 @@ const ReportDetailsPage = () => {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-10 space-y-8 relative">
-        <div className="flex items-center justify-between mb-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center text-indigo-600 font-semibold hover:text-indigo-800 transition focus:outline-none"
-          >
-            <FaArrowLeft className="mr-2" /> Back
-          </button>
-          <button
-            onClick={handleExportPDF}
-            className="px-4 py-2 bg-indigo-600 text-white rounded font-semibold shadow hover:bg-indigo-700 transition"
-          >
-            Export as PDF
-          </button>
+      <div className="min-h-screen py-10 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
+            >
+              <FaArrowLeft className="text-xs" /> Back
+            </button>
+            <button
+              onClick={handleExportPDF}
+              className="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40"
+            >
+              Export as PDF
+            </button>
+          </div>
+
+          <div className="bg-[#1e293b] border border-white/[0.08] rounded-2xl p-8">
+            <h1 className="text-2xl font-black text-white mb-6 pb-4 border-b border-white/[0.08]">
+              Report Details
+            </h1>
+
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {[
+                { label: "Placement Drive", value: placementDrive?.title || "N/A" },
+                { label: "Company", value: placementDrive?.companyName || "N/A" },
+                { label: "Participant Count", value: formatNumber(participantCount) },
+                { label: "Interview Count", value: formatNumber(interviewCount) },
+                { label: "Offers Made", value: formatNumber(offersMade) },
+                { label: "Students Placed", value: formatNumber(studentsPlaced) },
+                {
+                  label: "Period",
+                  value: `${startDate ? new Date(startDate).toLocaleDateString() : "N/A"} – ${endDate ? new Date(endDate).toLocaleDateString() : "N/A"}`
+                },
+              ].map(({ label, value }) => (
+                <div key={label} className="bg-[#172033] border border-white/[0.06] rounded-xl p-4">
+                  <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{label}</dt>
+                  <dd className="text-gray-200 text-sm font-medium">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div className="bg-[#1e293b] border border-white/[0.08] rounded-2xl p-8">
+            <h2 className="text-base font-bold text-white mb-6">Visual Summary</h2>
+            <div className="flex flex-col md:flex-row gap-10 justify-center items-center">
+              <div>
+                <h3 className="text-sm font-medium mb-3 text-gray-400 text-center">Placement Counts</h3>
+                <BarChart width={325} height={250} data={barData} margin={{ top: 5, right: 16, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="name" fontSize={12} tick={{ fill: "#9ca3af" }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} />
+                  <YAxis allowDecimals={false} fontSize={12} tick={{ fill: "#9ca3af" }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} />
+                  <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "#e2e8f0" }} />
+                  <Legend wrapperStyle={{ color: "#9ca3af", fontSize: "12px" }} />
+                  <Bar dataKey="count" fill="#6366f1" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium mb-3 text-gray-400 text-center">Success Rate</h3>
+                <PieChart width={260} height={250}>
+                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={38} outerRadius={85} dataKey="value" label>
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "#e2e8f0" }} />
+                  <Legend wrapperStyle={{ color: "#9ca3af", fontSize: "12px" }} />
+                </PieChart>
+              </div>
+            </div>
+          </div>
+
+          {summary && (
+            <div className="bg-[#1e293b] border border-white/[0.08] rounded-2xl p-6">
+              <h2 className="text-base font-bold text-white mb-3">Summary</h2>
+              <pre className="whitespace-pre-wrap text-gray-300 text-sm leading-relaxed">{summary}</pre>
+            </div>
+          )}
         </div>
-
-        <h1 className="text-3xl font-bold mb-10 text-indigo-700 text-center border-b pb-4">
-          Report Details
-        </h1>
-
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-indigo-900">
-          <div>
-            <dt className="font-semibold">Placement Drive</dt>
-            <dd className="mt-1">{placementDrive?.title || "N/A"}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Company</dt>
-            <dd className="mt-1">{placementDrive?.companyName || "N/A"}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Participant Count</dt>
-            <dd className="mt-1">{formatNumber(participantCount)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Interview Count</dt>
-            <dd className="mt-1">{formatNumber(interviewCount)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Offers Made</dt>
-            <dd className="mt-1">{formatNumber(offersMade)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Students Placed</dt>
-            <dd className="mt-1">{formatNumber(studentsPlaced)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Period</dt>
-            <dd className="mt-1">
-              {startDate ? new Date(startDate).toLocaleDateString() : "N/A"} -{" "}
-              {endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
-            </dd>
-          </div>
-        </dl>
-
-        <section className="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mt-8">
-          <h2 className="font-semibold text-xl mb-6 text-indigo-700">Visual Summary</h2>
-          <div className="flex flex-col md:flex-row gap-10 justify-center items-center">
-            <div>
-              <h3 className="text-lg font-medium mb-3 text-indigo-800">Placement Counts</h3>
-              <BarChart
-                width={325}
-                height={250}
-                data={barData}
-                margin={{ top: 5, right: 16, left: 0, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" fontSize={12} />
-                <YAxis allowDecimals={false} fontSize={12} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#6366f1" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium mb-3 text-indigo-800">Success Rate</h3>
-              <PieChart width={260} height={250}>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={38}
-                  outerRadius={85}
-                  fill="#4b61f9"
-                  dataKey="value"
-                  label
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </div>
-          </div>
-        </section>
-
-        {summary && (
-          <section>
-            <h2 className="font-semibold text-xl mb-2 text-indigo-700">Summary</h2>
-            <pre className="whitespace-pre-wrap">{summary}</pre>
-          </section>
-        )}
       </div>
 
       {/* Hidden printable content for PDF generation */}

@@ -105,187 +105,101 @@ const ManagePlacementDrives = () => {
     setFormData(emptyDrive);
   };
 
+  const inputClass = "w-full p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition text-sm [color-scheme:dark]";
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(`/admin/dashboard`)}
-        className="flex items-center mb-8 text-indigo-600 font-semibold hover:text-indigo-800 focus:outline-none transition"
-      >
-        <FaArrowLeft className="mr-2" /> Back
-      </button>
+    <div className="min-h-screen py-8 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto">
+        <button
+          onClick={() => navigate(`/admin/dashboard`)}
+          className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
+        >
+          <FaArrowLeft className="text-xs" /> Back
+        </button>
 
-      <h1 className="text-3xl font-bold mb-8 text-indigo-700 border-b pb-2">Manage Placement Drives</h1>
-
-      {loading && <p>Loading placement drives...</p>}
-      {error && <p className="text-red-600">Error: {error}</p>}
-
-      <button
-        onClick={() => setShowForm(true)}
-        className="mb-6 px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 font-semibold transition"
-      >
-        Create New Placement Drive
-      </button>
-
-      {showForm && (
-        <form onSubmit={handleSubmit} className="mb-8 bg-indigo-50 p-6 rounded-xl shadow-lg space-y-6 border border-indigo-100">
-          <h2 className="text-xl font-bold text-indigo-700 mb-2">
-            {editingId ? "Edit Placement Drive" : "Create Placement Drive"}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Title"
-              required
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="text"
-              name="companyName"
-              value={formData.companyName}
-              onChange={handleChange}
-              placeholder="Company Name"
-              required
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Location"
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="date"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
-              required
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="date"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
-              required
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="text"
-              name="eligibilityCriteria"
-              value={formData.eligibilityCriteria}
-              onChange={handleChange}
-              placeholder="Eligibility Criteria"
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="text"
-              name="packageOffered"
-              value={formData.packageOffered}
-              onChange={handleChange}
-              placeholder="Package Offered"
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="text"
-              name="contactPerson.name"
-              value={formData.contactPerson.name}
-              onChange={handleChange}
-              placeholder="Contact Person Name"
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="email"
-              name="contactPerson.email"
-              value={formData.contactPerson.email}
-              onChange={handleChange}
-              placeholder="Contact Person Email"
-              className="p-3 border rounded bg-white"
-            />
-            <input
-              type="text"
-              name="contactPerson.phone"
-              value={formData.contactPerson.phone}
-              onChange={handleChange}
-              placeholder="Contact Person Phone"
-              className="p-3 border rounded bg-white"
-            />
-            <textarea
-              name="jobDescription"
-              value={formData.jobDescription}
-              onChange={handleChange}
-              placeholder="Job Description"
-              className="p-3 border rounded col-span-1 md:col-span-2 bg-white"
-              rows={3}
-            />
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-black text-white tracking-tight">Manage Placement Drives</h1>
+            <p className="text-gray-400 text-sm mt-1">Create and manage all placement drives</p>
           </div>
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-5 py-2 rounded border border-gray-400 bg-white hover:bg-gray-100 transition font-semibold"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-semibold transition"
-            >
-              {editingId ? 'Update' : 'Create'}
-            </button>
-          </div>
-        </form>
-      )}
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40"
+          >
+            + New Drive
+          </button>
+        </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border border-indigo-100 rounded-xl shadow bg-white">
-          <thead className="bg-indigo-50">
-            <tr>
-              <th className="p-3 border border-indigo-100 text-indigo-700">Title</th>
-              <th className="p-3 border border-indigo-100 text-indigo-700">Company Name</th>
-              <th className="p-3 border border-indigo-100 text-indigo-700">Location</th>
-              <th className="p-3 border border-indigo-100 text-indigo-700">Start Date</th>
-              <th className="p-3 border border-indigo-100 text-indigo-700">End Date</th>
-              <th className="p-3 border border-indigo-100 text-indigo-700">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {placementDrives.length === 0 ? (
+        {loading && <p className="text-center text-gray-400 text-sm py-8">Loading placement drives...</p>}
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            Error: {error}
+          </div>
+        )}
+
+        {showForm && (
+          <form onSubmit={handleSubmit} className="mb-8 bg-[#1e293b] border border-white/[0.08] rounded-2xl p-6 space-y-5">
+            <h2 className="text-lg font-bold text-white mb-1">
+              {editingId ? "Edit Placement Drive" : "Create Placement Drive"}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Title *" required className={inputClass} />
+              <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name *" required className={inputClass} />
+              <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Location" className={inputClass} />
+              <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} required className={inputClass} />
+              <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} required className={inputClass} />
+              <input type="text" name="eligibilityCriteria" value={formData.eligibilityCriteria} onChange={handleChange} placeholder="Eligibility Criteria" className={inputClass} />
+              <input type="text" name="packageOffered" value={formData.packageOffered} onChange={handleChange} placeholder="Package Offered" className={inputClass} />
+              <input type="text" name="contactPerson.name" value={formData.contactPerson.name} onChange={handleChange} placeholder="Contact Person Name" className={inputClass} />
+              <input type="email" name="contactPerson.email" value={formData.contactPerson.email} onChange={handleChange} placeholder="Contact Person Email" className={inputClass} />
+              <input type="text" name="contactPerson.phone" value={formData.contactPerson.phone} onChange={handleChange} placeholder="Contact Person Phone" className={inputClass} />
+              <textarea name="jobDescription" value={formData.jobDescription} onChange={handleChange} placeholder="Job Description" className={`${inputClass} col-span-1 md:col-span-2 resize-y`} rows={3} />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button type="button" onClick={handleCancel} className="px-5 py-2 rounded-xl border border-white/10 text-gray-300 text-sm font-semibold hover:bg-[#243347] transition">
+                Cancel
+              </button>
+              <button type="submit" className="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40">
+                {editingId ? 'Update Drive' : 'Create Drive'}
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+          <table className="min-w-full divide-y divide-white/[0.06]">
+            <thead className="bg-[#1e293b]">
               <tr>
-                <td colSpan="6" className="p-6 text-center text-gray-600">No Placement Drives found.</td>
+                {["Title", "Company Name", "Location", "Start Date", "End Date", "Actions"].map(h => (
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">{h}</th>
+                ))}
               </tr>
-            ) : (
-              placementDrives.map((drive, idx) => (
-                <tr key={drive._id} className={idx % 2 === 0 ? "bg-white" : "bg-indigo-50"}>
-                  <td className="p-3 border border-indigo-100">{drive.title}</td>
-                  <td className="p-3 border border-indigo-100">{drive.companyName}</td>
-                  <td className="p-3 border border-indigo-100">{drive.location}</td>
-                  <td className="p-3 border border-indigo-100">{new Date(drive.startDate).toLocaleDateString()}</td>
-                  <td className="p-3 border border-indigo-100">{new Date(drive.endDate).toLocaleDateString()}</td>
-                  <td className="p-3 border border-indigo-100 flex gap-2">
-                    <button
-                      onClick={() => handleEdit(drive)}
-                      className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-white font-semibold transition"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(drive._id)}
-                      className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white font-semibold transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {placementDrives.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="p-6 text-center text-gray-500 text-sm">No Placement Drives found.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                placementDrives.map((drive) => (
+                  <tr key={drive._id} className="hover:bg-white/[0.04] transition">
+                    <td className="px-4 py-3 text-gray-200 text-sm font-medium">{drive.title}</td>
+                    <td className="px-4 py-3 text-gray-300 text-sm">{drive.companyName}</td>
+                    <td className="px-4 py-3 text-gray-300 text-sm">{drive.location || "—"}</td>
+                    <td className="px-4 py-3 text-gray-400 text-sm">{new Date(drive.startDate).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-gray-400 text-sm">{new Date(drive.endDate).toLocaleDateString()}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        <button onClick={() => handleEdit(drive)} className="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-lg text-xs font-semibold hover:bg-indigo-500/30 transition">Edit</button>
+                        <button onClick={() => handleDelete(drive._id)} className="px-3 py-1 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-xs font-semibold hover:bg-red-500/20 transition">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

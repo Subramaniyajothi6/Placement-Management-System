@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAuthUser, logout } from "../slices/authSlice"; 
+import { selectAuthUser, logout } from "../slices/authSlice";
 import { useNavigate } from "react-router";
 import { RxHamburgerMenu } from "react-icons/rx";
 
@@ -17,11 +17,8 @@ const Navbar = () => {
   const isAdmin = user?.role === "admin";
 
   const handleViewProfileClick = () => {
-    if (isStudent) {
-      navigate(`/student/viewStudentProfile`);
-    } else if (isCompany) {
-      navigate(`/company/profile/${user._id}`);
-    }
+    if (isStudent) navigate(`/student/viewStudentProfile`);
+    else if (isCompany) navigate(`/company/profile/${user._id}`);
     setMenuOpen(false);
   };
 
@@ -31,178 +28,139 @@ const Navbar = () => {
     setMenuOpen(false);
   };
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
     };
-
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
+    else document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
-  // Navigation links data for admin (you can adjust for company/student similarly)
   const adminLinks = [
-    { name: "Report", path: "/admin/reports" },
-    { name: "Placement Drive", path: "/admin/placementDrive" },
-    { name: "Student Management", path: "/admin/student/profiles" },
+    { name: "Reports", path: "/admin/reports" },
+    { name: "Placement Drives", path: "/admin/placementDrive" },
+    { name: "Students", path: "/admin/student/profiles" },
   ];
 
+  const navBtn =
+    "px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.06] font-medium transition-colors";
+
   return (
-    <nav className="bg-indigo-700 p-4 flex items-center justify-between flex-wrap relative">
-      <div
-        className="text-white font-bold text-xl cursor-pointer"
-        onClick={() => {
-          navigate("/");
-          setMenuOpen(false);
-        }}
-      >
-        Placement Management System
-      </div>
+    <nav className="bg-[#0f172a]/80 backdrop-blur-xl border-b border-white/[0.08] sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
 
-      {/* Hamburger Icon shown on small screens */}
-      <div className="sm:hidden">
-        <button
-          onClick={() => setMenuOpen((prev) => !prev)}
-          className="text-white text-3xl focus:outline-none"
-          aria-label="Toggle menu"
-        >
-          <RxHamburgerMenu />
-        </button>
-      </div>
+          {/* Brand */}
+          <div
+            className="flex items-center gap-2.5 cursor-pointer group"
+            onClick={() => { navigate("/"); setMenuOpen(false); }}
+          >
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-900/40">
+              <span className="text-white font-black text-sm leading-none">P</span>
+            </div>
+            <span className="font-bold text-white text-base tracking-tight group-hover:text-indigo-400 transition-colors">
+              PlacementMS
+            </span>
+          </div>
 
-      {/* Navigation links for medium & up */}
-      <div className="hidden sm:flex sm:items-center sm:space-x-6 text-indigo-200 font-semibold">
-        {isAdmin &&
-          adminLinks.map((link) => (
-            <button
-              key={link.name}
-              onClick={() => navigate(link.path)}
-              className="hover:text-white"
-            >
-              {link.name}
-            </button>
-          ))}
-
-        {isCompany && (
-          <>
-            <button
-              onClick={() => navigate("/companydashboard")}
-              className="hover:text-white"
-            >
-              Company Dashboard
-            </button>
-            <button onClick={handleViewProfileClick} className="hover:text-white">
-              View Profile
-            </button>
-          </>
-        )}
-
-        {isStudent && (
-          <>
-            <button
-              onClick={() => navigate("/studentdashboard")}
-              className="hover:text-white"
-            >
-              Student Dashboard
-            </button>
-            <button onClick={handleViewProfileClick} className="hover:text-white">
-              View Profile
-            </button>
-          </>
-        )}
-
-        <button onClick={handleLogout} className="hover:text-white">
-          Logout
-        </button>
-      </div>
-
-      {/* Mobile menu - shown when hamburger is toggled */}
-      {menuOpen && (
-        <div
-          ref={menuRef}
-          className="absolute right-4 top-full mt-2 w-48 bg-indigo-700 rounded shadow-lg z-50 sm:hidden"
-        >
-          <div className="flex flex-col p-4 space-y-3 text-indigo-200 font-semibold">
-            {isAdmin &&
-              adminLinks.map((link) => (
-                <button
-                  key={link.name}
-                  onClick={() => {
-                    navigate(link.path);
-                    setMenuOpen(false);
-                  }}
-                  className="text-left hover:text-white"
-                >
-                  {link.name}
-                </button>
-              ))}
+          {/* Desktop links */}
+          <div className="hidden sm:flex items-center gap-1">
+            {isAdmin && adminLinks.map((link) => (
+              <button key={link.name} onClick={() => navigate(link.path)} className={navBtn}>
+                {link.name}
+              </button>
+            ))}
 
             {isCompany && (
               <>
-                <button
-                  onClick={() => {
-                    navigate("/companydashboard");
-                    setMenuOpen(false);
-                  }}
-                  className="text-left hover:text-white"
-                >
-                  Company Dashboard
-                </button>
+                <button onClick={() => navigate("/companydashboard")} className={navBtn}>Dashboard</button>
+                <button onClick={handleViewProfileClick} className={navBtn}>Profile</button>
+              </>
+            )}
 
-                <button
-                  onClick={() => {
-                    handleViewProfileClick();
-                    setMenuOpen(false);
-                  }}
-                  className="text-left hover:text-white"
-                >
-                  View Profile
+            {isStudent && (
+              <>
+                <button onClick={() => navigate("/studentdashboard")} className={navBtn}>Dashboard</button>
+                <button onClick={handleViewProfileClick} className={navBtn}>Profile</button>
+              </>
+            )}
+
+            <div className="w-px h-5 bg-white/10 mx-2 flex-shrink-0" />
+
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-lg text-sm bg-indigo-600 text-white hover:bg-indigo-500 font-semibold transition-colors shadow-lg shadow-indigo-900/40"
+            >
+              Logout
+            </button>
+          </div>
+
+          {/* Mobile hamburger */}
+          <div className="sm:hidden">
+            <button
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+            >
+              <RxHamburgerMenu className="text-xl" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div
+          id="mobile-menu"
+          ref={menuRef}
+          className="sm:hidden border-t border-white/[0.08] bg-[#0f172a]/95 backdrop-blur-xl"
+        >
+          <div className="px-4 py-3 space-y-1">
+            {isAdmin && adminLinks.map((link) => (
+              <button
+                key={link.name}
+                onClick={() => { navigate(link.path); setMenuOpen(false); }}
+                className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.06] font-medium transition-colors"
+              >
+                {link.name}
+              </button>
+            ))}
+
+            {isCompany && (
+              <>
+                <button onClick={() => { navigate("/companydashboard"); setMenuOpen(false); }} className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.06] font-medium transition-colors">
+                  Dashboard
+                </button>
+                <button onClick={() => { handleViewProfileClick(); setMenuOpen(false); }} className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.06] font-medium transition-colors">
+                  Profile
                 </button>
               </>
             )}
 
             {isStudent && (
               <>
-                <button
-                  onClick={() => {
-                    navigate("/studentdashboard");
-                    setMenuOpen(false);
-                  }}
-                  className="text-left hover:text-white"
-                >
-                  Student Dashboard
+                <button onClick={() => { navigate("/studentdashboard"); setMenuOpen(false); }} className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.06] font-medium transition-colors">
+                  Dashboard
                 </button>
-                <button
-                  onClick={() => {
-                    handleViewProfileClick();
-                    setMenuOpen(false);
-                  }}
-                  className="text-left hover:text-white"
-                >
-                  View Profile
+                <button onClick={() => { handleViewProfileClick(); setMenuOpen(false); }} className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[0.06] font-medium transition-colors">
+                  Profile
                 </button>
               </>
             )}
 
-            <button
-              onClick={() => {
-                handleLogout();
-                setMenuOpen(false);
-              }}
-              className="text-left hover:text-white"
-            >
-              Logout
-            </button>
+            <div className="pt-2 mt-1 border-t border-white/[0.08]">
+              <button
+                onClick={() => { handleLogout(); setMenuOpen(false); }}
+                className="w-full text-left px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 font-medium transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       )}

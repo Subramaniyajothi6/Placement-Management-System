@@ -80,8 +80,6 @@ const LoginPage = () => {
 
     if (user) {
       checkProfile();
-    } else {
-      navigate("/login");
     }
   }, [user, dispatch, navigate]);
 
@@ -104,24 +102,33 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-indigo-50 p-6 sm:p-12">
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-w-md w-full p-10 sm:p-12">
-        <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-800">
-          Welcome Back
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-7">
+    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] relative overflow-hidden p-6">
+      <div className="fixed top-[-10%] left-[-5%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" aria-hidden="true" />
+      <div className="fixed bottom-[-10%] right-[-5%] w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] rounded-full bg-violet-600/10 blur-3xl pointer-events-none" aria-hidden="true" />
+
+      <div className="relative z-10 bg-[#1e293b] border border-white/[0.08] rounded-2xl max-w-md w-full p-8 sm:p-10 shadow-2xl">
+
+        {/* Brand */}
+        <div className="flex items-center justify-center gap-2.5 mb-8">
+          <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-900/40">
+            <span className="text-white font-black text-base leading-none">P</span>
+          </div>
+          <span className="font-bold text-white text-lg tracking-tight">PlacementMS</span>
+        </div>
+
+        <h2 className="text-2xl font-black text-white mb-1 text-center">Welcome back</h2>
+        <p className="text-gray-400 text-sm text-center mb-8">Sign in to your account to continue</p>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label
-              htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Email
+            <label htmlFor="email" className="block mb-1.5 text-sm font-medium text-gray-300">
+              Email address
             </label>
             <input
               type="email"
               id="email"
-              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-              placeholder="Enter your email"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/[0.05] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 text-sm transition-all"
+              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -130,16 +137,13 @@ const LoginPage = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block mb-1.5 text-sm font-medium text-gray-300">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="w-full px-5 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/[0.05] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 text-sm transition-all"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -147,24 +151,26 @@ const LoginPage = () => {
               disabled={isLoading}
             />
           </div>
+
           {error && (
-            <p className="text-red-600 text-sm text-center mt-2">{error}</p>
+            <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            </div>
           )}
+
           <button
             type="submit"
-            className={`w-full py-4 rounded-md text-white font-semibold text-lg transition-colors ${isLoading
-                ? "bg-indigo-300 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
-              }`}
+            className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-900/40"
             disabled={isLoading}
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? "Signing in..." : "Sign in"}
           </button>
         </form>
-        <p className="mt-8 text-center text-sm text-gray-600">
+
+        <p className="mt-6 text-center text-sm text-gray-500">
           Don't have an account?{" "}
-          <Link to="/register" className="text-indigo-600 hover:underline">
-            Sign up
+          <Link to="/register" className="text-indigo-400 font-medium hover:text-indigo-300 hover:underline">
+            Create one
           </Link>
         </p>
       </div>

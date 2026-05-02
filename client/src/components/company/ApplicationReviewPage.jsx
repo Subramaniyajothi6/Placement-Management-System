@@ -72,154 +72,76 @@ const ApplicationReviewPage = () => {
     navigate("/companyDashboard");
   };
 
+  const selectClass = "p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition text-sm w-full sm:w-1/3 [&>option]:bg-[#1e293b] [&>option]:text-white";
+
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow">
-      {/* Back Button */}
-      <button
-        onClick={handleBack}
-        className="mb-6 text-indigo-600 hover:underline font-semibold focus:outline-none"
-        aria-label="Go back"
-      >
-        &larr; Back
-      </button>
-
-      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">
-        Application Review
-      </h1>
-
-      {/* Filter controls */}
-      <div className="flex flex-col sm:flex-row sm:space-x-6 mb-6 space-y-4 sm:space-y-0">
-        <select
-          name="jobId"
-          value={filters.jobId}
-          onChange={handleFilterChange}
-          className="p-3 border rounded shadow-sm w-full sm:w-1/3 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-          aria-label="Filter by Job"
+    <div className="min-h-screen py-8 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
+          aria-label="Go back"
         >
-          <option value="">All Jobs</option>
-          {filteredJobs.map((job) => (
-            <option key={job._id} value={job._id}>
-              {job.title}
-            </option>
-          ))}
-        </select>
+          &larr; Back
+        </button>
 
-        <select
-          name="status"
-          value={filters.status}
-          onChange={handleFilterChange}
-          className="p-3 border rounded shadow-sm w-full sm:w-1/3 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-          aria-label="Filter by Application Status"
-        >
-          {statusOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
+        <h1 className="text-2xl font-black mb-6 text-white">Application Review</h1>
 
-      {/* Loading/Error */}
-      {jobsLoading && (
-        <p className="text-center text-gray-600 py-10">Loading jobs...</p>
-      )}
-      {jobsError && (
-        <p className="text-center text-red-600 py-10">{jobsError}</p>
-      )}
-      {loading && (
-        <p className="text-center text-gray-700 py-10">
-          Loading applications...
-        </p>
-      )}
-      {error && (
-        <p className="text-center text-red-600 py-10">{error}</p>
-      )}
-
-      {/* Applications Table */}
-      {!loading && !error && (
-        <div className="overflow-x-auto rounded-md border border-gray-200 shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-indigo-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
-                  Applicant Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
-                  Job Title
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
-                  Applied On
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">
-                  Resume
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {applications.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="text-center p-6 text-gray-600">
-                    No applications found.
-                  </td>
-                </tr>
-              ) : (
-                applications.map((app) => (
-                  <tr
-                    key={app._id}
-                    className="hover:bg-indigo-50 cursor-pointer transition"
-                    onClick={() => {
-                      navigate(`/company/applications/${app._id}`);
-                    }}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        navigate(`/company/applications/${app._id}`);
-                      }
-                    }}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-800">
-                      {app.candidate?.name || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">
-                      {app.candidate?.email || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">
-                      {app.job?.title || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-700 font-semibold">
-                      {app.status}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                      {new Date(app.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {app.resume ? (
-                        <a
-                          href={app.resume}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-indigo-600 hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          View Resume
-                        </a>
-                      ) : (
-                        "No resume"
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <select name="jobId" value={filters.jobId} onChange={handleFilterChange} className={selectClass} aria-label="Filter by Job">
+            <option value="">All Jobs</option>
+            {filteredJobs.map((job) => <option key={job._id} value={job._id}>{job.title}</option>)}
+          </select>
+          <select name="status" value={filters.status} onChange={handleFilterChange} className={selectClass} aria-label="Filter by Status">
+            {statusOptions.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+          </select>
         </div>
-      )}
+
+        {jobsLoading && <p className="text-center text-gray-400 text-sm py-10">Loading jobs...</p>}
+        {jobsError && <p className="text-center text-red-400 text-sm py-10">{jobsError}</p>}
+        {loading && <p className="text-center text-gray-400 text-sm py-10">Loading applications...</p>}
+        {error && <p className="text-center text-red-400 text-sm py-10">{error}</p>}
+
+        {!loading && !error && (
+          <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+            <table className="min-w-full divide-y divide-white/[0.06]">
+              <thead className="bg-[#1e293b]">
+                <tr>
+                  {["Applicant Name","Email","Job Title","Status","Applied On","Resume"].map(h => (
+                    <th key={h} className="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.06]">
+                {applications.length === 0 ? (
+                  <tr><td colSpan="6" className="text-center p-6 text-gray-500 text-sm">No applications found.</td></tr>
+                ) : (
+                  applications.map((app) => (
+                    <tr
+                      key={app._id}
+                      className="hover:bg-white/[0.04] cursor-pointer transition"
+                      onClick={() => navigate(`/company/applications/${app._id}`)}
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") navigate(`/company/applications/${app._id}`); }}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-200 text-sm">{app.candidate?.name || "N/A"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">{app.candidate?.email || "N/A"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">{app.job?.title || "N/A"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-200 text-sm font-semibold">{app.status}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-400 text-sm">{new Date(app.createdAt).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {app.resume ? (
+                          <a href={app.resume} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 hover:underline" onClick={(e) => e.stopPropagation()}>View Resume</a>
+                        ) : <span className="text-gray-600">No resume</span>}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

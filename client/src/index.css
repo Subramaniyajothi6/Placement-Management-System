@@ -1,1 +1,10 @@
-@import 'tailwindcss'
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html, body {
+  background-color: #0f172a;
+  color-scheme: dark;
+}

@@ -115,88 +115,91 @@ const InterviewSchedulingForm = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow">
-      <button onClick={handleBack} className="mb-6 text-indigo-600 hover:underline font-semibold focus:outline-none">
-        &larr; Back
-      </button>
+    <div className="min-h-screen py-8 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
+        >
+          &larr; Back
+        </button>
 
-      <h2 className="text-3xl font-bold mb-8 text-center text-indigo-700 border-b pb-3">Manage Interviews</h2>
-
-      <button
-        onClick={openCreateModal}
-        className="mb-8 bg-indigo-600 text-white rounded px-7 py-3 font-semibold hover:bg-indigo-700 shadow transition"
-      >
-        Schedule New Interview
-      </button>
-
-      {isLoading && <div>Loading interviews...</div>}
-      {isError && <div className="text-red-600 mb-6">Error loading interviews.</div>}
-
-      {!isLoading && !isError && (
-        <>
-          <p className="mb-4 text-center text-gray-600 italic">
-            Click on an interview row to view or manage detailed scheduling and feedback.
-          </p>
-
-          <div className="overflow-x-auto rounded-md border border-gray-200 shadow-sm">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-indigo-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">Candidate</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">Job</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">Date & Time</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">Type</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">Status</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-indigo-700">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {companyInterviews.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="text-center p-6 text-gray-600">
-                      No interviews scheduled.
-                    </td>
-                  </tr>
-                ) : (
-                  companyInterviews.map((interview) => (
-                    <tr
-                      key={interview._id}
-                      className="hover:bg-indigo-50 cursor-pointer transition"
-                      onClick={() => navigate(`/company/interview/${interview._id}`)}
-                    >
-                      <td className="px-6 py-4 text-gray-800">{getCandidateName(interview.candidate)}</td>
-                      <td className="px-6 py-4 text-gray-700">{getJobTitle(interview.job)}</td>
-                      <td className="px-6 py-4 text-gray-700">{new Date(interview.interviewDate).toLocaleString()}</td>
-                      <td className="px-6 py-4 text-gray-700">{interview.interviewType}</td>
-                      <td className="px-6 py-4 text-gray-700 font-semibold">{interview.status}</td>
-                      <td className="px-6 py-4">
-                        <button
-                          className="text-indigo-600 hover:underline font-semibold mr-3 focus:outline-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openEditModal(interview);
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="text-red-600 hover:underline font-semibold focus:outline-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteInterview(interview._id);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-3xl font-black text-white tracking-tight">Manage Interviews</h2>
+            <p className="text-gray-400 text-sm mt-1">Schedule and track all interviews</p>
           </div>
-        </>
-      )}
+          <button
+            onClick={openCreateModal}
+            className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40"
+          >
+            + Schedule Interview
+          </button>
+        </div>
+
+        {isLoading && <p className="text-center text-gray-400 text-sm py-10">Loading interviews...</p>}
+        {isError && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            Error loading interviews.
+          </div>
+        )}
+
+        {!isLoading && !isError && (
+          <>
+            <p className="mb-4 text-center text-gray-500 text-sm italic">
+              Click on a row to view or manage detailed scheduling and feedback.
+            </p>
+
+            <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+              <table className="min-w-full divide-y divide-white/[0.06]">
+                <thead className="bg-[#1e293b]">
+                  <tr>
+                    {["Candidate", "Job", "Date & Time", "Type", "Status", "Actions"].map((h) => (
+                      <th key={h} className="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.06]">
+                  {companyInterviews.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="text-center p-6 text-gray-500 text-sm">No interviews scheduled.</td>
+                    </tr>
+                  ) : (
+                    companyInterviews.map((interview) => (
+                      <tr
+                        key={interview._id}
+                        className="hover:bg-white/[0.04] cursor-pointer transition"
+                        onClick={() => navigate(`/company/interview/${interview._id}`)}
+                      >
+                        <td className="px-6 py-4 text-gray-200 text-sm">{getCandidateName(interview.candidate)}</td>
+                        <td className="px-6 py-4 text-gray-300 text-sm">{getJobTitle(interview.job)}</td>
+                        <td className="px-6 py-4 text-gray-300 text-sm">{new Date(interview.interviewDate).toLocaleString()}</td>
+                        <td className="px-6 py-4 text-gray-300 text-sm">{interview.interviewType}</td>
+                        <td className="px-6 py-4 text-gray-200 text-sm font-semibold">{interview.status}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2">
+                            <button
+                              className="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-lg text-xs font-semibold hover:bg-indigo-500/30 transition"
+                              onClick={(e) => { e.stopPropagation(); openEditModal(interview); }}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="px-3 py-1 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-xs font-semibold hover:bg-red-500/20 transition"
+                              onClick={(e) => { e.stopPropagation(); handleDeleteInterview(interview._id); }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
 
       <InterviewModal
         isOpen={modalIsOpen}
@@ -213,6 +216,7 @@ const InterviewSchedulingForm = () => {
         setSelectedCandidate={setSelectedCandidate}
         user={user}
       />
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCompany } from "../../slices/companySlice";
 import { selectAuthUser } from "../../slices/authSlice";
@@ -37,6 +37,18 @@ const CompanyForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
 
 const isValidURL = (string) => {
   if (!string) return true;
@@ -87,6 +99,7 @@ const isValidURL = (string) => {
 
   const handleNestedChange = (e, parentKey) => {
     const { name, value } = e.target;
+    setIsDirty(true);
     setFormData((prev) => ({
       ...prev,
       [parentKey]: {
@@ -117,6 +130,7 @@ const isValidURL = (string) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setIsDirty(true);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -154,6 +168,7 @@ const isValidURL = (string) => {
     dispatch(createCompany(payload))
       .unwrap()
       .then(() => {
+        setIsDirty(false);
         toast.success("Company profile created successfully!");
         setFormData({
           name: "",
@@ -188,187 +203,115 @@ const isValidURL = (string) => {
       });
   };
 
+  const inputClass = "w-full p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition text-sm";
+  const labelClass = "block mb-1.5 text-sm font-medium text-gray-300 capitalize";
+
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex flex-col items-center py-10 px-6 sm:px-12 lg:px-24">
-      {/* Back button fixed top-left */}
-      <button
-        onClick={() => navigate("/company/dashboard")}
-        aria-label="Go back"
-        className="absolute top-2 left-3 px-4 py-2 rounded-lg z-50 bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-lg"
-      >
-        &larr; Back
-      </button>
+    <div className="min-h-screen py-10 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto">
+        <button
+          onClick={() => navigate("/company/dashboard")}
+          aria-label="Go back"
+          className="mb-6 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#243347] border border-white/[0.1] text-gray-300 text-sm font-medium hover:bg-white/[0.1] hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition"
+        >
+          &larr; Back
+        </button>
 
-      <div className="w-full mt-6 max-w-6xl bg-gradient-to-br from-indigo-100 via-indigo-50 to-indigo-100 rounded-lg shadow-lg p-10">
-        <h2 className="text-4xl font-extrabold mb-10 text-center text-indigo-700 drop-shadow">
-          Create Company Profile
-        </h2>
+        <div className="bg-[#1e293b] border border-white/[0.08] rounded-2xl p-8">
+          <h2 className="text-2xl font-black text-white mb-1">Create Company Profile</h2>
+          <p className="text-gray-400 text-sm mb-8">Fill in your company details to get started.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <label className="block mb-2 font-semibold text-indigo-700">
-                Company Name<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                required
-              />
-              {errors.name && (
-                <p className="text-red-600 text-sm mt-1">{errors.name}</p>
-              )}
+          <form onSubmit={handleSubmit} className="space-y-7">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div>
+                <label className={labelClass}>Company Name <span className="text-red-400">*</span></label>
+                <input type="text" name="name" value={formData.name} onChange={handleChange} className={inputClass} required />
+                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <label className={labelClass}>Industry</label>
+                <input type="text" name="industry" value={formData.industry} onChange={handleChange} className={inputClass} />
+              </div>
+              <div>
+                <label className={labelClass}>Size</label>
+                <select name="size" value={formData.size} onChange={handleChange} className={inputClass}>
+                  {["1-10","11-50","51-200","201-500","501-1000","1000+"].map(s => (
+                    <option key={s} value={s} className="bg-[#1e293b] text-white">{s}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+
             <div>
-              <label className="block mb-2 font-semibold text-indigo-700">Industry</label>
-              <input
-                type="text"
-                name="industry"
-                value={formData.industry}
-                onChange={handleChange}
-                className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
+              <label className={labelClass}>Description</label>
+              <textarea name="description" value={formData.description} onChange={handleChange} rows={4} className={inputClass} />
             </div>
-            <div>
-              <label className="block mb-2 font-semibold text-indigo-700">Size</label>
-              <select
-                name="size"
-                value={formData.size}
-                onChange={handleChange}
-                className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className={labelClass}>Logo URL</label>
+                <input type="url" name="logo" value={formData.logo} onChange={handleChange} className={inputClass} />
+                {errors.logo && <p className="text-red-400 text-xs mt-1">{errors.logo}</p>}
+              </div>
+              <div>
+                <label className={labelClass}>Website</label>
+                <input type="url" name="website" value={formData.website} onChange={handleChange} className={inputClass} placeholder="https://example.com" />
+                {errors.website && <p className="text-red-400 text-xs mt-1">{errors.website}</p>}
+              </div>
+            </div>
+
+            <fieldset className="border border-white/[0.08] p-5 rounded-xl">
+              <legend className="text-sm font-semibold text-gray-300 px-2">Location</legend>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
+                {["address", "city", "state", "country", "pincode"].map((field) => (
+                  <div key={field}>
+                    <label className={labelClass}>{field}</label>
+                    <input type="text" name={field} value={formData.location[field]} onChange={(e) => handleNestedChange(e, "location")} className={inputClass} />
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="border border-white/[0.08] p-5 rounded-xl">
+              <legend className="text-sm font-semibold text-gray-300 px-2">Contact Person</legend>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
+                {["name", "email", "phone"].map((field) => (
+                  <div key={field}>
+                    <label className={labelClass}>{field}</label>
+                    <input type={field === "email" ? "email" : "text"} name={field} value={formData.contactPerson[field]} onChange={(e) => handleNestedChange(e, "contactPerson")} className={inputClass} />
+                    {field === "phone" && errors.contactPerson_phone && (
+                      <p className="text-red-400 text-xs mt-1">{errors.contactPerson_phone}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="border border-white/[0.08] p-5 rounded-xl">
+              <legend className="text-sm font-semibold text-gray-300 px-2">Social Links</legend>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
+                {["linkedin", "twitter", "facebook"].map((field) => (
+                  <div key={field}>
+                    <label className={labelClass}>{field}</label>
+                    <input type="url" name={field} value={formData.socialLinks[field]} onChange={(e) => handleNestedChange(e, "socialLinks")} className={inputClass} placeholder={`https://www.${field}.com/yourpage`} />
+                    {errors[`socialLinks_${field}`] && (
+                      <p className="text-red-400 text-xs mt-1">{errors[`socialLinks_${field}`]}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl text-sm hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/40"
               >
-                <option value="1-10">1-10</option>
-                <option value="11-50">11-50</option>
-                <option value="51-200">51-200</option>
-                <option value="201-500">201-500</option>
-                <option value="501-1000">501-1000</option>
-                <option value="1000+">1000+</option>
-              </select>
+                Create Company Profile
+              </button>
             </div>
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold text-indigo-700">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={5}
-              className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label className="block mb-2 font-semibold text-indigo-700">Logo URL</label>
-              <input
-                type="url"
-                name="logo"
-                value={formData.logo}
-                onChange={handleChange}
-                className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-              {errors.logo && (
-                <p className="text-red-600 text-sm mt-1">{errors.logo}</p>
-              )}
-            </div>
-            <div>
-              <label className="block mb-2 font-semibold text-indigo-700">Website</label>
-              <input
-                type="url"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                placeholder="https://example.com"
-              />
-              {errors.website && (
-                <p className="text-red-600 text-sm mt-1">{errors.website}</p>
-              )}
-            </div>
-          </div>
-
-          <fieldset className="border border-indigo-300 p-6 rounded-lg">
-            <legend className="font-semibold text-indigo-700 mb-5">Location</legend>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {["address", "city", "state", "country", "pincode"].map((field) => (
-                <div key={field}>
-                  <label className="block mb-2 capitalize font-semibold text-indigo-700">
-                    {field}
-                  </label>
-                  <input
-                    type="text"
-                    name={field}
-                    value={formData.location[field]}
-                    onChange={(e) => handleNestedChange(e, "location")}
-                    className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  />
-                </div>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset className="border border-indigo-300 p-6 rounded-lg mt-8">
-            <legend className="font-semibold text-indigo-700 mb-5">Contact Person</legend>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {["name", "email", "phone"].map((field) => (
-                <div key={field}>
-                  <label className="block mb-2 capitalize font-semibold text-indigo-700">
-                    {field}
-                  </label>
-                  <input
-                    type={field === "email" ? "email" : "text"}
-                    name={field}
-                    value={formData.contactPerson[field]}
-                    onChange={(e) => handleNestedChange(e, "contactPerson")}
-                    className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  />
-                  {field === "phone" && errors.contactPerson_phone && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.contactPerson_phone}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset className="border border-indigo-300 p-6 rounded-lg mt-8">
-            <legend className="font-semibold text-indigo-700 mb-5">Social Links</legend>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {["linkedin", "twitter", "facebook"].map((field) => (
-                <div key={field}>
-                  <label className="block mb-2 capitalize font-semibold text-indigo-700">
-                    {field}
-                  </label>
-                  <input
-                    type="url"
-                    name={field}
-                    value={formData.socialLinks[field]}
-                    onChange={(e) => handleNestedChange(e, "socialLinks")}
-                    className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    placeholder={`https://www.${field}.com/yourpage`}
-                  />
-                  {errors[`socialLinks_${field}`] && (
-                    <p className="text-red-600 text-sm mt-1">{errors[`socialLinks_${field}`]}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </fieldset>
-
-          <div className="flex justify-end mt-10">
-            <button
-              type="submit"
-              className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
-            >
-              Create Company Profile
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
