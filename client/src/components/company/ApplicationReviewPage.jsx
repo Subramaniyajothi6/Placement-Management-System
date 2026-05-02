@@ -69,7 +69,7 @@ const ApplicationReviewPage = () => {
 
   // Back button handler
   const handleBack = () => {
-    navigate("/companyDashboard");
+    navigate("/companydashboard");
   };
 
   const selectClass = "p-3 rounded-xl border border-white/10 bg-white/[0.05] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition text-sm w-full sm:w-1/3 [&>option]:bg-[#1e293b] [&>option]:text-white";

@@ -103,6 +103,7 @@ const InterviewSchema = new mongoose.Schema({
   videoProvider: {
     providerName: String,
     externalMeetingId: String,
+    meetingUrl: String,
     webhookStatus: {
       type: String,
       enum: ['pending', 'completed', 'failed', 'cancelled'],

@@ -111,7 +111,7 @@ const InterviewSchedulingForm = () => {
   };
 
   const handleBack = () => {
-    navigate('/companyDashboard');
+    navigate('/companydashboard');
   };
 
   return (
